@@ -45,8 +45,15 @@ You can check a JWT signature on (https://jwt.io)
 
 ## Using Irma signatures
 
-TODO: check stand-alone signature verify app!
-TODO: add Nuts login text
+The signature example returns a JWT with an Irma signature. You can post this proof in case 2 to your own irma server and check if the signature is valid.
+
+Nuts will use something like the following message to authenticate users across applications (using the signature of this message)
+
+```
+Ik verklaar hierbij dat applicatie X namens mij (x, y) gegevens mag ophalen. Deze machtiging is geldig tot Maandag 12 December 2018 13:05.
+```
+
+This message will be signed with some attributes. So the message can be checked for validity and the message itself contains the application name and validity period. (The application name will also be present in the certificate used for the two-way tls connection)
 
 ## Settings
 
