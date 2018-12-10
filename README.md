@@ -13,7 +13,23 @@ Aimed at setting up your mobile app, running some local examples and play with t
 
 This case will let you run your own irma_api_server and teaches you the ins-and-outs of the scheme(manager).
 
+### Case 3
+
+This will be all about integrating Irma into your own product. Some possibilities:
+
+- Integrate the Irma-api-server.
+- Integrating the irma_js or Alliander js and customizing the look and feel.
+- Issueing new attributes (+ hacking mobile app)
+- Using Irma signatures
+
+It would be nice if we could group together the different parties that have the same interest.
+
 ## Usefull stuff
+
+### Usefull links
+(https://credentials.github.io)
+(https://github.com/privacybydesign/)
+(https://privacybydesign.foundation/attribute-index/en/)
 
 ### For hosting party
 
