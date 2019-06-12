@@ -57,7 +57,7 @@ Find all organizations with 'zorg' in their name
 ./nuts registry search zorg
 ```
 
-The same queries can be done by using REST api's as listed on https://nuts-api-spec.readthedocs.io/en/latest/ with a base url of http://nuts.ngrok.io/
+The same queries can be done by using REST api's as listed on https://nuts-documentation.readthedocs.io/projects/nuts-api-spec/en/latest/ with a base url of http://nuts.ngrok.io/
 
 ## Nuts Auth server
 
