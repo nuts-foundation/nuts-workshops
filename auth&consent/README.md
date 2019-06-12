@@ -13,6 +13,11 @@
 
 ## Welcome and coffee
 
+WIFI: 
+PARKING:
+SLACK: nuts-foundation.slack.com#auth_consent-workshop
+ETC
+
 ## Architecture and Goal
 
 Using the architectural diagrom from https://nuts-documentation.readthedocs.io/en/latest/pages/architecture.html, an explanation will be given on what we're going to achieve:
