@@ -7,12 +7,15 @@
 - setting up Nuts Go executable (10 mins)
 - setting up Nuts auth executable (?)
 - register your health care organization (10 mins)
+- adding consent (10 mins)
+- break (10 mins)
+- explanation on auth (?)
 
 ## Welcome and coffee
 
 ## Architecture and Goal
 
-Using the architectural diagrom from https://nuts-documentation.readthedocs.io/en/latest/pages/architecture.html, an explanation will begiven on what we're going to achieve:
+Using the architectural diagrom from https://nuts-documentation.readthedocs.io/en/latest/pages/architecture.html, an explanation will be given on what we're going to achieve:
 
 Participants will be bringing their own software representing *Vendor space*, the key will be connecting to the Nuts *Service space*.
 For this workshop, a central consent-store and registry will be used. Getting *Nuts space* up and running on all machines will probably be another workshop.
@@ -100,8 +103,22 @@ curl -vX POST http://nuts.ngrok.io/api/organizations -d @registry/using.json \
 --header "Content-Type: application/json"
 ```
 
+## Consent
 
+If you're exposing data, you also have to register consent. This can be done by using the REST api or by using the Nuts executable:
 
+(make sure you're connecting to the remote consent-store using the nuts.yaml from this repo)
+```Shell
+./nuts consent-store record urn:oid:2.16.840.1.113883.2.4.6.3:999999990 urn:oid:2.16.840.1.113883.2.4.6.1:XXXXXXXX urn:oid:2.16.840.1.113883.2.4.6.1:00000007 Observation,Patient
+```
+
+## BREAK
+
+zzzzz
+
+## Auth
+
+Using https://nuts-documentation.readthedocs.io/en/latest/pages/login-contract.html#example
 
  
 
