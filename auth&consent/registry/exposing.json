@@ -1,0 +1,15 @@
+{
+	"name": "NAME",
+	"identifier": "urn:oid:2.16.840.1.113883.2.4.6.1:XXXXXXXX",
+	"actors": [
+	],
+	"endpoints":[
+		{
+			"endpointType": "urn:nuts:endpoint::fhir",
+			"identifier": "UUID/RANDOM",
+			"status": "active",
+			"version": "0.1.0",
+			"URL": "YOU NGROK PATH"
+		}
+	]
+}

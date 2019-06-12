@@ -1,0 +1,8 @@
+verbosity: debug
+cstore:
+  address: nuts.ngrok.io
+  mode: client
+registry:
+  address: nuts.ngrok.io
+  mode: client
+
