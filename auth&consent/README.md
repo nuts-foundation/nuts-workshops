@@ -97,9 +97,15 @@ Replace XXXXXXXX with your chosen AGB.
 
 Send a POST request to `http://nuts.ngrok.io/api/organizations` using one of the example files from /registry. If you'll be exposing data, use the registry/exposing.json template. Change all data in the file that is CAPITALIZED.
 
+Your public key can be found by executing the following command:
+```Shell
+./nuts crypto publicKey urn:oid:2.16.840.1.113883.2.4.6.1:XXXXXXXX
+```
+Paste the public key in the json and replace all the newlines with `\\n` just like in the example.
+
 The NGROK path will be the ngrok subdomain including the base path to a REST api. In practise any consent that is given regarding a resource, that resource name will be appended to the base path.
 
-If you don't know your NGROK path yet, this step can be done at a later time. Organizations can be removed by using the DELETE api giiven the organization identifier.
+If you don't know your NGROK path yet, this step can be done at a later time. Organizations can be removed by using the DELETE api given the organization identifier.
 
 REST api's can easily be called by plugins like POSTMAN or by using curl:
 
