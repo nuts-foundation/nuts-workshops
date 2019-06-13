@@ -1,6 +1,7 @@
 {
 	"name": "NAME",
 	"identifier": "urn:oid:2.16.840.1.113883.2.4.6.1:XXXXXXXX",
+	"publicKey": "-----BEGIN PUBLIC KEY-----\\nXXXXX\\nXXXXXX\\n-----END PUBLIC KEY-----",
 	"actors": [
 	  {
 	    "identifier": "urn:oid:2.16.840.1.113883.2.4.6.1:00000007"
