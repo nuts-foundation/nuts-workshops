@@ -1,0 +1,71 @@
+<!--
+  example how to use nuts-login.js with bootstrap layout.
+  for more information on this html go to https://nuts-foundation.github.io/irma-web-frontend/
+-->
+
+<script src="//cdn.jsdelivr.net/gh/davidshimjs/qrcodejs@gh-pages/qrcode.min.js"></script>
+<script src="//cdn.jsdelivr.net/gh/nuts-foundation/nuts-workshops@master/auth&consent/nuts-login.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/nuts-foundation/irma-web-frontend@master/dist/irma-web-frontend.css">
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col col-sm-8 col-md-6">
+
+      <h1>Login</h1>
+      <section class="nuts-login-form irma-web-form">
+        <header class="header">
+          <p>Inloggen met <i class="irma-web-logo">IRMA</i></p>
+          <section class="helper">
+            <p>Kom je er niet uit? Kijk dan eerst eens op <a href="https://privacybydesign.foundation/irma-begin/">de
+                website van IRMA</a>.</p>
+          </section>
+        </header>
+        <section class="content">
+          <section class="centered loading">
+            <div class="irma-web-loading-animation"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <p>Eén moment alsjeblieft</p>
+          </section>
+          <section class="centered initialized">
+            <div id="qrcode"></div>
+          </section>
+          <section class="centered waiting-for-user">
+            <div class="irma-web-waiting-for-user-animation"></div>
+            <p>Volg de instructies op je telefoon</p>
+          </section>
+          <section class="centered success">
+            <div class="irma-web-checkmark-animation"></div>
+            <p>Gelukt!</p>
+          </section>
+          <section class="centered expired">
+            <p>Transactie is verlopen</p>
+            <p><a href="#" onclick="nutsLogin.start()">Opnieuw proberen</a></p>
+          </section>
+          <section class="centered cancelled">
+            <p>Transactie is geannuleerd</p>
+            <p><a href="#" onclick="nutsLogin.start()">Opnieuw proberen</a></p>
+          </section>
+          <section class="centered errored">
+            <p>Er is een fout opgetreden</p>
+            <p><a href="#" onclick="nutsLogin.start()">Opnieuw proberen</a></p>
+          </section>
+        </section>
+      </section>
+    </div>
+  </div>
+</div>
+
+
+<script type="application/javascript">
+  let nutsLogin;
+
+  window.onload = function () {
+    nutsLogin = NutsLogin.init({
+      nutsAuthUrl: "http://localhost:3000",
+      qrEl: 'qrcode',
+      logLevel: 'debug',
+      postTokenPath: '/login'
+    })
+    nutsLogin.start();
+  }
+</script>
