@@ -76,6 +76,13 @@ curl http://nuts.ngrok.io/api/organizations?query=zorg
 
 For this workshop, some consent will be added for the Demo EHR application.
 
+### Start nuts server
+
+Start your Nuts server and make sure it's running throughout the workshop.
+```Shell
+./nuts --configfile PATH_TO/nuts.yaml
+```
+
 ## Nuts Auth server
 
 The Nuts auth server has an embedded Irma Go Server. To make sure your phone can find this server, you'll need to start ngrok and point it to the server:
@@ -92,7 +99,7 @@ cd PATH_TO_NUTS_AUTH_SRC
 go run main.go serve --config-file-path PATH_TO/nuts-workshops/auth\&consent/
 ```
 
-It will output that it listens on port 3000 and it auto-updates the Irma schemes.
+It will output that it listens on port 3000 and it auto-updates the Irma schemes. You're required to run your own nuts-auth server throughout the workshop.
 
 ## Registration
 
@@ -102,7 +109,7 @@ Throughout the workshop, we'll be using some demo/test data:
 - Actor = AGB = 00000007
 - Custodian = AGB = XXXXXXXX (where X can be chosen)
 
-All Nuts commands expect the full URN identifier to be used!
+All Nuts commands expect the full URN identifier to be used! So a BSN becomes urn:oid:2.16.840.1.113883.2.4.6.3:999999990 and an agbcode becomes: urn:oid:2.16.840.1.113883.2.4.6.1:00000007.
 
 Steps:
 - If you'll be exposing data, choose a test AGB
