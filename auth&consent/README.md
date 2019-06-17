@@ -119,7 +119,7 @@ Throughout the workshop, we'll be using some demo/test data:
 - Actor = AGB = 00000007
 - Custodian = AGB = XXXXXXXX (where X can be chosen)
 
-All Nuts commands expect the full URN identifier to be used! So a BSN becomes urn:oid:2.16.840.1.113883.2.4.6.3:999999990 and an agbcode becomes: urn:oid:2.16.840.1.113883.2.4.6.1:00000007.
+All Nuts commands expect the full URN identifier to be used! So a BSN becomes urn:oid:2.16.840.1.113883.2.4.6.3:999999990 and an agbcode becomes: urn:oid:2.16.840.1.113883.2.4.6.1:00000007. The oids used are the official hl7 netherlands oids: https://oidref.com/2.16.840.1.113883.2.4.6.1
 
 Steps:
 - If you'll be exposing data, choose a test AGB
