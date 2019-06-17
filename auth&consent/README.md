@@ -199,13 +199,13 @@ The result will be a list of `SimplifiedConsent` rules like this one:
 This information (custodian urn) can be used to query the nuts-registry for the correct endpoint using the `endpoint-by-type` or `organization` API:
 
 ```
-GET http://localhost:1323/api/endpoints?orgIds=urn:oid:2.16.840.1.113883.2.4.6.1:00000000&type=urn:nuts:endpoints:fhir
+GET http://nuts.ngrok.io/api/endpoints?orgIds=urn:oid:2.16.840.1.113883.2.4.6.1:00000000&type=urn:nuts:endpoints:fhir
 ```
 
 or
 
 ```
-GET http://localhost:1323/api/organization/urn:oid:2.16.840.1.113883.2.4.6.1:00000000
+GET http://nuts.ngrok.io/api/organization/urn:oid:2.16.840.1.113883.2.4.6.1:00000000
 ```
 
 The first call will give a list of endpoints and the second one will give an organization. The organization model has a list of endpoints from which you have to find the correct one yourself.
@@ -258,7 +258,7 @@ The JWT will only tell you from which user and organization the request is comin
 Consent can be checked by calling the `consent-check` api at the local nuts node:
 
 ```
-POST http://localhost:1323/consent/check
+POST http://nuts.ngrok.io/consent/check
 ```
 
 with body:
