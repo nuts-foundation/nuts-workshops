@@ -30,7 +30,7 @@ For this workshop, a central consent-store and registry will be used. Getting *N
 
 ## The Nuts executable
 
-The Nuts executable source can be obtained from https://github.com/nuts-foundation/nuts-go. Participants will be creating the executable form code. Golang version > 1.10 is required since Go modules are used. Once cloned, the exeutable can be created by running:
+The Nuts executable source can be obtained from https://github.com/nuts-foundation/nuts-go. Participants will be creating the executable from code. Golang version > 1.10 is required since Go modules are used. Once cloned, the exeutable can be created by running:
 
 ```Shell
 go build -o nuts
@@ -139,14 +139,14 @@ curl -vX POST http://nuts.ngrok.io/api/organizations -d @registry/using.json \
 
 ## Consent
 
-For this workshop, we'll add some consent to our Demo EHR service for users with agbcode 00000007.
-
 If you're exposing data, you also have to register consent. This can be done by using the REST api or by using the Nuts executable:
 
 (make sure you're connecting to the remote consent-store using the nuts.yaml from this repo)
 ```Shell
 ./nuts consent-store record urn:oid:2.16.840.1.113883.2.4.6.3:999999990 urn:oid:2.16.840.1.113883.2.4.6.1:XXXXXXXX urn:oid:2.16.840.1.113883.2.4.6.1:00000007 Observation,Patient
 ```
+
+For this workshop, we'll add some consent to our Demo EHR service for users with agbcode 00000007.
 
 ## Transform consent into an endpoint
 
@@ -196,7 +196,7 @@ GET http://localhost:1323/api/organization/urn:oid:2.16.840.1.113883.2.4.6.1:000
 
 The first call will give a list of endpoints and the second one will give an organization. The organization model has a list of endpoints from which you have to find the correct one yourself.
 
-If all went well, the consent search call should have resulted in a hit where the `Observation` resource was listed for the given actor. One of the registry calls should have given a FHIR base URL.These two combined give the final URL for fetching Observations from the Demo EHR app. The next step will be to add the security token to this FHIR call.
+If all went well, the consent search call should have resulted in a hit where the `Observation` resource was listed for the given actor. One of the registry calls should have given a FHIR base URL. These two combined give the final URL for fetching Observations from the Demo EHR app. The next step will be to add the security token to this FHIR call.
 
 ## Auth
 
@@ -223,7 +223,17 @@ Authorization: Bearer [NUTS_AUTH_TOKEN]
 
 ### Checking Irma contract 
 
-The JWT can be checked at the other end by sending it to the jwt-check api at `http://localhost/auth/jwt_validate`. The result from this call will tell you if the contract is valid or not and will give you the attributes with which it was signed. Since the contract is signed with an agbcode, you then have enough information to do the next check: the consent check.
+The JWT can be checked at the other end by sending it to the validate api at `http://localhost/auth/validate`. The result from this call will tell you if the contract is valid or not and will give you the attributes with which it was signed. Since the contract is signed with an agbcode, you then have enough information to do the next check: the consent check.
+
+The `nuts_auth_token` from the earlier calls can be entered in the body of the validate call:
+
+```json
+{
+  "contract_format": "JWT",
+  "contract_string": [NUTS_AUTH_TOKEN],
+  "acting_party_cn": "unused"
+}
+```
 
 ### Checking consent
 
