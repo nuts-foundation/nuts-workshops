@@ -67,6 +67,10 @@ Find all organizations with 'zorg' in their name
 
 The same queries can be done by using REST api's as listed on https://nuts-documentation.readthedocs.io/projects/nuts-api-spec/en/latest/ with a base url of http://nuts.ngrok.io/
 
+```Shell
+curl http://nuts.ngrok.io/api/organizations?query=zorg
+```
+
 ## Nuts Auth server
 
 The Nuts auth server has an embedded Irma Go Server. To make sure your phone can find this server, you'll need to start ngrok and point it to the server:
