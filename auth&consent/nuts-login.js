@@ -131,7 +131,7 @@ let NutsLogin = (function () {
       fetch(config.postTokenPath, {
         method: 'POST',
         headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({"nuts_contract": JSON.stringify(status.signature)}),
+        body: status.nuts_auth_token,
         cache: 'reload',
         json: true
       }).then((res) => {
