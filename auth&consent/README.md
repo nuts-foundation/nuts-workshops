@@ -143,7 +143,7 @@ Your public key can be found by executing the following command:
 ```Shell
 ./nuts crypto publicKey urn:oid:2.16.840.1.113883.2.4.6.1:XXXXXXXX
 ```
-Paste the public key in the json and replace all the newlines with `\\n` just like in the example.
+*Paste the public key in the json and replace all the newlines with `\\n` just like in the example.*
 
 The NGROK path will be the ngrok subdomain including the base path to a REST api. In practise any consent that is given regarding a resource, that resource name will be appended to the base path.
 
