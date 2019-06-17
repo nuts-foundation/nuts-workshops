@@ -28,6 +28,15 @@ Using the architectural diagrom from https://nuts-documentation.readthedocs.io/e
 Participants will be bringing their own software representing *Vendor space*, the key will be connecting to the Nuts *Service space*.
 For this workshop, a central consent-store and registry will be used. Getting *Nuts space* up and running on all machines will probably be another workshop.
 
+## Preparation
+
+- install ngrok (ngrok.com)
+- install GO (>1.10)
+- clone github repo's:
+    - https://github.com/nuts-foundation/nuts-workshops
+    - https://github.com/nuts-foundation/nuts-go
+    - https://github.com/nuts-foundation/nuts-auth
+
 ## The Nuts executable
 
 The Nuts executable source can be obtained from https://github.com/nuts-foundation/nuts-go. Participants will be creating the executable from code. Golang version > 1.10 is required since Go modules are used. Once cloned, the exeutable can be created by running:
@@ -48,7 +57,7 @@ The help function can be used for the sub-commands:
 ./nuts registry help
 ```
 
-To help in the configuration, a `nuts.yaml` file is available in this repo. Either place it next to the `nuts` executable or use:
+To help in the configuration, a `nuts.yaml` file is available in this  workshop repo. Either place it next to the `nuts` executable or use:
 
 ```Shell
 ./nuts --configfile PATH_TO/nuts.yaml
@@ -85,7 +94,8 @@ Start your Nuts server and make sure it's running throughout the workshop.
 
 ## Nuts Auth server
 
-The Nuts auth server has an embedded Irma Go Server. To make sure your phone can find this server, you'll need to start ngrok and point it to the server:
+The second executable that has to be started is the nuts-auth server. This is temporary, it'll be enclosed in the nuts executable at a later stage. Start by cloning the github repo https://github.com/nuts-foundation/nuts-auth. 
+The Nuts auth server has an embedded Irma Go Server. To make sure your phone can find this server, you'll need to start ngrok first and point it to the (future) server:
 
 ```Shell
 ngrok http 3000
