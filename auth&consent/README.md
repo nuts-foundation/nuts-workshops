@@ -87,6 +87,8 @@ cd PATH_TO_NUTS_AUTH_SRC
 go run main.go serve --config-file-path PATH_TO/nuts-workshops/auth\&consent/
 ```
 
+It will output that it listens on port 3000 and it auto-updates the Irma schemes.
+
 ## Registration
 
 Throughout the workshop, we'll be using some demo/test data:
@@ -132,6 +134,8 @@ curl -vX POST http://nuts.ngrok.io/api/organizations -d @registry/using.json \
 
 ## Consent
 
+For this workshop, we'll add some consent to our Demo EHR service for users with agbcode 00000007.
+
 If you're exposing data, you also have to register consent. This can be done by using the REST api or by using the Nuts executable:
 
 (make sure you're connecting to the remote consent-store using the nuts.yaml from this repo)
@@ -145,12 +149,52 @@ zzzzz
 
 ## Auth
 
-Using https://nuts-documentation.readthedocs.io/en/latest/pages/login-contract.html#example
+On https://nuts-documentation.readthedocs.io/en/latest/pages/login-contract.html#example can be read how Nuts contracts work. The nuts-auth server will do most of the heavy lifting for you.
 
 ### Signing Irma contract
 
-This repo contains an example html and js file (login-example.html and nuts-login.js) which can help in getting started. It'll show a QRCode which can be scanned by the Irma app. It'll handle all Irma stuff and POST the signed Nuts login contract to the configured path (/login by default)
+This repo contains an example html and js file (login-example.html and nuts-login.js) which can help in getting started. It'll show a QRCode which can be scanned by the Irma app. It'll handle all Irma stuff and POST the signed Nuts login contract to the configured path (/login by default). If you do not have a webapplication then you'll have to make the REST calls from within your application. This can be done by POSTing the json below to `http://localhost:3000/auth/contract/session` (assuming nuts-auth is running at 3000)
+
+```json
+
+{
+  "type": "BehandelaarLogin",
+  "language": "NL",
+  "version" "v1"
+}
+```
+
+The result will be a piece of json where the `qr_code_info` property has to be converted to a QRcode. This code can then be scanned by the Irma app. In the json is also a `session_id` property which can be used to poll the session status on `http://localhost/auth/contract/session/{session_id}`. The resulting json from this call contains an `NUTS_AUTH_TOKEN` which is a Json Web Token. This token can be used in the `Authorization` header as bearer token:
+
+```
+Authorization: Bearer [NUTS_AUTH_TOKEN]
+```
 
 ### Checking Irma contract 
 
+The JWT can be checked at the other end by sending it to the jwt-check api at `http://localhost/auth/jwt_validate`. The result from this call will tell you if the contract is valid or not and will give you the attributes with which it was signed. Since the contract is signed with an agbcode, you then have enough information to do the next check: the consent check.
 
+### Checking consent
+
+For this workshop the Custodian and employer of the actor are left blank. The employer will become visible as attribute of the JWT and can be validated by checking the signature of the JWT against the public-key in the Nuts registry. The custodian is an optional field when querying for data. In the future different auth schemes besides JWT can be made available.
+
+The JWT will only tell you from which user and organization the request is coming. Given a particular data format/protocol like FHIR, the requested subject (patient) and custodian (organization) have to be given as a query parameter. When the custodian is left blank, this means that a search can be done over all consent records with only the actor.
+
+Consent can be checked by calling the `consent-check` api at the local nuts node:
+
+```
+POST http://localhost:1323/consent/check
+```
+
+with body:
+
+```json
+{
+  "subject": " urn:oid:2.16.840.1.113883.2.4.6.3:999999990",
+  "custodian": "urn:oid:2.16.840.1.113883.2.4.6.1:00000000",
+  "actor": "urn:oid:2.16.840.1.113883.2.4.6.1:00000007",
+  "resourceType": "Observation"
+}
+```
+
+Where subject is the urn with the BSN from a query param, custodian can be hardcoded for this workshop, actor can be obtained from the auth jwt_validate call and resourceType is the FHIR resource being queried.
