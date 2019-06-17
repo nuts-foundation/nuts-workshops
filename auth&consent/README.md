@@ -87,13 +87,6 @@ curl http://nuts.ngrok.io/api/organizations?query=zorg
 
 For this workshop, some consent will be added for the Demo EHR application.
 
-### Start nuts server
-
-Start your Nuts server and make sure it's running throughout the workshop.
-```Shell
-./nuts --configfile PATH_TO/nuts.yaml
-```
-
 ## Nuts Auth server
 
 The second executable that has to be started is the nuts-auth server. This is temporary, it'll be enclosed in the nuts executable at a later stage. Start by cloning the github repo https://github.com/nuts-foundation/nuts-auth. 
@@ -174,7 +167,7 @@ For this workshop, we'll add some consent to our Demo EHR service for users with
 If consent has been given by a subject for an actor to get medical information, then something in the UI of your app can show this option or an extra tab can be rendered or some other smart stuff can be done. To know if the current user (actor) can view data for a given subject (patient) or when a list of available subjects needs to be rendered, the following call can be made to the consent-store:
 
 ```
-POST http://localhost:1323/consent/query
+POST http://nuts.ngrok.io/consent/query
 ``` 
 
 with the following body:
