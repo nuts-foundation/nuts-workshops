@@ -69,7 +69,19 @@ The same queries can be done by using REST api's as listed on https://nuts-docum
 
 ## Nuts Auth server
 
-TODO
+The Nuts auth server has an embedded Irma Go Server. To make sure your phone can find this server, you'll need to start ngrok and point it to the server:
+
+```Shell
+ngrok http 3000
+``` 
+
+Ngrok will publish the public url on which it will listen. This URL must be placed in your nuts-auth-config.yaml.
+You can then startup your nuts-auth server:
+
+```Shell
+cd PATH_TO_NUTS_AUTH_SRC
+go run main.go serve --config-file-path PATH_TO/nuts-workshops/auth\&consent/
+```
 
 ## Registration
 
@@ -133,8 +145,7 @@ Using https://nuts-documentation.readthedocs.io/en/latest/pages/login-contract.h
 
 ### Signing Irma contract
 
-- js
-- example html
+This repo contains an example html and js file (login-example.html and nuts-login.js) which can help in getting started. It'll show a QRCode which can be scanned by the Irma app. It'll handle all Irma stuff and POST the signed Nuts login contract to the configured path (/login by default)
 
 ### Checking Irma contract 
 
