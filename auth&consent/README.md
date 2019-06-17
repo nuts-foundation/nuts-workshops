@@ -98,7 +98,7 @@ It will output that it listens on port 3000 and it auto-updates the Irma schemes
 
 Throughout the workshop, we'll be using some demo/test data:
 
-- Subject = BSN = 999999990
+- Subject = BSN = 999999990, 999999989, 999999977, 999999965, 999999953
 - Actor = AGB = 00000007
 - Custodian = AGB = XXXXXXXX (where X can be chosen)
 
