@@ -133,6 +133,8 @@ Replace XXXXXXXX with your chosen AGB.
 ./nuts crypto generateKeyPair urn:oid:2.16.840.1.113883.2.4.6.1:XXXXXXXX
 ```
 
+This will generate a new keypair in the current directory or in the given data directory when specified in the nuts.yaml or as commandline parameter.
+
 ### Add your organization to the registry
 
 Send a POST request to `http://nuts.ngrok.io/api/organizations` using one of the example files from /registry. If you'll be exposing data, use the registry/exposing.json template. Change all data in the file that is CAPITALIZED.
