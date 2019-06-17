@@ -13,10 +13,10 @@
 
 ## Welcome and coffee
 
-WIFI: 
-PARKING:
-SLACK: nuts-foundation.slack.com#auth_consent-workshop
-ETC
+- WIFI: 
+- PARKING:
+- SLACK: nuts-foundation.slack.com#auth_consent-workshop
+- ETC
 
 ## Architecture and Goal
 
@@ -131,5 +131,11 @@ zzzzz
 
 Using https://nuts-documentation.readthedocs.io/en/latest/pages/login-contract.html#example
 
- 
+### Signing Irma contract
+
+- js
+- example html
+
+### Checking Irma contract 
+
 
