@@ -32,6 +32,8 @@ For this workshop, a central consent-store and registry will be used. Getting *N
 
 - install ngrok (ngrok.com)
 - install GO (>1.10)
+- install IRMA app
+- load agb demo credentials via https://privacybydesign.foundation/attribute-index/en/irma-demo.nuts.agb.html
 - clone github repo's:
     - https://github.com/nuts-foundation/nuts-workshops
     - https://github.com/nuts-foundation/nuts-go
