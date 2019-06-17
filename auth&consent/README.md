@@ -2,14 +2,18 @@
 
 ## Program
 
-- welcome and coffee (15 mins)
-- explanation of architecture and goal of workshop (15 mins)
-- setting up Nuts Go executable (10 mins)
-- setting up Nuts auth executable (?)
-- register your health care organization (10 mins)
-- adding consent (10 mins)
-- break (10 mins)
-- explanation on auth (?)
+- welcome and coffee 
+- explanation of architecture and goal of workshop 
+- setting up Nuts Go executable 
+- setting up Nuts auth executable
+- register your health care organization 
+- adding consent (optional)
+- break 
+- explanation on auth 
+- integrating Irma contract signing
+- using Irma contract for calls
+- querying consent
+- checking auth and consent
 
 ## Welcome and coffee
 
@@ -51,14 +55,14 @@ To help in the configuration, a `nuts.yaml` file is available in this repo. Eith
 ./nuts --configfile PATH_TO/nuts.yaml
 ```
 
-As explained earlier, this workshop will connect to a central consent-store and registry. It'll be empty initially, this can be checked by querying the registry:
+As explained earlier, this workshop will connect to a central consent-store and registry. It'll be empty initially, this can be checked by querying the consent-store:
 
 Find all consent for Actor with agbcode: 00000007
 ```Shell
 ./nuts consent-store list urn:oid:2.16.840.1.113883.2.4.6.1:00000007
 ```
 
-and consents-store:
+and registry:
 
 Find all organizations with 'zorg' in their name
 ```Shell
@@ -70,6 +74,58 @@ The same queries can be done by using REST api's as listed on https://nuts-docum
 ```Shell
 curl http://nuts.ngrok.io/api/organizations?query=zorg
 ```
+
+For this workshop, some consent will be added for the Demo EHR application.
+
+## Transform consent into an endpoint
+
+If consent has been given by a subject for an actor to get medical information, then something in the UI of your app can show this option or an extra tab can be rendered or some other smart stuff can be done. To know if the current user (actor) can view data for a given subject (patient) or when a list of available subjects needs to be rendered, the following call can be made to the consent-store:
+
+```
+POST http://localhost:1323/consent/query
+``` 
+
+with the following body:
+
+```json
+{
+  "actor": "urn:oid:2.16.840.1.113883.2.4.6.1:00000007",
+  "query": "urn:oid:2.16.840.1.113883.2.4.6.3:999999990"
+}
+```
+
+where the optional query can be a urn for a subject or any other text. If it's a urn, it'll scope the search to actor AND subject. (using query as query will always result in all results for that actor in this workshop)  
+
+The result will be a list of `SimplifiedConsent` rules like this one:
+
+```json
+{
+      "actors": [
+        "urn:oid:2.16.840.1.113883.2.4.6.1:00000007"
+      ],
+      "custodian": "urn:oid:2.16.840.1.113883.2.4.6.1:00000007",
+      "resources": [
+        "string"
+      ],
+      "subject": "urn:oid:2.16.840.1.113883.2.4.6.1:00000007"
+}
+```
+
+This information (custodian urn) can be used to query the nuts-registry for the correct endpoint using the `endpoint-by-type` or `organization` API:
+
+```
+GET http://localhost:1323/api/endpoints?orgIds=urn:oid:2.16.840.1.113883.2.4.6.1:00000000&type=urn:nuts:endpoints:fhir
+```
+
+or
+
+```
+GET http://localhost:1323/api/organization/urn:oid:2.16.840.1.113883.2.4.6.1:00000000
+```
+
+The first call will give a list of endpoints and the second one will give an organization. The organization model has a list of endpoints from which you have to find the correct one yourself.
+
+If all went well, the consent search call should have resulted in a hit where the `Observation` resource was listed for the given actor. One of the registry calls should have given a FHIR base URL.These two combined give the final URL for fetching Observations from the Demo EHR app. The next step will be to add the security token to this FHIR call.
 
 ## Nuts Auth server
 
