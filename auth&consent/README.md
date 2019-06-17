@@ -16,7 +16,7 @@
 
 ## Welcome and coffee
 
-- WIFI: 
+- WIFI: SSID 'Stichting Nuts', password 'letsgonuts'
 - PARKING:
 - SLACK: nuts-foundation.slack.com#auth_consent-workshop
 - ETC
