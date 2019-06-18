@@ -199,7 +199,7 @@ The result will be a list of `SimplifiedConsent` rules like this one:
 This information (custodian urn) can be used to query the nuts-registry for the correct endpoint using the `endpoint-by-type` or `organization` API:
 
 ```
-GET http://nuts.ngrok.io/api/endpoints?orgIds=urn:oid:2.16.840.1.113883.2.4.6.1:00000000&type=urn:nuts:endpoints:fhir
+GET http://nuts.ngrok.io/api/endpoints?orgIds=urn:oid:2.16.840.1.113883.2.4.6.1:00000000&type=urn:nuts:endpoint:fhir
 ```
 
 or
