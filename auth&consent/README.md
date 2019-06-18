@@ -225,7 +225,7 @@ This repo contains an example html and js file (login-example.html and nuts-logi
 {
   "type": "BehandelaarLogin",
   "language": "NL",
-  "version" "v1"
+  "version": "v1"
 }
 ```
 
