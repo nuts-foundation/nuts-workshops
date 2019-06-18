@@ -244,7 +244,7 @@ The `nuts_auth_token` from the earlier calls can be entered in the body of the v
 ```json
 {
   "contract_format": "jwt",
-  "contract_string": [NUTS_AUTH_TOKEN],
+  "contract_string": NUTS_AUTH_TOKEN,
   "acting_party_cn": "Demo EHR"
 }
 ```
