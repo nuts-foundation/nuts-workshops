@@ -229,7 +229,7 @@ This repo contains an example html and js file (login-example.html and nuts-logi
 }
 ```
 
-The result will be a piece of json where the `qr_code_info` property has to be converted to a QRcode. This code can then be scanned by the Irma app. In the json is also a `session_id` property which can be used to poll the session status on `http://localhost/auth/contract/session/{session_id}`. The resulting json from this call contains an `NUTS_AUTH_TOKEN` which is a Json Web Token. This token can be used in the `Authorization` header as bearer token:
+The result will be a piece of json where the `qr_code_info` property has to be converted to a QRcode. This code can then be scanned by the Irma app. In the json is also a `session_id` property which can be used to poll the session status on `http://localhost:3000/auth/contract/session/{session_id}`. The resulting json from this call contains an `NUTS_AUTH_TOKEN` which is a Json Web Token. This token can be used in the `Authorization` header as bearer token:
 
 ```
 Authorization: Bearer [NUTS_AUTH_TOKEN]
