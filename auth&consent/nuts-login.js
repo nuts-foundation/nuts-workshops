@@ -12,6 +12,8 @@ let NutsLogin = (function () {
     config.logLevel = 'logLevel' in config ? config.logLevel : 'none';
     // on success, post token to which path?
     config.postTokenPath = 'postTokenPath' in config ? config.postTokenPath : '/login';
+    // point the browser to this path after a successful login
+    config.afterSuccessPath = 'afterSuccessPath' in config ? config.afterSuccessPath : '/user'
 
     if (!document.getElementById(config.qrEl)) {
       throw(`Could not load qr code: element with id ${config.qrEl} not found!`);
@@ -138,7 +140,7 @@ let NutsLogin = (function () {
         if (config.logLevel === 'debug') {
           console.log("result", res);
         }
-        window.location = '/user'
+        window.location = config.afterSuccessPath;
       }).catch((err) => {
         console.log("error while validating session", err);
       })
