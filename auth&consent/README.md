@@ -16,7 +16,7 @@
 
 ## Welcome and coffee
 
-- WIFI: 
+- WIFI: Promedico_Guest ww: Promedico!
 - PARKING:
 - SLACK: nuts-foundation.slack.com#auth_consent-workshop
 - ETC
