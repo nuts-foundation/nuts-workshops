@@ -237,15 +237,15 @@ Authorization: Bearer [NUTS_AUTH_TOKEN]
 
 ### Checking Irma contract 
 
-The JWT can be checked at the other end by sending it to the validate api at `http://localhost/auth/validate`. The result from this call will tell you if the contract is valid or not and will give you the attributes with which it was signed. Since the contract is signed with an agbcode, you then have enough information to do the next check: the consent check.
+The JWT can be checked at the other end by sending it to the validate api at `http://localhost:3000/auth/contract/validate`. The result from this call will tell you if the contract is valid or not and will give you the attributes with which it was signed. Since the contract is signed with an agbcode, you then have enough information to do the next check: the consent check.
 
 The `nuts_auth_token` from the earlier calls can be entered in the body of the validate call:
 
 ```json
 {
-  "contract_format": "JWT",
+  "contract_format": "jwt",
   "contract_string": [NUTS_AUTH_TOKEN],
-  "acting_party_cn": "unused"
+  "acting_party_cn": "Demo EHR"
 }
 ```
 
