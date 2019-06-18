@@ -16,8 +16,8 @@
 
 ## Welcome and coffee
 
-- WIFI: Promedico_Guest ww: Promedico!
-- PARKING: Bij ons kun je een uitrijkaart krijgen
+- WIFI: Promedico_Guest ww: `Promedico!`
+- PARKING: Free parking cards will be provided
 - SLACK: nuts-foundation.slack.com#auth_consent-workshop
 - ETC
 
