@@ -205,7 +205,7 @@ GET http://nuts.ngrok.io/api/endpoints?orgIds=urn:oid:2.16.840.1.113883.2.4.6.1:
 or
 
 ```
-GET http://nuts.ngrok.io/api/organization/urn:oid:2.16.840.1.113883.2.4.6.1:00000000
+GET http://nuts.ngrok.io/api/organization/urn:oid:2.16.840.1.113883.2.4.6.1:00000002
 ```
 
 The first call will give a list of endpoints and the second one will give an organization. The organization model has a list of endpoints from which you have to find the correct one yourself.
@@ -265,7 +265,7 @@ with body:
 
 ```json
 {
-  "subject": " urn:oid:2.16.840.1.113883.2.4.6.3:999999990",
+  "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:999999990",
   "custodian": "urn:oid:2.16.840.1.113883.2.4.6.1:00000000",
   "actor": "urn:oid:2.16.840.1.113883.2.4.6.1:00000007",
   "resourceType": "Observation"
