@@ -1,0 +1,1 @@
+ngrok start nedap_dev nuts_notary nuts_discovery nuts_manson --config ~/.ngrok2/ngrok.yml --config ngrok.yml

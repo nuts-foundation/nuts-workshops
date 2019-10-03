@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  nedap_dev:
+    image: nginx:alpine
+    ports:
+      - "8443:80"
+    volumes:
+      - "./nodes/nedap_dev/nginx.conf:/etc/nginx/nginx.conf"
+      - "./nodes/nedap_dev/conf.d/location.defaults:/etc/nginx/conf.d/location.defaults"
+      - "./nodes/nedap_dev/conf.d/proxy.params:/etc/nginx/conf.d/proxy.params"
+      - "./nodes/nedap_dev/ssl/:/etc/nginx/ssl/"
