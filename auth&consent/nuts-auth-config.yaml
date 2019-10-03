@@ -1,4 +1,4 @@
 http_port: 3000
-http_address: "https://XXXXXX.ngrok.io"
-irma_config_path: "XXXXX/projects/nuts-foundation/nuts-auth/conf"
+http_address: "http://nuts-auth.ngrok.io"
+irma_config_path: ""
 acting_party_cn: "Demo EHR"
