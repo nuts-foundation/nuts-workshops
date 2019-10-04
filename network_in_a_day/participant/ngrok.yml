@@ -1,3 +1,5 @@
+authtoken: CHAMGE_ME
+region: eu
 tunnels:
   nuts_consent:
     proto: tcp
