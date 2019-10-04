@@ -14,7 +14,7 @@ services:
       restart_policy:
         condition: none
 
-  manson:
+  host:
     image: nutsfoundation/nuts-consent-cordapp:latest-dev
     networks:
       - nuts
@@ -22,7 +22,7 @@ services:
       - "2222:2222"
       - "17886:7886"
     volumes:
-      - "./nodes/manson/:/opt/nuts/"
+      - "./nodes/host/:/opt/nuts/"
     command: "-jar /opt/nuts/corda.jar --network-root-truststore-password=changeit --log-to-console --initial-registration"
     deploy:
       restart_policy:
