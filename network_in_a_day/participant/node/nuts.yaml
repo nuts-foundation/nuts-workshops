@@ -14,6 +14,6 @@ registry:
 events:
   connectionstring: file:eventstore.db
 cbridge:
-  address: http://manson-bridge:8080
+  address: http://bridge:8080
 cstore:
   connectionstring: file:consent.db

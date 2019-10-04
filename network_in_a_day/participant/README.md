@@ -2,10 +2,11 @@
 
 ## Startup procedure
 
+- register with ngrok and add auth_token to local ngrok.yml
 - ngrok_all.sh
 - write down tcp and http addresses
 - choose a name for your consent node in node/node.conf
-- change tcp port in node/node.conf wth port listed in ngrok output
+- change p2pAddress in node/node.conf wth tcp address listed in ngrok output
 - change publicUrl in node/nuts.yaml wth http(s) address in ngrok output
 - choose a name for your actingPartyCn in node/nuts.yaml
 - docker-compose -f docker-compose-initial.yml up
