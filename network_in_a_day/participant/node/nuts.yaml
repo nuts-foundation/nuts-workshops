@@ -1,0 +1,19 @@
+verbosity: debug
+address: :1323
+auth:
+  actingPartyCn: CHANGE_ME
+  publicUrl: CHANGE_ME
+  irmaConfigPath: /opt/nuts/irma
+  enableCORS: true
+crypto:
+  fspath: /opt/nuts/keys
+registry:
+  datadir: /opt/nuts/registry
+  syncMode: github
+  syncAddress: https://codeload.github.com/nuts-foundation/nuts-registry-workshop/tar.gz/master
+events:
+  connectionstring: file:eventstore.db
+cbridge:
+  address: http://manson-bridge:8080
+cstore:
+  connectionstring: file:consent.db

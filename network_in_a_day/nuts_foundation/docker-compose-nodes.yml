@@ -16,7 +16,7 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-  manson:
+  host:
     image: nutsfoundation/nuts-consent-cordapp:latest-dev
     networks:
       - nuts
@@ -24,7 +24,7 @@ services:
       - "2222:2222"
       - "17886:7886"
     volumes:
-      - "./nodes/manson/:/opt/nuts/"
+      - "./nodes/host/:/opt/nuts/"
     command: "-jar /opt/nuts/corda.jar --network-root-truststore-password=changeit --log-to-console"
     deploy:
       restart_policy:
@@ -32,7 +32,7 @@ services:
         delay: 15s
         max_attempts: 3
         window: 120s
-  manson-bridge:
+  bridge:
     image: nutsfoundation/nuts-consent-bridge:latest-dev
     environment:
       SPRING_SERVER_ADDRESS: manson-bridge
@@ -41,14 +41,14 @@ services:
     ports:
       - "18080:8080"
     volumes:
-      - "./nodes/manson/application.properties:/opt/nuts/application.properties"
+      - "./nodes/host/application.properties:/opt/nuts/application.properties"
     deploy:
       restart_policy:
         condition: all
         delay: 15s
         max_attempts: 3
         window: 120s
-  manson-nuts-service-space:
+  nuts-service-space:
     image: nutsfoundation/nuts-service-space:latest
     environment:
       NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
@@ -59,7 +59,8 @@ services:
     ports:
       - "11323:1323"
     volumes:
-      - "./nodes/manson/nuts.yaml:/opt/nuts/nuts.yaml"
+      - "./nodes/host/nuts.yaml:/opt/nuts/nuts.yaml"
+      - "./nodes/host/keys:/opt/nuts/keys"
 networks:
   nuts:
     name: nuts

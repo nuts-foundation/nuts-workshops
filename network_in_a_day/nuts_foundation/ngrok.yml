@@ -7,7 +7,7 @@ tunnels:
     proto: tcp
     addr: 7886
     remote-addr: 1.tcp.eu.ngrok.io:24960
-  nuts_manson:
+  nuts_host:
     proto: tcp
     addr: 17886
     remote-addr: 1.tcp.eu.ngrok.io:24964

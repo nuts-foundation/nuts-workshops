@@ -1,0 +1,7 @@
+tunnels:
+  nuts_consent:
+    proto: tcp
+    addr: 7886
+  nuts_irma:
+    proto: http
+    addr: 11323
