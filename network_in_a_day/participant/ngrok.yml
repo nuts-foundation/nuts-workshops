@@ -1,9 +1,9 @@
-authtoken: CHAMGE_ME
+authtoken: CHANGE_ME
 region: eu
 tunnels:
   nuts_consent:
     proto: tcp
-    addr: 7886
+    addr: 27886
   nuts_irma:
     proto: http
-    addr: 11323
+    addr: 21323
