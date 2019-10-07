@@ -11,6 +11,7 @@ registry:
   datadir: /opt/nuts/registry
   syncMode: github
   syncAddress: https://codeload.github.com/nuts-foundation/nuts-registry-workshop/tar.gz/master
+  syncInterval: 1
 events:
   connectionstring: file:eventstore.db
 cbridge:
