@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   notary:
-    image: nutsfoundation/nuts-consent-cordapp:latest-dev
+    image: nutsfoundation/nuts-consent-cordapp:release-0.9.0-dev
     networks:
       - nuts
     ports:
@@ -15,7 +15,7 @@ services:
         condition: none
 
   host:
-    image: nutsfoundation/nuts-consent-cordapp:latest-dev
+    image: nutsfoundation/nuts-consent-cordapp:release-0.9.0-dev
     networks:
       - nuts
     ports:
