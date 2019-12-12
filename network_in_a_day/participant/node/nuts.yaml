@@ -5,6 +5,7 @@ auth:
   publicUrl: CHANGE_ME
   irmaConfigPath: /opt/nuts/irma
   enableCORS: true
+  irmaSchemeManager: irma-demo
 crypto:
   fspath: /opt/nuts/keys
 registry:
