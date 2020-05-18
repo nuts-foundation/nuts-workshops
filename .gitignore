@@ -1,1 +1,14 @@
 .idea
+network_in_a_day/participant/node/additional-node-infos/*
+*.bindings
+*.amq
+*.lock
+network_in_a_day/participant/node/djvm/*
+*.log
+*.db
+network_in_a_day/participant/node/nodeInfo-*
+network_in_a_day/participant/node/network-parameters
+network_in_a_day/participant/node/process-id
+network_in_a_day/participant/node/certificates/nodekeystore.jks
+network_in_a_day/participant/node/certificates/sslkeystore.jks
+network_in_a_day/participant/node/certificates/truststore.jks
