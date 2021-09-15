@@ -1,13 +1,14 @@
 # Nuts workshops
 
-This repository contains the descriptions. howto's and various files needed for the Nuts workshops.
+This repository contains the descriptions, HOWTOs and various files needed for the Nuts workshops.
 
 ## Contents
 
-### irma
+### network_in_day
 
-Workshop on the use of Irma from privacyByDesign foundation
+Workshop on setting up the Nuts node and joining a network.
+It also handles the registration of care organizations.
 
-### auth&consent
+### eOverdracht
 
-Workshop on integerating the Nuts auth and consent logic into vendor specific software
+Workshop on the eOverdracht Bolt.

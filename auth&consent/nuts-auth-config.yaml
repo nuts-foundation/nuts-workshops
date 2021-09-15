@@ -1,4 +1,0 @@
-http_port: 3000
-http_address: "http://nuts-auth.ngrok.io"
-irma_config_path: ""
-acting_party_cn: "Demo EHR"

@@ -1,9 +1,0 @@
-authtoken: CHANGE_ME
-region: eu
-tunnels:
-  nuts_consent:
-    proto: tcp
-    addr: 27886
-  nuts_irma:
-    proto: http
-    addr: 21323
