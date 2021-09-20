@@ -2,8 +2,8 @@
 
 ## Description
 
-This manual describes how to register care organizations (the customer) and publish their names.
-We'll describe the API calls based on the assumption there's a single vendor DID.
+This manual describes how to register care organizations (the vendor's customers) and publish their names.
+We'll describe the API calls based on the assumption the customer has a single vendor.
 
 ## Resources
 
@@ -20,6 +20,7 @@ Some settings are slightly different:
 
 ```
 POST <internal-node-address>/internal/vdr/v1/did
+{
   "controllers": ["did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz"],
   "assertionMethod": true,
   "authentication": false,
@@ -27,18 +28,21 @@ POST <internal-node-address>/internal/vdr/v1/did
   "capabilityDelegation": false,
   "keyAgreement": false,
   "selfControl": false
+}
 ```
 
 Given these parameters, we create a DID that can only use its key for assertions (access tokens and credentials).
 The DID Document is controlled by another DID, the vendor's DID.
 The resulting DID Document can only be updated with the vendor's private key.
 This setup allows you to keep the most important key secure.
-The resulting DID must be stored somewhere, or the DID is lost.
+The resulting DID must be stored somewhere, or the DID is lost (or very hard to retrieve).
 
 ## Giving the organization a name
 
-A DID may represent a particular customer, other nodes don't know yet which customer.
-This is where credentials come to the rescue. The vendor will issue a NutsOrganizationCredential to the customer DID, giving it a name.
+Since a DID in itself doesn't hold any information about its owner, it may represent anything (vendor/care organization/etc).
+To make it known as a care organization's presence on the network, it must be issued a credential.
+The vendor will issue a NutsOrganizationCredential to the customer DID, giving it a name.
+
 Such a credential is created by:
 
 ```
@@ -88,8 +92,7 @@ The result will be the created credential:
     }
 ```
 
-This credential will also be transported to each node in the network.
-This will allow other nodes to search for it.
+This credential will also be transported to each node in the network, which allows other nodes to find it.
 
 ## Searching for an organization
 
@@ -107,11 +110,11 @@ POST <internal-node-address>/internal/vcr/v1/{concept}
 }
 ```
 
-`concept` will have to be replaced with the correct concept. A concept groups several credentials together.
-An organization can be defined by a NutsAuthorizationCredential but in the future also by another credential.
+`concept` will have to be replaced with the correct concept, an abstraction that generalizes the information of credentials.
+Currently, organizations are only defined through `NutsOrganizationCredential`s, but in the future other credentials may be supported as well.
 Having an abstract concept will allow clients to find the correct result even if it doesn't know by which credential it's defined.
-Checkout the [docs](https://nuts-node.readthedocs.io/en/latest/pages/technology/vc-concepts.html) for the current concepts.
-Searching for an organization can be done by using the `organization` concept:
+Check out the [docs](https://nuts-node.readthedocs.io/en/latest/pages/technology/vc-concepts.html) for the current concepts.
+Searching for a care organization can be done by using the `organization` concept:
 
 ```
 POST <internal-node-address>/internal/vcr/v1/organization
@@ -181,7 +184,7 @@ For both calls the result will be a list of DIDs:
 ]
 ```
 
-Trust can be added by calling:
+An issuer can be trusted (for a specific credential type) by calling:
 ```
 POST /internal/vcr/v1/trust
 {
