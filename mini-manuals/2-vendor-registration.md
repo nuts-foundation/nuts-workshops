@@ -13,12 +13,13 @@ The concept of a vendor comes from a SaaS based architecture. If a single care o
 
 ## Creating a DID
 
-You can create an infinite amount of DIDs. DIDs are useless until value is added to them.
-Creating a DID only creates a key pair and an ID. If the result of the REST call is not stored, the DID is lost.
+You can create an infinite amount of DIDs. DIDs in itself are meaningless until information is added to them.
+Creating a DID only creates a key pair and an ID. If the result of the REST call is not stored, the DID is lost (or at least very hard to retrieve).
 A DID is created through:
 
 ```
 POST <internal-node-address>/internal/vdr/v1/did
+{
   "controllers": [],
   "assertionMethod": true,
   "authentication": false,
@@ -26,6 +27,7 @@ POST <internal-node-address>/internal/vdr/v1/did
   "capabilityDelegation": false,
   "keyAgreement": false,
   "selfControl": true
+}
 ```
 
 The body of the call is the default setting. Using an empty body will yield the same result.
@@ -67,14 +69,14 @@ The result will be a DID Document:
 }
 ```
 
-It's important to store the `id`. All API calls use that id.
+It's important to store the `id` (`did:nuts:Ft8N... etc`), which is the actual DID. All API calls use that id.
 
 ## Updating contact information
 
 Each organization that runs a Nuts node is responsible for keeping it in good health, this includes updates.
-It could be the case that a node in the network is not updating. 
+It could be the case that a node in the network is not synchronizing with a rest of the network.
 The contact information allows for other node operators to contact the lagging node operator.
-Contact information are basically a set of services. In order to make the life of developers easier, we've added a convenience method:
+Contact information is stored as service on the DID document. In order to make the life of developers easier, we've added a convenience method:
 
 ```
 PUT /internal/didman/v1/did/{did}/contactinfo
