@@ -4,10 +4,10 @@
 
 This manual describes how to add and revoke authorization credentials.
 Authorization credentials are verifiable credentials that tell the subject where and which resources can be viewed (or changed).
-The credentials are issued by the custodian, the care organization that is responsible for the data that is to be shared.
+The credentials are issued by the custodian, the care organization that holds the data.
 The credentials are issued to the actor, the care organization which users have a demand for patient data.
 
-Authorization credentials have a `purposeOfUse` which scope the credential to a specific (part of a) Bolt.
+Authorization credentials have a `purposeOfUse` which scopes the credential to a specific (part of a) Bolt.
 The [Nuts authorization credential RFC](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) explains the details of the credential.
 For this manual we'll create two different authorization credentials. 
 The eOverdracht bolt requires similar credentials.
@@ -63,7 +63,7 @@ A bolt specifies how the `legalBase`, `purposeOfUse` and `resources` fields are 
 The example above describes an authorization credential that is created by the *sender* of the *eOverdracht* bolt.
 The recipient of that credential is able to read and update the specified Task resource.
 No user authentication is required.
-It also allows the recipient to read and perform the FHIR *document* operation on the specified composition.
+It also allows the recipient to *read* and perform the FHIR *$document* operation on the specified composition.
 That composition is the •AdvanceNotice*.
 The `purposeOfUse` field is filled with `eOverdracht-sender`. 
 That value signals a resource server to apply a specific access policy when the credential is used to retrieve data.
