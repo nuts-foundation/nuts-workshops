@@ -18,8 +18,10 @@ We'll describe the API calls based on the assumption the customer has a single v
 Creating the DID for the customer is similar to creating the DID for the vendor.
 Some settings are slightly different:
 
-```
-POST <internal-node-address>/internal/vdr/v1/did
+```http request
+POST http://localhost:1323/internal/vdr/v1/did
+Content-Type: application/json
+
 {
   "controllers": ["did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz"],
   "assertionMethod": true,
@@ -45,8 +47,10 @@ The vendor will issue a NutsOrganizationCredential to the customer DID, giving i
 
 Such a credential is created by:
 
-```
-POST <internal-node-address>/internal/vcr/v1/vc
+```http request
+POST http://localhost:1323/internal/vcr/v1/vc
+Content-Type: application/json
+
 {
     "type": "NutsOrganizationCredential",
     "issuer": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
@@ -98,8 +102,10 @@ This credential will also be transported to each node in the network, which allo
 
 You can search for any credential by:
 
-```
-POST <internal-node-address>/internal/vcr/v1/{concept}
+```http request
+POST http://localhost:1323/internal/vcr/v1/{concept}
+Content-Type: application/json
+
 {
     "Params": [
         {
@@ -116,8 +122,10 @@ Having an abstract concept will allow clients to find the correct result even if
 Check out the [docs](https://nuts-node.readthedocs.io/en/latest/pages/technology/vc-concepts.html) for the current concepts.
 Searching for a care organization can be done by using the `organization` concept:
 
-```
-POST <internal-node-address>/internal/vcr/v1/organization
+```http request
+POST http://localhost:1323/internal/vcr/v1/organization
+Content-Type: application/json
+
 {
     "Params": [
         {
@@ -165,9 +173,11 @@ A search API call can be extended by adding the `untrusted=true` query parameter
 
 A list of (un)trusted issuers can be obtained by calling:
 
+```http request
+GET http://localhost:1323/internal/vcr/v1/{credentialType}/trusted
 ```
-GET <internal-node-address>/internal/vcr/v1/{credentialType}/trusted
-GET <internal-node-address>/internal/vcr/v1/{credentialType}/untrusted
+```http request
+GET http://localhost:1323/internal/vcr/v1/{credentialType}/untrusted
 ```
 
 where `credentialType` needs to be replaced by the credential type. For example: `NutsOrganizationCredential`.
@@ -185,8 +195,10 @@ For both calls the result will be a list of DIDs:
 ```
 
 An issuer can be trusted (for a specific credential type) by calling:
-```
-POST /internal/vcr/v1/trust
+```http request
+POST http://localhost:1323/internal/vcr/v1/trust
+Content-Type: application/json
+
 {
   "issuer": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
   "credentialType": "NutsOrganizationCredential"
@@ -194,8 +206,10 @@ POST /internal/vcr/v1/trust
 ```
 
 and removed by calling:
-```
-DELETE /internal/vcr/v1/trust
+```http request
+DELETE http://localhost:1323/internal/vcr/v1/trust
+Content-Type: application/json
+
 {
   "issuer": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
   "credentialType": "NutsOrganizationCredential"

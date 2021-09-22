@@ -15,8 +15,8 @@ This manual describes how to diagnose a local Nuts node. It's important to know 
 
 The following REST call can be used to check if the node is running:
 
-```
-GET /status
+```http request
+GET http://localhost:1323/status
 ```
 
 It'll return the string "OK" with a 200 status code.
@@ -28,8 +28,8 @@ The docker config for the Nuts node also checks this, so the default docker heal
 
 A bit more information can be obtained by calling:
 
-```
-GET /status/diagnostics
+```http request
+GET http://localhost:1323/status/diagnostics
 ```
 
 This will return data similar to the data below:
@@ -69,8 +69,8 @@ When only a single head exists, the listed value will be the same as the omnihas
 The diagnostics call only lists your connected nodes. It's possible to get some more info!
 The REST call:
 
-```
-GET /internal/network/v1/diagnostics/peers
+```http request
+GET http://localhost:1323/internal/network/v1/diagnostics/peers
 ```
 
 will return the network diagnostics of all your peers:
@@ -121,14 +121,14 @@ The result is a map of nodeID to some statistics. The Node IDs should match with
 
 It's possible to show the relation of each transaction in the DAG (Directed Acyclic Graph) using:
 
-```
-GET /internal/network/v1/diagnostics/graph
+```http request
+GET http://localhost:1323/internal/network/v1/diagnostics/graph
 ```
 
 The result is a data structure which you can feed to the `dot` program:
 
-```
-GET /internal/network/v1/diagnostics/graph | dot -T png > graph.png
+```http request
+GET http://localhost:1323/internal/network/v1/diagnostics/graph | dot -T png > graph.png
 ```
 
 
