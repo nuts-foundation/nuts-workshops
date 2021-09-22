@@ -24,8 +24,10 @@ The contents can be found on the auth API page under the `/internal/auth/v1/acce
 The Nuts node has a convenience API which will request an access token for you based on the bolt you require access to.
 We'll describe the process using this API.
 
-```
+```http request
 POST <internal-node-address>/internal/auth/v1/request-access token
+Content-Type: application/json
+
 {
   "custodian": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
   "actor": "did:nuts:3wEb8GJEuenjMexQXKfrdAr8CvA69SdbVh8qhUpDMcX2",
@@ -64,8 +66,10 @@ The access policy is selected by the `service` field in the JWT.
 
 The first step is to check the validity of the token. Tokens issued by the Nuts node can be validated by using the introspection API:
 
-```
+```http request
 POST <internal-node-address>/internal/auth/v1/accesstoken/introspect
+Content-Type: application/json
+
 {
   "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhaWQiOiJ1cm46b2lkOjIuMTYuODQwLjEuMTEzODgzLjIuNC42LjE6MDAwMDAwMDAiLCJleHAiOjE1ODE0MTI2NjcsImlhdCI6MTU4MTQxMTc2NywiaXNzIjoidXJuOm9pZDoyLjE2Ljg0MC4xLjExMzg4My4yLjQuNi4xOjAwMDAwMDAxIiwic2lkIjoidXJuOm9pZDoyLjE2Ljg0MC4xLjExMzg4My4yLjQuNi4zOjk5OTk5OTk5MCIsInN1YiI6IiJ9.OhniTJcPS45nhJVqXfxsngG5eYS_0BvqFg-96zaWFO90I_5_N9Eg_k7NmIF5eNZ9Xutl1aqSxlSp80EX07Gmk8uzZO9PEReo0YZxnNQV-Zeq1njCMmfdwusmiczFlwcBi5Bl1xYGmLrxP7NcAoljmDgMgmLH0xaKfP4VVim6snPkPHqBdSzAgSrrc-cgVDLl-9V2obPB1HiVsFMYfbHEIb4MPsnPRnSGavYHTxt34mHbRsS8BvoBy3v6VNYaewLr6yz-_Zstrnr4I_wxtYbSiPJUeVQHcD-a9Ck53BdjspnhVHZ4IFVvuNrpflVaB1A7P3A2xZ7G_a8gF_SHMynYSA"
 }
@@ -95,7 +99,7 @@ If the requested resource requires an authorization credential then the resource
 
 Resolving a credential can be done by the following call:
 
-```
+```http request
 GET <internal-node-address>/internal/vcr/v1/vc/{id}
 ```
 
