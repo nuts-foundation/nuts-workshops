@@ -28,8 +28,10 @@ Issuing an authorization credential is similar to issuing an organization creden
 
 The credential can be issued with the following call:
 
-```
+```http request
 POST <internal-node-address>/internal/vcr/v1/vc
+Content-Type: application/json
+
 {
     "issuer": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
     "type": ["NutsAuthorizationCredential"],
@@ -78,8 +80,10 @@ Within that resource a reference to a FHIR composition is listed.
 The receiver must find the authorization credential that authorizes access to that composition.
 The following call must be used to find it:
 
-```
+```http request
 POST <internal-node-address>/internal/vcr/v1/authorization?untrusted=true
+Content-Type: application/json
+
 {
     "Params": [
         {
@@ -152,7 +156,7 @@ The `vcs` field in the access token request can be populated with a list of auth
 
 Revoking an authorization credential is easy. An issuer can revoke the credential with the following call:
 
-```
+```http request
 DELETE <internal-node-address>/vcr/v1/vc/{id}
 ```
 
