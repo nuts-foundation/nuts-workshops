@@ -46,7 +46,7 @@ Replace `<external-node-address>` with the host/port through which your node can
 POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
 {
   "type": "oauth",
-  "endpoint": "http://<external-node-address>/n2n/auth/v1/accesstoken",
+  "endpoint": "<external-node-address>/n2n/auth/v1/accesstoken"
 }
 ```
 
@@ -59,7 +59,7 @@ In test/development setups *Nuts Demo EHR* could be used as proxy for the FHIR s
 POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
 {
   "type": "fhir",
-  "endpoint": "http://<external-fhir-address>/fhir",
+  "endpoint": "<external-fhir-address>/fhir"
 }
 ```
 
@@ -70,8 +70,8 @@ Replace `<external-ehr-address>` with the correct host/port, so it can be reache
 ```
 POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
 {
-  "type": "fhir",
-  "endpoint": "http://<external-ehr-address>/web/external/transfer/notify",
+  "type": "notification",
+  "endpoint": "<external-ehr-address>/web/external/transfer/notify"
 }
 ```
 
@@ -118,7 +118,7 @@ Perform the following HTTP operation to enable `eOverdracht-sender` for a custom
 POST <internal-node-address>/internal/didman/v1/did/{customerDID}/endpoint
 {
   "type": "eOverdracht-sender",
-  "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-sender",
+  "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-sender"
 }
 ```
 
@@ -128,6 +128,6 @@ Vice versa, to enable `eOverdracht-receiver` for a customer:
 POST <internal-node-address>/internal/didman/v1/did/{customerDID}/endpoint
 {
   "type": "eOverdracht-receiver",
-  "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-receiver",
+  "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-receiver"
 }
 ```
