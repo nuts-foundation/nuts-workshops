@@ -23,8 +23,10 @@ Contracts are formatted, so they can also be easily parsed.
 
 A login contract can be formatted by calling:
 
-```
-PUT <internal-node-address>/internal/auth/v1/contract/drawup 
+```http request
+PUT <internal-node-address>/internal/auth/v1/contract/drawup
+Content-Type: application/json
+
 {
   "type": "PractitionerLogin",
   "language": "EN",
@@ -54,8 +56,10 @@ The `message` contents is needed in the next step.
 
 To initiate a new signing session, call:
 
-```
+```http request
 POST <internal-node-address>/internal/auth/v1/signature/session
+Content-Type: application/json
+
 {
   "means": "dummy",
   "payload": "EN:PractitionerLogin:v3 I hereby declare to act on behalf of CareBears located in CareTown. This declaration is valid from Tuesday, 21st of September 2021 16:56:02 till Tuesday, 21st of September 2021 17:56:02."
@@ -81,7 +85,7 @@ The UZI means requires data from the `sessionPtr` field to be sent to the card r
 For the dummy means, we just ignore that field.
 Now we have a started session, we can poll the Nuts node for the current status of the session:
 
-```
+```http request
 GET <internal-node-address>/internal/auth/v1/signature/session/{sessionID}
 ```
 
