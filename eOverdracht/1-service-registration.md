@@ -7,8 +7,6 @@ The services are used for resolving technical endpoints and must be published by
 
 This manual assumes the vendor and its care organization(s) have been registered.
 
-After completing the steps in this manual your care organization can transfer patients to other care organizations, or receive transfers.
-
 ## Resources
 
 - **eOverdracht Bolt**: https://nuts-foundation.gitbook.io/bolts/eoverdracht/leveranciersspecificatie
@@ -33,7 +31,7 @@ Although this setup isn't required, it makes administration easier because endpo
 
 First, the technical endpoints need to be registered as services on the vendor's DID document. The eOverdracht Bolt specifies the following endpoints:
 
-* `oauth`: for requesting access tokens to access remote Nuts nodes. Required for both `eOverdracht-sender` and `eOverdracht-receiver`.
+* `oauth`: for requesting access tokens to access (remote) protected resources. Required for both `eOverdracht-sender` and `eOverdracht-receiver`.
 * `fhir`: for reading/updating resources at the remote care organization's FHIR server. Required for `eOverdracht-sender`.
 * `notification`: for notifying a remote care organization that a patient transfer is registered/updated. Required for `eOverdracht-receiver`. 
 
@@ -45,7 +43,7 @@ Replace `<external-node-address>` with the host/port through which your node can
 
 
 ```
-POST /internal/didman/v1/did/{did}/endpoint
+POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
 {
   "type": "oauth",
   "endpoint": "http://<external-node-address>/n2n/auth/v1/accesstoken",
@@ -54,10 +52,11 @@ POST /internal/didman/v1/did/{did}/endpoint
 
 #### FHIR Endpoint
 The FHIR endpoint is exposed by a FHIR server (or proxy that forwards requests to it) which additionally checks authentication/authorization.
-In test/development setups the *Nuts Demo EHR* application generally acts as proxy for the FHIR server, so replace `<external-fhir-address>` with the correct host/port so it can be reached by external EHRs.
+Replace `<external-fhir-address>` with the correct host/port, so it can be reached by external EHRs.
+In test/development setups *Nuts Demo EHR* could be used as proxy for the FHIR server. 
 
 ```
-POST /internal/didman/v1/did/{did}/endpoint
+POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
 {
   "type": "fhir",
   "endpoint": "http://<external-fhir-address>/fhir",
@@ -65,11 +64,11 @@ POST /internal/didman/v1/did/{did}/endpoint
 ```
 
 #### Notification Endpoint
-The notification endpoint is exposed by EHR and notified when an eOverdracht sender creates a transfer for the local (receiving) care organization.
-In test/development setups the *Nuts Demo EHR* application will generally handle the notification, so replace `<external-ehr-address>` with the correct host/port so it can be reached by external EHRs.
+The notification endpoint is exposed by the EHR and notified when an eOverdracht sender creates a transfer for the local (receiving) care organization.
+Replace `<external-ehr-address>` with the correct host/port, so it can be reached by external EHRs. This could be *Nuts Demo EHR* for test/development setups.
 
 ```
-POST /internal/didman/v1/did/{did}/endpoint
+POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
 {
   "type": "fhir",
   "endpoint": "http://<external-ehr-address>/web/external/transfer/notify",
@@ -81,7 +80,7 @@ POST /internal/didman/v1/did/{did}/endpoint
 To register the `eOverdracht-sender` compound service, perform the following HTTP operation (make sure to replace `{did}` with the vendor's DID):
 
 ```
-POST /internal/didman/v1/did/{did}/compoundservice
+POST <internal-node-address>/internal/didman/v1/did/{did}/compoundservice
 {
   "type": "eOverdracht-sender",
   "serviceEndpoint": {
@@ -98,7 +97,7 @@ Note that the `serviceEndpoint` field contains reference to technical endpoints 
 To register the `eOverdracht-receiver` compound service, perform the following HTTP operation (make sure to replace `{did}` with the vendor's DID):
 
 ```
-POST /internal/didman/v1/did/{did}/compoundservice
+POST <internal-node-address>/internal/didman/v1/did/{did}/compoundservice
 {
   "type": "eOverdracht-receiver",
   "serviceEndpoint": {
@@ -116,7 +115,7 @@ This is done by registering a service that references the specific vendor's comp
 Perform the following HTTP operation to enable `eOverdracht-sender` for a customer. Make sure to replace `{customerDID}` with the customer's DID and `{vendorDID}` with the vendor's DID.
 
 ```
-POST /internal/didman/v1/did/{customerDID}/endpoint
+POST <internal-node-address>/internal/didman/v1/did/{customerDID}/endpoint
 {
   "type": "eOverdracht-sender",
   "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-sender",
@@ -126,7 +125,7 @@ POST /internal/didman/v1/did/{customerDID}/endpoint
 Vice versa, to enable `eOverdracht-receiver` for a customer:
 
 ```
-POST /internal/didman/v1/did/{customerDID}/endpoint
+POST <internal-node-address>/internal/didman/v1/did/{customerDID}/endpoint
 {
   "type": "eOverdracht-receiver",
   "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-receiver",
