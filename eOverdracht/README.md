@@ -23,7 +23,7 @@ The rest of this workshop manual is divided in these 2 roles.
 
 ## Resources
 
-- **Network in a day workshop**: [../network_in_a_day](../netowrk_in_a_day)
+- **Network in a day workshop**: [../network_in_a_day](../network_in_a_day)
 - **Local network setup**: https://github.com/nuts-foundation/nuts-network-local
 - **Node config**: https://nuts-node.readthedocs.io/en/latest/pages/configuration/configuration.html
 - **services manual**: [1-service-registration.md](1-service-registration.md)
