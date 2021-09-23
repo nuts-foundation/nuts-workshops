@@ -17,8 +17,10 @@ You can create an infinite amount of DIDs. DIDs in itself are meaningless until 
 Creating a DID only creates a key pair and an ID. If the result of the REST call is not stored, the DID is lost (or at least very hard to retrieve).
 A DID is created through:
 
-```
-POST <internal-node-address>/internal/vdr/v1/did
+```http request
+POST http://localhost:1323/internal/vdr/v1/did
+Content-Type: application/json
+
 {
   "controllers": [],
   "assertionMethod": true,
@@ -78,8 +80,10 @@ It could be the case that a node in the network is not synchronizing with a rest
 The contact information allows for other node operators to contact the lagging node operator.
 Contact information is stored as service on the DID document. In order to make the life of developers easier, we've added a convenience method:
 
-```
-PUT /internal/didman/v1/did/{did}/contactinfo
+```http request
+PUT http://localhost:1323/internal/didman/v1/did/{did}/contactinfo
+Content-Type: application/json
+
 {
   "name": "Care services B.V.",
   "phone": "555-1234",
@@ -92,8 +96,8 @@ It returns the same information as sent when successful.
 
 The changes to the DID Document can be seen by resolving it:
 
-```
-GET /internal/vdr/v1/did/{did}
+```http request
+GET http://localhost:1323/internal/vdr/v1/did/{did}
 ```
 
 ```
