@@ -223,4 +223,21 @@ With the correct access token, the composition resource and other resources shou
 
 ### Updating the Task state
 
-todo
+Updating the Task by the receiver can be done by sending a FHIR Task update to the sender.
+The endpoint is the same as for the other FHIR resources but has a different resource specific path.
+The Nictiz TO states which fields may be changed by the receiver.
+It's up to the sender to check if the changes are correct.
+
+```http request
+PUT <base>/Task/4ab6093c-88e0-4176-afd6-fa793142b287
+Authorization: bearer <access-token>
+Content-Type: application/json
+
+{
+    "resourceType": "Task"
+    ...
+}
+```
+
+This call requires the correct authorization credentials to be sent with the access token request.
+It does NOT require a user identity.
