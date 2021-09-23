@@ -29,6 +29,7 @@ The rest of this workshop manual is divided in these 2 roles.
 - **services manual**: [1-service-registration.md](1-service-registration.md)
 - **authorization credential manual**: [../mini-manuals/5-authz-credentials.md](../mini-manuals/5-authz-credentials.md)
 - **authentication manual**: [../mini-manuals/7-authentication.md](../mini-manuals/7-authentication.md)
+- **access token manual**: [../mini-manuals/6-access-token.md](../mini-manuals/6-access-token.md)
 - **eOverdracht Bolt**: https://nuts-foundation.gitbook.io/bolts/eoverdracht/leveranciersspecificatie
 - **Demo EHR**: https://github.com/nuts-foundation/nuts-demo-ehr
 - **DIDman APIs**: https://nuts-node.readthedocs.io/en/latest/pages/api.html
@@ -37,8 +38,122 @@ The rest of this workshop manual is divided in these 2 roles.
 ## Prerequisites
 
 - completed **Network in a day** workshop
+- have your network peers (or at least the ones you'll be transferring to/accepting transfers from) trust your vendor as `NutsOrganizationCredential`-issuer.
 
 ## Sender
+
+To transfer patients to another care organization, your care organizations needs to be register the appropriate eOverdracht services.
+That way other organizations can look up the technical endpoints required for eOverdracht.
+Follow the [service registration](./1-service-registration.md) manual to register the required services for acting as eOverdracht sender (you don't need to follow the steps required for eOverdracht receivers).
+
+### Searching care organizations
+
+First you need to actually find the care organization which your want to transfer the patient to. The receiving care organization needs to be:
+
+* Registered on the Nuts Network, been issued a `NutsOrganizationCredential` which' issuer you trust.
+* Registered as eOverdracht receiver (see "Receiver" section).
+
+You can search for organizations by name, filtering by the required DID service (`eOverdracht-receiver`) by performing the following HTTP operation:
+
+```http request
+GET http://localhost:1323/internal/didman/v1/search/organizations?query=Zorgcentrum&didServiceType=eOverdracht-receiver
+```
+
+Replace the `query` parameter with the name of the organization you're looking for (matching is both partial and phonetically).
+
+This query then yields a list of matching organizations with their respective DID document and organization concept.
+To proceed you just need the receiving organization's DID, which you can find in `didDocument.id`.
+
+### FHIR resources
+
+To transfer a patient the receiving organization will query your organization's FHIR server. Aside the patient itself,
+you need to create the `Overdrachtsbericht` FHIR `Composition` and `Task` according to the [Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht).
+
+In the `Task` the `requester` needs to be filled with the sending organization's DID and the `owner` filled with the receiving organization's DID, e.g.:
+
+```json
+{
+  "requester": {
+    "agent": {
+      "identifier": {
+        "system": "http://nuts.nl",
+        "value": "did:nuts:jdBQDo8fu2aopb8CLTvuuyn4G8zDVzLSXzYxmEkWqWu"
+      }
+    }
+  },
+  "owner": {
+    "identifier": {
+      "system": "http://nuts.nl",
+      "value": "did:nuts:5vLpJpRP8KnQbTL4XC78VtfdNabwNGfDtTTWXDkAkXBm"
+    }
+  }
+}
+```
+
+### Issuing NutsAuthorizationCredential
+
+Now the FHIR resources have been prepared for the receiver, the sender needs to issue a `NutsAuthorizationCredential` to the receiver, which it can use to query the FHIR server.
+Follow the [Authorization credentials](../mini-manuals/5-authz-credentials.md) manual to the credential below. Make sure to replace the example with the proper values:
+
+* `issuer` needs to contain your care organization's DID,
+* `credentialSubject.id` needs to contain the receiving care organization's DID,
+* `resources.path` needs to contain the FHIR resource reference to the eOverdracht's `Task` and `Composition`
+
+```http request
+POST http://localhost:1323/internal/vcr/v1/vc
+Content-Type: application/json
+
+{
+    "issuer": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+    "type": ["NutsAuthorizationCredential"],
+    "credentialSubject": {
+        "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+        "legalBase": {
+            "consentType": "implied"
+        },
+        "resources": [
+            {
+                "path": "/task/cfd5d1da-ceca-43ce-a6ca-3bc70f5d9cda",
+                "operations": ["read", "update"],
+                "userContext": false
+            },
+            {
+                "path": "/composition/cfd5d1da-ceca-43ce-a6ca-3bc70f5d9cda",
+                "operations": ["read", "document"],
+                "userContext": false
+            },
+        ],
+        "purposeOfUse": "eOverdracht-sender"
+    }
+}
+```
+
+### Notifying
+
+Now the receiving care organization has been issued a credential which it can use to access FHIR resources, it needs to be notified about the transfer.
+First you need to resolve the receiving organization's `notification` endpoint of its `eOverdracht-receiver` service
+(replace `{did}` with the receiving organization's DID):
+
+```http request
+GET http://localhost:1323/internal/didman/v1/did/{did}/compoundservice/eOverdracht-receiver/endpoint/notification
+```
+
+If the receiving organization is properly configured for eOverdracht, this will yield its notification endpoint.
+Before it can be called you need to acquire an access token from the receiving organization's Nuts node.
+Follow [Requesting the access token](../mini-manuals/6-access-token.md) to request the access token, given the following values:
+
+* `custodian`: the receiving organization's DID,
+* `actor`: the sending organization's DID,
+* `identity`: omit, because user identity is only required when accessing medical data,
+* `service`: `eOverdracht-receiver`
+* `credentials`: omit, because credentials are only required when accessing medical data,
+
+You can now call the receiver's notification endpoint, supplying the access token as authorization:
+
+```http request
+POST <receiver-notification-endpoint>
+Authorization: Bearer eyJhbGciOiJSUz...
+```
 
 ## Receiver
 
