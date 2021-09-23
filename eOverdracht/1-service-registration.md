@@ -42,8 +42,10 @@ The access token endpoint is exposed by the Nuts node and is one of the *Node to
 Replace `<external-node-address>` with the host/port through which your node can be reached by external Nuts nodes.
 
 
-```
-POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{did}/endpoint
+Content-Type: application/json
+
 {
   "type": "oauth",
   "endpoint": "<external-node-address>/n2n/auth/v1/accesstoken"
@@ -55,8 +57,10 @@ The FHIR endpoint is exposed by a FHIR server (or proxy that forwards requests t
 Replace `<external-fhir-address>` with the correct host/port, so it can be reached by external EHRs.
 In test/development setups *Nuts Demo EHR* could be used as proxy for the FHIR server. 
 
-```
-POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{did}/endpoint
+Content-Type: application/json
+
 {
   "type": "fhir",
   "endpoint": "<external-fhir-address>/fhir"
@@ -67,8 +71,10 @@ POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
 The notification endpoint is exposed by the EHR and notified when an eOverdracht sender creates a transfer for the local (receiving) care organization.
 Replace `<external-ehr-address>` with the correct host/port, so it can be reached by external EHRs. This could be *Nuts Demo EHR* for test/development setups.
 
-```
-POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{did}/endpoint
+Content-Type: application/json
+
 {
   "type": "notification",
   "endpoint": "<external-ehr-address>/web/external/transfer/notify"
@@ -79,8 +85,10 @@ POST <internal-node-address>/internal/didman/v1/did/{did}/endpoint
 
 To register the `eOverdracht-sender` compound service, perform the following HTTP operation (make sure to replace `{did}` with the vendor's DID):
 
-```
-POST <internal-node-address>/internal/didman/v1/did/{did}/compoundservice
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{did}/compoundservice
+Content-Type: application/json
+
 {
   "type": "eOverdracht-sender",
   "serviceEndpoint": {
@@ -88,6 +96,7 @@ POST <internal-node-address>/internal/didman/v1/did/{did}/compoundservice
     "oauth": "{did}/serviceEndpoint?type=oauth"
   }
 }
+
 ```
 
 Note that the `serviceEndpoint` field contains reference to technical endpoints we've just defined. That way technical endpoints can be re-used by multiple services/Bolts.
@@ -96,8 +105,10 @@ Note that the `serviceEndpoint` field contains reference to technical endpoints 
 
 To register the `eOverdracht-receiver` compound service, perform the following HTTP operation (make sure to replace `{did}` with the vendor's DID):
 
-```
-POST <internal-node-address>/internal/didman/v1/did/{did}/compoundservice
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{did}/compoundservice
+Content-Type: application/json
+
 {
   "type": "eOverdracht-receiver",
   "serviceEndpoint": {
@@ -114,8 +125,10 @@ This is done by registering a service that references the specific vendor's comp
 
 Perform the following HTTP operation to enable `eOverdracht-sender` for a customer. Make sure to replace `{customerDID}` with the customer's DID and `{vendorDID}` with the vendor's DID.
 
-```
-POST <internal-node-address>/internal/didman/v1/did/{customerDID}/endpoint
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{customerDID}/endpoint
+Content-Type: application/json
+
 {
   "type": "eOverdracht-sender",
   "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-sender"
@@ -124,8 +137,10 @@ POST <internal-node-address>/internal/didman/v1/did/{customerDID}/endpoint
 
 Vice versa, to enable `eOverdracht-receiver` for a customer:
 
-```
-POST <internal-node-address>/internal/didman/v1/did/{customerDID}/endpoint
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{customerDID}/endpoint
+Content-Type: application/json
+
 {
   "type": "eOverdracht-receiver",
   "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-receiver"
