@@ -9,7 +9,7 @@ The Nuts node can be used as authorization server.
 The endpoint for the Nuts node authorization endpoint is: `<n2n-node-address>/n2n/auth/v1/accesstoken`
 
 An access token can be obtained by sending a request according to RFC003 to the registered endpoint.
-If a bolt describes secured endpoint it'll also specify how the authorization endpoint needs to be registered as a service.
+If a bolt describes a secured endpoint it'll also specify how the authorization endpoint needs to be registered as a service.
 The contents of the access token is not specified. The authorization server may specify its own contents/format as long as the resource server can verify it.
 The Nuts node issues a JWT as access token. 
 The contents can be found on the auth API page under the `/internal/auth/v1/accesstoken/introspect` API call.
@@ -25,7 +25,7 @@ The Nuts node has a convenience API which will request an access token for you b
 We'll describe the process using this API.
 
 ```http request
-POST <internal-node-address>/internal/auth/v1/request-access token
+POST http://localhost:1323/internal/auth/v1/request-access token
 Content-Type: application/json
 
 {
@@ -67,7 +67,7 @@ The access policy is selected by the `service` field in the JWT.
 The first step is to check the validity of the token. Tokens issued by the Nuts node can be validated by using the introspection API:
 
 ```http request
-POST <internal-node-address>/internal/auth/v1/accesstoken/introspect
+POST http://localhost:1323/internal/auth/v1/accesstoken/introspect
 Content-Type: application/json
 
 {
@@ -100,7 +100,7 @@ If the requested resource requires an authorization credential then the resource
 Resolving a credential can be done by the following call:
 
 ```http request
-GET <internal-node-address>/internal/vcr/v1/vc/{id}
+GET http://localhost:1323/internal/vcr/v1/vc/{id}
 ```
 
 where the `id` has to be replaced with one of the IDs from the `vcs` field.
