@@ -50,6 +50,7 @@ git clone https://github.com/nuts-foundation/nuts-network-local
 ```
 
 If you already did this as part of the preparation, please pull the latest changes.
+And pull the latest versions of the docker images: `docker-compose pull`
 
 Inside the repository there are 2 directories: *single* and *network*. We'll use the setup from the **single** directory.
 Inside that directory startup the docker containers:
@@ -80,8 +81,7 @@ where `xxx` and `yyy` are to replaced by you peers IPs.
 
 Stop the docker containers (if not done already) and start them again:
 ```shell
-docker-compose down
-docker-compose up
+docker-compose restart
 ```
 
 Now follow the [diagnostics manual](../mini-manuals/1-node-diagnostics.md) again.
