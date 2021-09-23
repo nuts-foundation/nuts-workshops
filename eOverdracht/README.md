@@ -97,7 +97,7 @@ Follow the [Authorization credentials](../mini-manuals/5-authz-credentials.md) m
 
 * `issuer` needs to contain your care organization's DID,
 * `credentialSubject.id` needs to contain the receiving care organization's DID,
-* `resources.path` needs to contain the FHIR resource reference to the eOverdracht's `Task` and `Composition`
+* `resources.path` needs to contain the FHIR resource references to the eOverdracht's `Task`, `Composition` and all references within the composition.
 
 ```http request
 POST http://localhost:1323/internal/vcr/v1/vc
@@ -120,7 +120,7 @@ Content-Type: application/json
             {
                 "path": "/composition/cfd5d1da-ceca-43ce-a6ca-3bc70f5d9cda",
                 "operations": ["read", "document"],
-                "userContext": false
+                "userContext": true
             },
         ],
         "purposeOfUse": "eOverdracht-sender"
