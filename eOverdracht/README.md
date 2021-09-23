@@ -93,11 +93,12 @@ In the `Task` the `requester` needs to be filled with the sending organization's
 ### Issuing NutsAuthorizationCredential
 
 Now the FHIR resources have been prepared for the receiver, the sender needs to issue a `NutsAuthorizationCredential` to the receiver, which it can use to query the FHIR server.
-Follow the [Authorization credentials](../mini-manuals/5-authz-credentials.md) manual to the credential below. Make sure to replace the example with the proper values:
+Use the HTTP operation below to issue it, making sure to replace the example with the proper values:
 
 * `issuer` needs to contain your care organization's DID,
 * `credentialSubject.id` needs to contain the receiving care organization's DID,
-* `resources.path` needs to contain the FHIR resource references to the eOverdracht's `Task`, `Composition` and all references within the composition.
+* `resources` needs to contain all FHIR resources which needs to be accessed by the receiving organization, starting the `Task` and `Composition`.
+  * For resources that contain medical data `userContext` must be `true`, which indicates the access token must contain an authenticated, actual end user (e.g. `Composition`, `Patient` or `Problem`).
 
 ```http request
 POST http://localhost:1323/internal/vcr/v1/vc
@@ -127,6 +128,8 @@ Content-Type: application/json
     }
 }
 ```
+
+For more information on issuing/managing authorization credentials, see [Authorization credentials](../mini-manuals/5-authz-credentials.md).
 
 ### Notifying
 
