@@ -6,7 +6,7 @@ This manual describes how to authenticate a user. Nuts authentication makes use 
 Several means are supported. This manual will describe how to use the dummy means.
 The authentication result is used in the access token request for resources that require user context.
 The authentication result is in the form of a verifiable presentation. 
-It contains enough information for the required logging.
+It contains enough information for the required logging (NEN7513).
 
 ## Resources
 
@@ -17,11 +17,11 @@ It contains enough information for the required logging.
 ## Compose a contract
 
 User authentication is done by signing a contract. 
-This contract is shown on the means of the user.
+This contract is shown on the device of the user.
 It contains additional information like the name of the organization and the validity of the contract.
 Contracts are formatted, so they can also be easily parsed.
 
-A login contract can be formatted by calling:
+A login contract can be composed by calling:
 
 ```http request
 PUT <internal-node-address>/internal/auth/v1/contract/drawup
@@ -37,7 +37,7 @@ Content-Type: application/json
 }
 ```
 
-The Nuts node will try to find a trusted organization credential for the given DID. The name and place of that credential will be used in the contract.
+The Nuts node will try to find a trusted organization credential for the given DID. The name and city of that credential will be used in the contract.
 The same operation will be performed by a node that has to validate the contract via the access token.
 The call above will yield something similar to :
 
@@ -98,7 +98,7 @@ Which returns something like:
 ```
 
 When the signing session has not completed yet a means specific status is returned like: *pending* or *in-progress*.
-The call above has to be called 3 times for the dummy means before it is completed.
+The call above has to be polled until the status shows `completed`.
 When completed the return will look like:
 
 ```
@@ -111,4 +111,4 @@ When completed the return will look like:
 ```
 
 The `status` has changed to completed and a `verifiablePresentation` has been added.
-The contents of that field can be used when requesting an access token. It has to be base64 encoded and entered in the `identity` field of the `/internal/auth/v1/request-access-token` request body.
+The contents of the `verifiablePresentation` field can be used when requesting an access token. It has to be base64 encoded and entered in the `identity` field of the `/internal/auth/v1/request-access-token` request body.
