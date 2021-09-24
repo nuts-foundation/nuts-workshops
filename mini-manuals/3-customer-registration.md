@@ -39,6 +39,8 @@ The resulting DID Document can only be updated with the vendor's private key.
 This setup allows you to keep the most important key secure.
 The resulting DID must be stored somewhere, or the DID is lost (or very hard to retrieve).
 
+Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/customers/service.go#L18-L43
+
 ## Giving the organization a name
 
 Since a DID in itself doesn't hold any information about its owner, it may represent anything (vendor/care organization/etc).
@@ -97,6 +99,8 @@ The result will be the created credential:
 ```
 
 This credential will also be transported to each node in the network, which allows other nodes to find it.
+
+code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L186-L226
 
 ## Searching for an organization
 
@@ -166,6 +170,8 @@ A search will return converted results. Each credential type within a concept is
 ]
 ```
 
+Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L76-L117
+
 ## Trust
 
 By default, a search will only yield *trusted* credentials. A credential is trusted when its issuer is trusted.
@@ -194,6 +200,8 @@ For both calls the result will be a list of DIDs:
 ]
 ```
 
+Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L118-L149
+
 An issuer can be trusted (for a specific credential type) by calling:
 ```http request
 POST http://localhost:1323/internal/vcr/v1/trust
@@ -218,3 +226,5 @@ Content-Type: application/json
 
 Trust in the name (or other identifying information) of an organization is essential for a network to operate safely.
 A user will select an organization based on this information and will send medical data to that organization!
+
+Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L254-293

@@ -149,3 +149,4 @@ GET http://localhost:1323/internal/vdr/v1/did/{did}
 }
 ```
 
+You can find a code sample for creating a DID and updating the contact info here: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/sp/service.go#L36-L58

@@ -158,6 +158,8 @@ POST <receiver-notification-endpoint>
 Authorization: Bearer eyJhbGciOiJSUz...
 ```
 
+Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain/transfer/sender/service.go#L622-L634
+
 ## Receiver
 
 ### Receiving notifications
@@ -204,6 +206,8 @@ Given the JWT from the previous chapter, the `custodian` in the access token req
 
 The Task resources should now be returned and can be processed.
 The [Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) has details on the contents of the Tasks.
+
+Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain/notification/handler.go#L42-L100
 
 ### Retrieving NursingHandoff and other resources
 

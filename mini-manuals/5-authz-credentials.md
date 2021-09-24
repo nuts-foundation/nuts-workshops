@@ -70,6 +70,8 @@ That composition is the •AdvanceNotice*.
 The `purposeOfUse` field is filled with `eOverdracht-sender`. 
 That value signals a resource server to apply a specific access policy when the credential is used to retrieve data.
 
+Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/nuts/registry/verifiable_credential.go#L34-L56
+
 ## Using credentials
 
 Authorization credentials are only used in the request for an access token.
@@ -151,6 +153,8 @@ This call will yield a result similar to:
 
 The entire JSON object will be needed when requesting an access token.
 The `vcs` field in the access token request can be populated with a list of authorization credentials. 
+
+Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/nuts/registry/verifiable_credential.go#L57-L65
 
 ## Revoking credentials
 

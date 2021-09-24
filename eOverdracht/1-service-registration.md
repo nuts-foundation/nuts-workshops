@@ -118,6 +118,9 @@ Content-Type: application/json
 }
 ```
 
+Code sample for endpoint registration: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/sp/service.go#L60-L68
+Code sample for compound service registration: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/sp/service.go#L134-L155
+
 ## Enabling Bolts for customers
 
 Now that the technical endpoints and compound services have been registered on the vendor's DID document, the Bolt services can be enabled for its customers.
@@ -146,3 +149,5 @@ Content-Type: application/json
   "endpoint": "{vendorDID}/serviceEndpoint?type=eOverdracht-receiver"
 }
 ```
+
+Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/customers/service.go#L48-L67
