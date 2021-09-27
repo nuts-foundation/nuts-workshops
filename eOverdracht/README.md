@@ -90,6 +90,14 @@ In the `Task` the `requester` needs to be filled with the sending organization's
 }
 ```
 
+---
+**NOTE**
+
+The `requester` and `owner` structures above are not according to the Nictiz TO FHIR specification, which specifies a reference to a FHIR `Organization`.
+This is because the Nuts Demo EHR in combination with the current HAPI FHIR server doesn't (seem to) support filtering on non-existing organizations.
+In production implementations, these fields need to contain a reference according to the specification.
+---
+
 ### Issuing NutsAuthorizationCredential
 
 Now the FHIR resources have been prepared for the receiver, the sender needs to issue a `NutsAuthorizationCredential` to the receiver, which it can use to query the FHIR server.
