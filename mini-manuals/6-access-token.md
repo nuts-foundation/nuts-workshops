@@ -25,7 +25,7 @@ The Nuts node has a convenience API which will request an access token for you b
 We'll describe the process using this API.
 
 ```http request
-POST http://localhost:1323/internal/auth/v1/request-access token
+POST http://localhost:1323/internal/auth/v1/request-access-token
 Content-Type: application/json
 
 {
