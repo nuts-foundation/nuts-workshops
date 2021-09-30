@@ -50,7 +50,7 @@ Content-Type: application/json
                 "path": "/composition/cfd5d1da-ceca-43ce-a6ca-3bc70f5d9cda",
                 "operations": ["read", "document"],
                 "userContext": false
-            },
+            }
         ],
         "purposeOfUse": "eOverdracht-sender"
     }
