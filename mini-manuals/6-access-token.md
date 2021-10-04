@@ -83,10 +83,9 @@ The response will reflect the contents of the JWT. It'll also contain the creden
   "sub": "did:nuts:3wEb8GJEuenjMexQXKfrdAr8CvA69SdbVh8qhUpDMcX2",
   "exp": 0,
   "iat": 0,
-  "name": "Willeke de Bruijn",
   "family_name": "Bruijn",
   "prefix": "de",
-  "given_name": "Willeke",
+  "initials": "W",
   "email": "w.debruijn@example.org"
   "vcs": ["did:nuts:C46nMd...FruT#5b56d0da-4476-41f4-a0fd-7a79d12eb73b"],
 }
