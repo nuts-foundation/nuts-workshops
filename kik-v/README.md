@@ -7,8 +7,8 @@ This workshop depends on the *Network in a day* workshop. Make sure you complete
 In this workshop you'll learn how to:
 
 - register specific services required for KIK-V;
-- create and validate an access token;
 - issue a validate query credential;
+- create and validate an access token;
 - make use of the validated query credential in a query;
 - validate the validated query credential;
 
@@ -34,14 +34,31 @@ to each other an and validate each other's queries.
 ## Prerequisites
 
 - completed **Network in a day** workshop
-- Create DID documents for all three organisations: issuer, requester and care organisation.
 
-## Issuer
+## Roles
 
-The issuer issues the right to perform a certain query to a qualified organisation (requester).
-For this process you'll need the DID of this organisation.
+In the KIK-V use-case there are 3 roles:
+A credential **issuer** issues the `ValidatedQueryCredential` to a **holder**,
+which in turn uses this credential to query a care organisation which has the role of **verifier**.
+The **Verifiable Data Registry** (VDR) is provided by the Nuts Network.
 
-### Issuing ValidatedQueryCredential
+
+![Roles and their Relationships](https://www.w3.org/TR/vc-data-model/diagrams/ecosystem.svg)
+*The roles and their relationships*
+
+Each of these roles (except the Nuts network) has an unique identifier relative to the VDR. This identifier the has the form of a nuts DID: `did:nuts:123`
+
+Before we can start, each of these roles must be created in the network.
+
+### Issuer
+Each DID document with assertion key can issue credentials. Creating a DID document with this capability is described in the 
+[mini manual number 2](../mini-manuals/2-vendor-registration.md).
+
+### Holder
+
+### Verifier
+
+## Issuing the ValidatedQueryCredential
 
 We now need to issue a `ValidatedQueryCredential` to the requester, which it can use to query the Care organization.
 Use the HTTP operation below to issue it, making sure to replace the example with the proper values:
