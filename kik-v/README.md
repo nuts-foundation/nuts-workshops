@@ -31,9 +31,51 @@ to each other an and validate each other's queries.
 - **DIDman APIs**: https://nuts-node.readthedocs.io/en/latest/pages/api.html
 - **KIK-V ValidatedQueryCredential specification**: https://gitlab.com/data-en-techniek/specificaties/verifiable-data-registry/credentialschemas/validated-query
 
-## Prerequisites
+## Setup
 
-- completed **Network in a day** workshop
+### Start a network
+
+We'll use the network setup as defined by the **nuts-network-local** repository.
+First clone the github repo to your machine:
+
+```shell
+git clone https://github.com/nuts-foundation/nuts-network-local
+```
+
+Navigate to the `network` directory.
+
+We start a network with 3 nodes, one for every role. Each node will have a admin ui which makes it easier to manage DIDs.
+
+```shell
+docker-compose --profile three \
+  --profile with-admin-one \
+  --profile with-admin-two \
+  --profile with-admin-three \
+  up
+```
+
+Starting up the fist time may take some time to download the IRMA schema's.
+
+You can check the status by execturing `docker-compose ps` from the same directory.
+
+```shell
+docker-compose ps
+        Name                       Command                  State                                              Ports
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+network_admin-one_1     /app/nuts-registry-admin-demo   Up (unhealthy)   0.0.0.0:1303->1303/tcp,:::1303->1303/tcp
+network_admin-three_1   /app/nuts-registry-admin-demo   Up (unhealthy)   0.0.0.0:3303->1303/tcp,:::3303->1303/tcp
+network_admin-two_1     /app/nuts-registry-admin-demo   Up (unhealthy)   0.0.0.0:2303->1303/tcp,:::2303->1303/tcp
+network_node-one_1      /usr/bin/nuts server            Up (healthy)     0.0.0.0:1323->1323/tcp,:::1323->1323/tcp, 0.0.0.0:5555->5555/tcp,:::5555->5555/tcp
+network_node-three_1    /usr/bin/nuts server            Up (healthy)     0.0.0.0:3323->1323/tcp,:::3323->1323/tcp, 5555/tcp
+network_node-two_1      /usr/bin/nuts server            Up (healthy)     0.0.0.0:2323->1323/tcp,:::2323->1323/tcp, 5555/tcp
+```
+
+### Setup the Service Providers
+
+Now, for each node we need to create a service provider. A service provider is the DID that represents the organization running the node.
+Start with node one, since this is the bootstrap node and it needs to create the genesis block.
+Go to [Admin UI of node 1](http://localhost:1303). Loging with `demo`. Create on the button `Create Service Provider`.
+Do the same thing for node 2 and 3.
 
 ## Roles
 
