@@ -56,57 +56,70 @@ docker-compose --profile three \
 
 Starting up the fist time may take some time to download the IRMA schema's.
 
-You can check the status by execturing `docker-compose ps` from the same directory.
+You can check the status by executing `docker-compose ps` from the same directory.
 
 ```shell
 docker-compose ps
         Name                       Command                  State                                              Ports
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
-network_admin-one_1     /app/nuts-registry-admin-demo   Up (unhealthy)   0.0.0.0:1303->1303/tcp,:::1303->1303/tcp
-network_admin-three_1   /app/nuts-registry-admin-demo   Up (unhealthy)   0.0.0.0:3303->1303/tcp,:::3303->1303/tcp
-network_admin-two_1     /app/nuts-registry-admin-demo   Up (unhealthy)   0.0.0.0:2303->1303/tcp,:::2303->1303/tcp
+network_admin-one_1     /app/nuts-registry-admin-demo   Up (healthy)   0.0.0.0:1303->1303/tcp,:::1303->1303/tcp
+network_admin-three_1   /app/nuts-registry-admin-demo   Up (healthy)   0.0.0.0:3303->1303/tcp,:::3303->1303/tcp
+network_admin-two_1     /app/nuts-registry-admin-demo   Up (healthy)   0.0.0.0:2303->1303/tcp,:::2303->1303/tcp
 network_node-one_1      /usr/bin/nuts server            Up (healthy)     0.0.0.0:1323->1323/tcp,:::1323->1323/tcp, 0.0.0.0:5555->5555/tcp,:::5555->5555/tcp
 network_node-three_1    /usr/bin/nuts server            Up (healthy)     0.0.0.0:3323->1323/tcp,:::3323->1323/tcp, 5555/tcp
 network_node-two_1      /usr/bin/nuts server            Up (healthy)     0.0.0.0:2323->1323/tcp,:::2323->1323/tcp, 5555/tcp
 ```
 
-### Setup the Service Providers
-
-Now, for each node we need to create a service provider. A service provider is the DID that represents the organization running the node.
-Start with node one, since this is the bootstrap node and it needs to create the genesis block.
-Go to [Admin UI of node 1](http://localhost:1303). Loging with `demo`. Create on the button `Create Service Provider`.
-Do the same thing for node 2 and 3.
-
 ## Roles
 
 In the KIK-V use-case there are 3 roles:
-A credential **issuer** issues the `ValidatedQueryCredential` to a **holder**,
-which in turn uses this credential to query a care organisation which has the role of **verifier**.
+1. An authority which determines which queries can be performed and by whom. This authority is the credential **issuer** and issues the `ValidatedQueryCredential` to subjects.
+2. The consumer of the quality information is the subject of the credential and is therefore also the credential **holder**.
+3. A care organisation which offers the data station and allows authorized consumers to query the quality information. It therefore has the role of credential **verifier**.
+
 The **Verifiable Data Registry** (VDR) is provided by the Nuts Network.
 
 
 ![Roles and their Relationships](https://www.w3.org/TR/vc-data-model/diagrams/ecosystem.svg)
 *The roles and their relationships*
 
-Each of these roles (except the Nuts network) has an unique identifier relative to the VDR. This identifier the has the form of a nuts DID: `did:nuts:123`
 
-Before we can start, each of these roles must be created in the network.
+### Setup the Service Providers
+Before we can start, each of these roles must be created in the network. Each role has its own Nuts node and every nuts node has a _Service Provider_ which represents the identity of the node operator.
 
-### Issuer
-Each DID document with assertion key can issue credentials. Creating a DID document with this capability is described in the 
-[mini manual number 2](../mini-manuals/2-vendor-registration.md).
+> :warning: Start with node one, since this is the bootstrap node which needs to hold the genesis block.
 
-### Holder
+For all these Admin UIs, use the password `demo`
 
-### Verifier
+> :info: We use the Admin Demo UI for all three roles as it gives us an easily clickable UI. For the issuer and consumer the terminology seems a bit off since it is originally designed as a management interface for EPD suppliers managing its customers.
+
+#### Issuer
+Go to [Admin UI of node 1](http://localhost:1303).
+Name this service provider **Issuer SP** since it will be the _Service Provider_ of the credential issuer.
+Click on the button `Create Service Provider`.
+Now you can create a issuer organization: Go to `Your care organizations` and create a new organization.
+You can use any `internal ID`, name it **Issuer** and give it your favorite city.
+After saving you can click on the newly created organization and check the `Publish by this name in Nuts network` checkbox to make sure the issuer is visible on the network.
+
+#### Holder
+Do the same thing for [Admin UI of node 2](http://localhost:2303) and call the _Service Provider_ **Consumer SP** since it will be the service provider of the data consumer and create an organization **Consumer**
+
+#### Verifier
+Create one last _Service Provider_ for the care organization with the [Admin UI of node 3](http://localhost:3303). Give this service provider the name of your favorite (fictional) EPD software supplier.
+Lastly, create a Care Organization with a unique name and publish it on the network.
+
+> TODO: Create endpoints?
 
 ## Issuing the ValidatedQueryCredential
 
-We now need to issue a `ValidatedQueryCredential` to the requester, which it can use to query the Care organization.
+Issuing needs to be performed on the node of the issuer.
+In order to issue a credential to a subject, we need its DID. You can manually look up the DID using the admin UI of the holder node.
+
+We now need to issue a `ValidatedQueryCredential` to the holder, which it can use to query the Care organization.
 Use the HTTP operation below to issue it, making sure to replace the example with the proper values:
 
-* `issuer` needs to contain the DID of the issuer,
-* `credentialSubject.id` needs to contain the DID of the requesting organization,
+* `issuer` needs to contain the DID of the issuer (not the Service Provider),
+* `credentialSubject.id` needs to contain the DID of the consumer,
 * `query` The actual SPARQL query which must be performed,
 * `profile` (linked data) reference to the exchange profiles (??),
 * `ontology` The used ontologies,
@@ -116,13 +129,13 @@ POST http://localhost:1323/internal/vcr/v1/vc
 Content-Type: application/json
 
 {
-    "issuer": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+    "issuer": "did:nuts:<issuer DID>",
     "type": ["ValidatedQueryCredential"],
     "credentialSubject": {
-        "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-        "profile": "(linked data) verwijzing naar het uitwisselprofiel"
-        "ontology": "gehanteerde ontologie",
-        "query": "de SPARQL query die moet worden uitgevoerd"
+        "id": "did:nuts:<consumer DID>",
+        "profile": "..."
+        "ontology": "...",
+        "query": "..."
     }
 }
 ```
@@ -135,7 +148,7 @@ For more information on issuing/managing authorization credentials, see [Authori
 
 ### Search for the Verifiable Credential in the wallet
 
-### Get a access token
+### Get an access token
 
 ### Perform the query
 
