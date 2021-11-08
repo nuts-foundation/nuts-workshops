@@ -193,7 +193,7 @@ The data station is a service living under the legal authority of a care organis
 It has the capability to execute queries in order to collect data to authorized requesters.
 To determine if the requester is authorized to perform the query the data station has to verify the verifiable credential which holds the query.
 
-The official specification of the role of the data station can be found here: https://gitlab.com/data-en-techniek/specificaties/datastation/verifiable-credentials.
+The official specification of the role of the data station can be found here: https://gitlab.com/data-en-techniek/specificaties/datastation.
 
 The requestor sends the VC as part of the body of the POST http call. To identify itself, the requestor sends a accompaning 
 
