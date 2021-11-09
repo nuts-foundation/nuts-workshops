@@ -69,7 +69,7 @@ Navigate to the `network` directory.
 We start a network with 3 nodes, one for every role. Each node will have a admin ui which makes it easier to manage DIDs.
 
 ```shell
-docker-compose --profile three \
+docker compose --profile three \
   --profile with-admin-one \
   --profile with-admin-two \
   --profile with-admin-three \
@@ -78,10 +78,10 @@ docker-compose --profile three \
 
 Starting up the fist time may take some time to download the IRMA schema's.
 
-You can check the status by executing `docker-compose ps` from the same directory.
+You can check the status by executing `docker compose ps` from the same directory.
 
 ```shell
-docker-compose ps
+docker compose ps
         Name                       Command                  State                                              Ports
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
 network_admin-one_1     /app/nuts-registry-admin-demo   Up (healthy)   0.0.0.0:1303->1303/tcp,:::1303->1303/tcp
@@ -171,6 +171,9 @@ Use the HTTP operation below to issue it, making sure to replace the example wit
 * `profile` (linked data) reference to the exchange profiles (??),
 * `ontology` The used ontologies,
 
+The news example dataset of GraphDB is used for querying. Testdata is not available from KIK-V at the moment.
+You can pick a query from the [examples provided](./triplestore/data/queries.txt). Make sure that the query is url encoded.
+
 ```http request
 POST http://localhost:1323/internal/vcr/v1/vc
 Content-Type: application/json
@@ -180,9 +183,9 @@ Content-Type: application/json
     "type": ["ValidatedQueryCredential"],
     "credentialSubject": {
         "id": "did:nuts:<consumer DID>",
-        "profile": "..."
-        "ontology": "...",
-        "query": "..."
+        "profile": "https://kik-v2.gitlab.io/uitwisselprofielen/uitwisselprofiel-odb/",
+        "ontology": "http://ontology.ontotext.com/publishing",
+        "query": "PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"
     }
 }
 ```
@@ -196,15 +199,6 @@ To determine if the requester is authorized to perform the query the data statio
 The official specification of the role of the data station can be found here: https://gitlab.com/data-en-techniek/specificaties/datastation.
 
 The requestor sends the VC as part of the body of the POST http call. To identify itself, the requestor sends a accompaning 
-
-
-### Search for the Care Organisation
-
-
-### Search for the Verifiable Credential in the wallet
-
-
-
 
 ### Get an access token
 
@@ -222,6 +216,32 @@ Content-Type: application/json
 ```
 
 The access token must be used as bearer token in the authorization header of the reqeust.
+
+### Get the endpoint of the service
+
+The endpoint of the Care Organisation is needed to send a request. First the organization must be found. Send a query to the nuts node of the consumer to find the organization. 
+
+```http request
+GET http://localhost:2323/internal/didman/v1/search/organizations?query=<(part of) name of the care organization>
+Content-Type: application/json
+
+```
+
+You find the DID of the service provider in the controller attribute of the result. The DID is also part of the endpoint reference within the services structure.
+
+Next step is to get the endpoint of the service. Be sure you have registered the service with the name `validated-query-service` and the endpoint type of the service `validquery` with the service provider. Look also that the service is registered for the Care organization.
+
+```http request
+GET http://localhost:2323/internal/didman/v1/did/<DID Service Provider>/compoundservice/validated-query-service/endpoint/validquery
+Content-Type: application/json
+
+```
+
+Result should be the endpoint.
+
+### Search for the Verifiable Credential in the wallet
+
+Not yet available
 
 ### Perform the request
 
@@ -247,7 +267,9 @@ The validated query is presented by the consumer in a http request. The consumer
 
 ```
 
-The presentation is added to the request body. The request is described in the specification of the [http message](https://gitlab.com/data-en-techniek/specificaties/datastation/http-messages), the [verifier role](https://gitlab.com/data-en-techniek/specificaties/datastation/verifiable-credentials) of the data station, and the [validated query](https://gitlab.com/data-en-techniek/specificaties/datastation/validated-query).
+The presentation is added to the request body. The request is described in the specification of the [http message](https://gitlab.com/data-en-techniek/specificaties/datastation/http-messages), and the [validated query](https://gitlab.com/data-en-techniek/specificaties/datastation/validated-query).
+
+See also the requirements for [verifiable credentials](https://gitlab.com/data-en-techniek/specificaties/agents/verifiable-credentials). 
 
 ### Verify the access token
 
@@ -282,8 +304,10 @@ Not yet available
 
 Execute the query on the SPARQL-endpoint. 
 
+The right dataset can be found in the data catalog when its available in the data station. The ontology attribute from the credential is used to search for the dataset that conforms to (conformsTo) this ontology. See the specification of the [data catalog](https://gitlab.com/data-en-techniek/specificaties/datastation/data-catalog). The data station you build in the hackathon won't have a data catalog. So the default for now is `news`.
+
 See the guide on the [triple store](./triplestore/README.md) to install GraphDB. GraphDB is a persistent store for RDF-triples with support for reasoning and ontology. It also includes a SPARQL-endpoint.
 
 ### Return the answer
 
-he response is described in the specification of the [http message](https://gitlab.com/data-en-techniek/specificaties/datastation/http-messages) and the [validated query](https://gitlab.com/data-en-techniek/specificaties/datastation/validated-query). A simple http server is provided for the hackathon. The answer can ben send to the address of that server, localhost at port 8080.
+The response is described in the specification of the [http message](https://gitlab.com/data-en-techniek/specificaties/datastation/http-messages) and the [validated query](https://gitlab.com/data-en-techniek/specificaties/datastation/validated-query). A simple http server is provided for the hackathon. The answer can ben send to the address of that server, localhost at port 8080.

@@ -25,7 +25,7 @@ docker compose down
 Go to http://localhost:7200 in your browser to start the workbench
 
 Now you need to create a new repository named *news*. 
-Perform the steps from the quick guide. 
+Perform the steps from the quick guide. **Make sure you create a repository with the ruleset __OWL2_RL__ option**
 https://graphdb.ontotext.com/documentation/9.10/free/quick-start-guide.html#create-a-repository
 
 Next step is to import the data. The data can be found in the *data* subdirectory. 
