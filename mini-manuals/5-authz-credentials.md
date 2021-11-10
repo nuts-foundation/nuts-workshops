@@ -88,7 +88,7 @@ Content-Type: application/json
             }
         },
         "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780",
-        "purposeOfUse": "?"
+        "purposeOfUse": "zorginzage-demo"
     }
 }
 ```
@@ -194,7 +194,7 @@ Content-Type: application/json
         },
         {
             "key": "credentialSubject.purposeOfUse",
-            "value": "?"
+            "value": "zorginzage-demo"
         },
         {
             "key": "credentialSubject.subject",

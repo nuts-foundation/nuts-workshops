@@ -4,18 +4,16 @@
 
 This manual describes how to register the services required for the zorginzage Bolt.
 The services are used for resolving technical endpoints and must be published by the care organization's vendor.
+All API calls in this manual are used by the *Nuts registry admin demo* to register endpoints.
+If the *Nuts registry admin demo* is used in a workshop, the calls below are just for reference and do not need to be implemented.
 
 This manual assumes the vendor and its care organization(s) have been registered.
-
-## Resources
-
-- **zorginzage Bolt**: ?
 
 ## zorginzage Services
 
 Bolts specify which technical endpoints (URLs, e.g. http://nuts.nl) are required for exchanging data.
 Bolts generally specify these as *compound services*, which is a service on a DID document containing a set of technical endpoints.
-For instance, the ? service must contain a `fhir` and `oauth` endpoint.
+For instance, the **zorginzage-demo** service must contain a `fhir` and `oauth` endpoint.
 
 For the vendor/care organization DID document setup, the technical endpoints and compound services are registered on the vendor's DID document.
 Then, when the vendor wants to enable a Bolt for a specific customer (care organization),
@@ -62,14 +60,14 @@ Content-Type: application/json
 
 ### Registering zorginzage service
 
-To register the `?` compound service, perform the following HTTP operation (make sure to replace `{did}` with the vendor's DID):
+To register the `zorginzage-demo` compound service, perform the following HTTP operation (make sure to replace `{did}` with the vendor's DID):
 
 ```http request
 POST http://localhost:1323/internal/didman/v1/did/{did}/compoundservice
 Content-Type: application/json
 
 {
-  "type": "?",
+  "type": "zorginzage-demo",
   "serviceEndpoint": {
     "fhir": "{did}/serviceEndpoint?type=fhir",
     "oauth": "{did}/serviceEndpoint?type=oauth"
@@ -85,14 +83,14 @@ Note that the `serviceEndpoint` field contains reference to technical endpoints 
 Now that the technical endpoints and compound services have been registered on the vendor's DID document, the Bolt services can be enabled for its customers.
 This is done by registering a service that references the specific vendor's compound service.
 
-Perform the following HTTP operation to enable `?` for a customer. Make sure to replace `{customerDID}` with the customer's DID and `{vendorDID}` with the vendor's DID.
+Perform the following HTTP operation to enable `zorginzage-demo` for a customer. Make sure to replace `{customerDID}` with the customer's DID and `{vendorDID}` with the vendor's DID.
 
 ```http request
 POST http://localhost:1323/internal/didman/v1/did/{customerDID}/endpoint
 Content-Type: application/json
 
 {
-  "type": "?",
-  "endpoint": "{vendorDID}/serviceEndpoint?type=?"
+  "type": "zorginzage-demo",
+  "endpoint": "{vendorDID}/serviceEndpoint?type=zorginzage-demo"
 }
 ```
