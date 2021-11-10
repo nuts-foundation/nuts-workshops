@@ -239,9 +239,24 @@ Content-Type: application/json
 
 Result should be the endpoint.
 
-### Search for the Verifiable Credential in the wallet
+### Search for the validated query credential
 
-Not yet available
+Search for the ValidatedQueryCredential you would like to send in the request.
+
+```http request
+POST http://localhost:1323/internal/vcr/v1/authorization?untrusted=true
+Content-Type: application/json
+
+{
+    "Params": [
+        {
+            "key": "credentialSubject.id",
+            "value": "DID of Care Organization"
+        }
+    ]
+}
+
+```
 
 ### Perform the request
 
