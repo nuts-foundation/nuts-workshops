@@ -9,8 +9,6 @@ The credentials are issued to the actor, the care organization which users have 
 
 Authorization credentials have a `purposeOfUse` which scopes the credential to a specific (part of a) Bolt.
 The [Nuts authorization credential RFC](https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential) explains the details of the credential.
-For this manual we'll create two different authorization credentials. 
-The eOverdracht bolt requires similar credentials.
 
 Nuts authorization credentials are only synchronized between the issuer and the subject. 
 Other nodes will not be able to view the credential.
@@ -20,13 +18,12 @@ Other nodes will not be able to view the credential.
 - **Nuts authorization credential spec**: https://nuts-foundation.gitbook.io/drafts/rfc/rfc014-authorization-credential
 - **Nuts node manual on authorizations**: https://nuts-node.readthedocs.io/en/latest/pages/getting-started/6-adding-authorizations.html
 - **Verifiable Credential APIs**: https://nuts-node.readthedocs.io/en/latest/pages/api.html?urls.primaryName=Verifiable%20Credential%20Registry
-- **eOverdracht Bolt**: https://nuts-foundation.gitbook.io/bolts/eoverdracht/leveranciersspecificatie
 
 ## Adding credentials
 
 Issuing an authorization credential is similar to issuing an organization credential. Both use the same API. New credentials will automatically receive an id, issuanceDate, context and proof. A DID requires a valid assertionMethod key for issuing credentials.
 
-The credential can be issued with the following call:
+A credential with implied consent can be issued with the following call:
 
 ```http request
 POST http://localhost:1323/internal/vcr/v1/vc
@@ -72,14 +69,41 @@ That value signals a resource server to apply a specific access policy when the 
 
 Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/nuts/registry/verifiable_credential.go#L34-L56
 
+A credential with explicit consent can be issued with the following call:
+
+```http request
+POST http://localhost:1323/internal/vcr/v1/vc
+Content-Type: application/json
+
+{
+    "issuer": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+    "type": ["NutsAuthorizationCredential"],
+    "credentialSubject": {
+        "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+        "legalBase": {
+            "consentType": "explicit",
+            "evidence": {
+                "path": "not",
+                "type": "used"
+            }
+        },
+        "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780",
+        "purposeOfUse": "zorginzage-demo"
+    }
+}
+```
+
+This credential does not limit on specific resources but rather on a single patient. 
+The `resources` field is replaced by a `subject` field which contains the BSN as oid.
+The `consentType` has also changed to `explicit`.
+
 ## Using credentials
 
 Authorization credentials are only used in the request for an access token.
 Before you can use them, you'll have to find them first.
-We use the example above from the eOverdracht bolt.
-In that bolt, the *receiver* (the actor) has received a FHIR Task resource. 
-Within that resource a reference to a FHIR composition is listed.
-The receiver must find the authorization credential that authorizes access to that composition.
+We use the examples above.
+In the first example, the actor has received access to some FHIR resources. 
+The receiver must find the authorization credential that authorizes access to those resources.
 The following call must be used to find it:
 
 ```http request
@@ -155,6 +179,30 @@ The entire JSON object will be needed when requesting an access token.
 The `vcs` field in the access token request can be populated with a list of authorization credentials. 
 
 Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/nuts/registry/verifiable_credential.go#L57-L65
+
+A similar request example, but for the authorization credential with explicit consent:
+
+```http request
+POST http://localhost:1323/internal/vcr/v1/authorization?untrusted=true
+Content-Type: application/json
+
+{
+    "Params": [
+        {
+            "key": "credentialSubject.id",
+            "value": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv"
+        },
+        {
+            "key": "credentialSubject.purposeOfUse",
+            "value": "zorginzage-demo"
+        },
+        {
+            "key": "credentialSubject.subject",
+            "value": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
+        }
+    ]
+}
+```
 
 ## Revoking credentials
 

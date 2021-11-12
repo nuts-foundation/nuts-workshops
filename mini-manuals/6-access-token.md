@@ -40,9 +40,9 @@ Content-Type: application/json
   ]
 }
 ```
-`identity` and `credentials` are optional. `identity` is required for any resources that requires *userContext*.
+`identity` and `credentials` are optional. `identity` is required for any resources that requires *userContext* or if a credential includes a `credentialSubject.subject`.
 `credentials` are required when stated by the access policy of a bolt.
-The Nuts node expects that the custodian has a compound service in its DID Document with the type `eOverdracht-sender`.
+The Nuts node expects that the custodian has a compound service in its DID Document with the correct service type.
 In that compound service, it expects an `oauth` key/value pair. When resolved that value points to an authorization server.
 The Nuts node will send an access token request to that endpoint.
 When successful the Nuts node will respond with:
@@ -51,7 +51,7 @@ When successful the Nuts node will respond with:
 {
   "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhaWQiOiJ1cm46b2lkOjIuMTYuODQwLjEuMTEzODgzLjIuNC42LjE6MDAwMDAwMDAiLCJleHAiOjE1ODE0MTI2NjcsImlhdCI6MTU4MTQxMTc2NywiaXNzIjoidXJuOm9pZDoyLjE2Ljg0MC4xLjExMzg4My4yLjQuNi4xOjAwMDAwMDAxIiwic2lkIjoidXJuOm9pZDoyLjE2Ljg0MC4xLjExMzg4My4yLjQuNi4zOjk5OTk5OTk5MCIsInN1YiI6IiJ9.OhniTJcPS45nhJVqXfxsngG5eYS_0BvqFg-96zaWFO90I_5_N9Eg_k7NmIF5eNZ9Xutl1aqSxlSp80EX07Gmk8uzZO9PEReo0YZxnNQV-Zeq1njCMmfdwusmiczFlwcBi5Bl1xYGmLrxP7NcAoljmDgMgmLH0xaKfP4VVim6snPkPHqBdSzAgSrrc-cgVDLl-9V2obPB1HiVsFMYfbHEIb4MPsnPRnSGavYHTxt34mHbRsS8BvoBy3v6VNYaewLr6yz-_Zstrnr4I_wxtYbSiPJUeVQHcD-a9Ck53BdjspnhVHZ4IFVvuNrpflVaB1A7P3A2xZ7G_a8gF_SHMynYSA",
   "token_type": "nuts_session_token",
-  "expires_in": 15
+  "expires_in": 900
 }
 ```
 
