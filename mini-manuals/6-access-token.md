@@ -29,8 +29,8 @@ POST http://localhost:1323/internal/auth/v1/request-access-token
 Content-Type: application/json
 
 {
-  "custodian": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
-  "actor": "did:nuts:3wEb8GJEuenjMexQXKfrdAr8CvA69SdbVh8qhUpDMcX2",
+  "authorizer": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
+  "requester": "did:nuts:3wEb8GJEuenjMexQXKfrdAr8CvA69SdbVh8qhUpDMcX2",
   "identity": "BASE64 Login contract",
   "service": "eOverdracht-sender",
   "credentials": [
