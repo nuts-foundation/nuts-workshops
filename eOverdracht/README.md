@@ -153,8 +153,8 @@ If the receiving organization is properly configured for eOverdracht, this will 
 Before it can be called you need to acquire an access token from the receiving organization's Nuts node.
 Follow [Requesting the access token](../mini-manuals/6-access-token.md) to request the access token, given the following values:
 
-* `custodian`: the receiving organization's DID,
-* `actor`: the sending organization's DID,
+* `authorizer`: the receiving organization's DID,
+* `requester`: the sending organization's DID,
 * `identity`: omit, because user identity is only required when accessing medical data,
 * `service`: `eOverdracht-receiver`
 * `credentials`: omit, because credentials are only required when accessing medical data,
