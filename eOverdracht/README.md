@@ -18,7 +18,7 @@ The code blocks will either show a shell/terminal command or a http request.
 Most code samples/shell commands are specific for the eOverdracht bolt. 
 
 There are two roles within the eOverdracht bolt: the sender and receiver.
-Implementing both roles a quite a lot of work. Given the time available in the workshop, it's better to choose one of the roles.
+Implementing both roles is quite a lot of work. Given the time available in the workshop, it's better to choose one of the roles.
 The rest of this workshop manual is divided in these 2 roles.
 
 ## Resources
