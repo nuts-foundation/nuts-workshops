@@ -1,9 +1,9 @@
 #!/bin/bash
 node_list="node1 node2 node3"
 # Node ports
-node1_port=8080
-node2_port=8081
-node3_port=8082
+node1_port=1323
+node2_port=2323
+node3_port=3323
 # Datastation port
 datastation_port=9090
 # Hostname and port of the nuts nodes 
@@ -27,12 +27,53 @@ function usage {
 
         Commands:
 
-        create_vendor [node] - To create a vendor in the node including contact information.
-             Examples:
-              $0 create_vendor node1
+        vendor [node] - To create a vendor in the node including contact information.
+            Examples:
+              $0 vendor node1
                - Create a vendor in node1.
-              $0 create_vendor node1 node2 node3
+              $0 vendor node1 node2 node3
                - Create a vendor in node1, node2, and node3.
+
+        get_vendor [node] - Resolve the diddoc of the vendor on the node
+
+        trust [node] - Let the other nodes trust the vendor of the node specified.
+                       The vendor is trusted as an issuer of verifiable credentials.
+
+            Examples:
+              $0 trust node1
+               - Trust the vendor of node1 as an issuer of verifiable credentials.
+
+        customer [node] - To create a customer in the node.
+            Examples:
+              $0 customer node1
+               - Create a customer in node1.
+              $0 customer node1 node2 node3
+               - Create a customer in node1, node2, and node3.
+
+        get_customer [node] - Resolve the diddoc of the customer on the node
+
+        endpoint [node] - Define an endpoint and compound services for authorization and validatedqueries.
+
+            Examples:
+              $0 endpoint node3
+               - Define an endpoint and compound services on node3.
+  
+        issue_organization [node] - Issue an organizational credential for the customer on the node.
+                                    The organizational credential is issued by the vendor of the node.
+
+        issue_validatedquery - Issue a validated query credential for the customer on node 2
+                               It's assumed that the issuer is the customer on node1, the holder the customer on node2,
+                               and the verifier the customer on node3 
+
+        get_ready - Get the nodes ready to go nuts on the kik-v bolt, all of the above is done.
+                    It's assumed that the issuer is the customer on node1, the holder the customer on node2,
+                    and the verifier the customer on node3. The customer on node3 is the controller of the data station.
+        
+        accesstoken - Get an access token from the controller of the data source, the customer on node3. 
+                      The request is done by the consumer, which is the customer on node2
+                      
+                      If you get an error on the accesstoken after the get_ready command, be a little patient.
+                      The nodes must sync first before the access token can be released.
 
 EOF
 exit 1
@@ -283,6 +324,11 @@ function getAccessToken {
 pushd "${script_home}" >/dev/null
 command=$(toLower ${1})
 shift || command=usage
+if [[ ! -d ${script_home}${docs_path} ]]
+then
+    show_docs=$(echo ${docs_path} | tr -d '/')
+    echo "The directory ${show_docs} doesn't exists, create it first."
+fi
 case "${command}" in
     vendor)
         for param in "$@"
@@ -343,6 +389,7 @@ case "${command}" in
         done
         addVendorEndPoint node3
         addCustomerCompoundService node3
+        trustIssuer node1
         trustIssuer node2
         trustIssuer node3
         issueOrganizationCredential node2
