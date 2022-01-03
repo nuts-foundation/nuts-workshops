@@ -147,13 +147,13 @@ For more information on issuing/managing organiszation credentials, see [Issue a
 ##### Setup the endpoints for the data station
 
 Go to the [Admin UI of node 3](http://localhost:3303). The endpoints will be created for the _Service Provider_. 
-The first endpoint will be used by the validquery service. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. validquery, and `URL` needs to contain the value of the valid query enpoint at the data station.
+The first endpoint will be used by the validatedquery service. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. validatedquery, and `URL` needs to contain the value of the valid query enpoint at the data station.
 
 The second endpoint is used for the authorization. Make sure that the type is called `oauth` and the endpoint points to `http://host.docker.internal:3323/n2n/auth/v1/accesstoken`. The host `host.docker.internal` means that docker is calling the localhost of your machine, assuming you are using docker to run the nodes.
 
 ##### Setup the service for the data station
 
-The service you create is the `validated-query-service`. Fill in the name of the service and the endpoints `oauth` and `validquery`. It's necessary to use these names also as type in the service form. The request for an access token will look for the `oauth` endpoint type, and will return an error if it's not found.
+The service you create is the `validated-query-service`. Fill in the name of the service and the endpoints `oauth` and `validatedquery`. It's necessary to use these names also as type in the service form. The request for an access token will look for the `oauth` endpoint type, and will return an error if it's not found.
 
 Now go to the customer's page and click on the customer you created. Tick the box for the service configuration and make sure the customer is published on the network.
 
@@ -183,9 +183,11 @@ Content-Type: application/json
     "type": ["ValidatedQueryCredential"],
     "credentialSubject": {
         "id": "did:nuts:<consumer DID>",
-        "profile": "https://kik-v2.gitlab.io/uitwisselprofielen/uitwisselprofiel-odb/",
-        "ontology": "http://ontology.ontotext.com/publishing",
-        "query": "PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"
+        "validatedQuery": {
+            "profile": "https://kik-v2.gitlab.io/uitwisselprofielen/uitwisselprofiel-odb/",
+            "ontology": "http://ontology.ontotext.com/publishing",
+            "sparql": "PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"
+        }
     }
 }
 ```
@@ -229,10 +231,10 @@ Content-Type: application/json
 
 You find the DID of the service provider in the controller attribute of the result. The DID is also part of the endpoint reference within the services structure.
 
-Next step is to get the endpoint of the service. Be sure you have registered the service with the name `validated-query-service` and the endpoint type of the service `validquery` with the service provider. Look also that the service is registered for the Care organization.
+Next step is to get the endpoint of the service. Be sure you have registered the service with the name `validated-query-service` and the endpoint type of the service `validatedquery` with the service provider. Look also that the service is registered for the Care organization.
 
 ```http request
-GET http://localhost:2323/internal/didman/v1/did/<DID Service Provider>/compoundservice/validated-query-service/endpoint/validquery
+GET http://localhost:2323/internal/didman/v1/did/<DID Service Provider>/compoundservice/validated-query-service/endpoint/validatedquery
 Content-Type: application/json
 
 ```
@@ -266,7 +268,7 @@ The validated query is presented by the consumer in a http request. The consumer
 {
    "@context": [
     "https://www.w3.org/2018/credentials/v1",
-    "https://www.w3.org/2021/credentials/validated-query/v1"
+    "https://www.w3.org/2021/credentials/validatedquery/v1"
   ],
   "type": "VerifiablePresentation",
   // the ValidatedQueryCredential issued
@@ -282,7 +284,7 @@ The validated query is presented by the consumer in a http request. The consumer
 
 ```
 
-The presentation is added to the request body. The request is described in the specification of the [http message](https://gitlab.com/data-en-techniek/specificaties/datastation/http-messages), and the [validated query](https://gitlab.com/data-en-techniek/specificaties/datastation/validated-query).
+The presentation is added to the request body. The request is described in the specification of the [http message](https://gitlab.com/data-en-techniek/specificaties/datastation/http-messages), and the [validated query](https://gitlab.com/data-en-techniek/specificaties/datastation/validatedquery).
 
 See also the requirements for [verifiable credentials](https://gitlab.com/data-en-techniek/specificaties/agents/verifiable-credentials). 
 
@@ -325,4 +327,4 @@ See the guide on the [triple store](./triplestore/README.md) to install GraphDB.
 
 ### Return the answer
 
-The response is described in the specification of the [http message](https://gitlab.com/data-en-techniek/specificaties/datastation/http-messages) and the [validated query](https://gitlab.com/data-en-techniek/specificaties/datastation/validated-query). A simple http server is provided for the hackathon. The answer can ben send to the address of that server, localhost at port 8080.
+The response is described in the specification of the [http message](https://gitlab.com/data-en-techniek/specificaties/datastation/http-messages) and the [validated query](https://gitlab.com/data-en-techniek/specificaties/datastation/validatedquery). A simple http server is provided for the hackathon. The answer can ben send to the address of that server, localhost at port 8080.

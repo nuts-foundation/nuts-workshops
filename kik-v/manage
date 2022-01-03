@@ -1,0 +1,355 @@
+#!/bin/bash
+node_list="node1 node2 node3"
+# Node ports
+node1_port=8080
+node2_port=8081
+node3_port=8082
+# Datastation port
+datastation_port=9090
+# Hostname and port of the nuts nodes 
+node1_base=http://localhost:${node1_port}
+node2_base=http://localhost:${node2_port}
+node3_base=http://localhost:${node3_port}
+
+script_home="$( cd "$( dirname "$0" )" && pwd )"
+docs_path=/docs/
+
+# Running on Windows?
+if [[ "$OSTYPE" == "msys" ]]; then
+  # Prefix interactive terminal commands ...
+  terminalEmu="winpty"
+fi
+
+function usage {
+    cat <<-EOF
+
+        Usage: $0 [command] [options]
+
+        Commands:
+
+        create_vendor [node] - To create a vendor in the node including contact information.
+             Examples:
+              $0 create_vendor node1
+               - Create a vendor in node1.
+              $0 create_vendor node1 node2 node3
+               - Create a vendor in node1, node2, and node3.
+
+EOF
+exit 1
+}
+
+function toLower {
+  echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
+}
+
+function createVendor {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            hostname=${node}_base
+            diddoc_vendor=${script_home}${docs_path}diddoc_vendor-${node}.json   
+            # The json string represents the values send to the node in the request
+            json_string='{"selfControl":true,"keyAgreement":true,"assertionMethod":true,"capabilityInvocation":true}'
+            # Send post request to the node to create a vendor
+            curl --silent --request POST "${!hostname}/internal/vdr/v1/did" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string}" \
+                 | jq '.' > ${diddoc_vendor}
+        fi
+    fi
+}
+
+function addVendorContact {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            hostname=${node}_base
+            diddoc_vendor=${script_home}${docs_path}diddoc_vendor-${node}.json
+            did=$(cat ${diddoc_vendor} | jq '.id' | tr -d '"')
+            # The json string represents the values send to the node in the request
+            json_template='{"name":"%s","phone":"06-12345670","email":"info@example.com","website":"https://example.com"}'
+            json_string=$(printf ${json_template} ${node})
+
+            # Send put request to the node to add the contact to the vendor
+            curl --silent --request PUT "${!hostname}/internal/didman/v1/did/${did}/contactinfo" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string}" | jq '.' 
+        fi
+    fi
+}
+
+function addVendorEndPoint {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            hostname=${node}_base
+            port=${node}_port
+            diddoc_vendor=${script_home}${docs_path}diddoc_vendor-${node}.json
+            did=$(cat ${diddoc_vendor} | jq '.id' | tr -d '"')
+            # The json string represents the values send to the node in the request
+            json_template='{"type":"%s","endpoint":"%s"}'
+
+            json_string_e1=$(printf ${json_template} "oauth" "http://host.docker.internal:${!port}/n2n/auth/v1/accesstoken")
+            # Send post request to the node to add endpoint to the vendor
+            curl --silent --request POST "${!hostname}/internal/didman/v1/did/${did}/endpoint" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string_e1}" | jq '.' 
+
+            json_string_e2=$(printf ${json_template} "validatedquery" "host.docker.internal:${datastation_port}/validatedquery")
+            # Send post request to the node to add endpoint to the vendor
+            curl --silent --request POST "${!hostname}/internal/didman/v1/did/${did}/endpoint" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string_e2}" | jq '.' 
+        fi
+    fi
+}
+
+function addCustomerCompoundService {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            hostname=${node}_base
+            port=${node}_port
+            diddoc_vendor=${script_home}${docs_path}diddoc_vendor-${node}.json
+            did_vendor=$(cat ${diddoc_vendor} | jq '.id' | tr -d '"')
+            # The json string represents the values send to the node in the request
+            json_template='{"type":"validated-query-service","serviceEndpoint":{"oauth":"%s/serviceEndpoint?type=oauth","validatedquery":"%s/serviceEndpoint?type=validatedquery"}}'
+            json_string=$(printf ${json_template} ${did_vendor} ${did_vendor} )
+            # Send post request to the node to add endpoint to the vendor
+            curl --silent --request POST "${!hostname}/internal/didman/v1/did/${did_vendor}/compoundservice" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string}" | jq '.' 
+
+            diddoc_customer=${script_home}${docs_path}diddoc_customer-${node}.json
+            did_customer=$(cat ${diddoc_customer} | jq '.id' | tr -d '"')
+
+            curl --silent --request POST "${!hostname}/internal/didman/v1/did/${did_customer}/compoundservice" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string}" | jq '.' 
+        fi
+    fi
+}
+
+function getVendorDiddoc {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            hostname=${node}_base
+            diddoc_vendor=${script_home}${docs_path}diddoc_vendor-${node}.json
+            did=$(cat ${diddoc_vendor} | jq '.id' | tr -d '"')
+
+            # Send get request to the node to get the diddoc
+            curl --silent --request GET "${!hostname}/internal/vdr/v1/did/${did}" | jq '.'
+        fi
+    fi
+}
+
+function createCustomer {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            hostname=${node}_base
+            diddoc_vendor=${script_home}${docs_path}diddoc_vendor-${node}.json
+            did=$(cat ${diddoc_vendor} | jq '.id' | tr -d '"')
+            
+            diddoc_customer=${script_home}${docs_path}diddoc_customer-${node}.json   
+            # The json string represents the values send to the node in the request
+            json_template='{"selfControl":false,"controllers":["%s"],"assertionMethod":true,"capabilityInvocation":false}'
+            json_string=$(printf ${json_template} ${did} )
+
+            # Send post request to the node to create a customer
+            curl --silent --request POST "${!hostname}/internal/vdr/v1/did" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string}" \
+                 | jq '.' > ${diddoc_customer}
+        fi
+    fi
+}
+
+function getCustomerDiddoc {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            hostname=${node}_base
+            diddoc_customer=${script_home}${docs_path}diddoc_customer-${node}.json
+            did=$(cat ${diddoc_customer} | jq '.id' | tr -d '"')
+
+            # Send get request to the node to get the diddoc
+            curl --silent --request GET "${!hostname}/internal/vdr/v1/did/${did}" | jq '.'
+        fi
+    fi
+}
+
+function issueOrganizationCredential {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            # Vendor of the node is the issuer of the credential
+            # credential is issued on the same node from issuer to holder
+            hostname=${node}_base
+            diddoc_issuer=${script_home}${docs_path}diddoc_vendor-${node}.json
+            issuer=$(cat ${diddoc_issuer} | jq '.id' | tr -d '"')
+            
+            diddoc_holder=${script_home}${docs_path}diddoc_customer-${node}.json
+            holder=$(cat ${diddoc_holder} | jq '.id' | tr -d '"')
+            
+            json_organization='{"name":"Nightingale","city":"Delft"}'
+            json_credentialSubject=$(printf '{"id":"%s","organization":%s}' ${holder} ${json_organization})
+            # The json string represents the values send to the node in the request
+            json_string=$(printf '{"type":"NutsOrganizationCredential","issuer":"%s","credentialSubject":%s}' ${issuer} ${json_credentialSubject})
+            # Send post request to the node to issue an organizational credential
+            curl --silent --request POST "${!hostname}/internal/vcr/v1/vc" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string}" \
+                 | jq '.'
+        fi
+    fi
+}
+
+function trustIssuer {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            # Vendor of the node is the issuer of a credential
+            # Trust the issuer on all nodes
+            diddoc_issuer=${script_home}${docs_path}diddoc_vendor-${node}.json
+            issuer=$(cat ${diddoc_issuer} | jq '.id' | tr -d '"')
+            json_trustissuer=$(printf '{"issuer":"%s","credentialType":"NutsOrganizationCredential"}' ${issuer} )
+            ## Trust the issuer of the credential on all nodes
+            for value in ${node_list}
+            do
+                hostname_n=${value}_base
+                curl --silent --request POST "${!hostname_n}/internal/vcr/v1/trust" \
+                    --header "Content-Type: application/json" \
+                    --data-raw "${json_trustissuer}"
+            done
+        fi
+    fi
+}
+
+
+function issueValidatedQueryCredential {
+    # Assumptions:
+    # The customer on node1 is the issuer
+    # The customer on node2 is the holder
+    # The customer on node3 is the verifier
+    
+    diddoc_issuer=${script_home}${docs_path}diddoc_customer-node1.json
+    issuer=$(cat ${diddoc_issuer} | jq '.id' | tr -d '"')
+    if [ ! -z "${issuer}" ]; then
+        json_trustissuer=$(printf '{"issuer":"%s","credentialType":"ValidatedQueryCredential"}' ${issuer} )
+        ## Trust the issuer of the credential
+        curl --silent --request POST "${node1_base}/internal/vcr/v1/trust" \
+            --header "Content-Type: application/json" \
+            --data-raw "${json_trustissuer}"
+
+        diddoc_holder=${script_home}${docs_path}diddoc_customer-node2.json
+        holder=$(cat ${diddoc_holder} | jq '.id' | tr -d '"')
+        if [ ! -z "${holder}" ]; then
+            json_validquery='{"profile":"https://kik-v2.gitlab.io/uitwisselprofielen/uitwisselprofiel-odb/","ontology":"http://ontology.ontotext.com/publishing","sparql":"PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"}'
+            json_credentialSubject=$(printf '{"id":"%s","validatetQuery":%s}' ${holder} ${json_validquery})
+            # The json string represents the values send to the node in the request
+            json_string=$(printf '{"type":"ValidatedQueryCredential","issuer":"%s","credentialSubject":%s}' ${issuer} ${json_credentialSubject})
+            
+            # Send post request to node1 to issue an validated query credential
+            curl --silent --request POST "${node1_base}/internal/vcr/v1/vc" \
+                --header "Content-Type: application/json" \
+                --data-raw "${json_string}" \
+                | jq '.'
+        fi
+    fi
+}
+
+function getAccessToken {
+    # The holder of the ValidateQueryCredential needs an access token. The holder is on node2
+    diddoc_holder=${script_home}${docs_path}diddoc_customer-node2.json
+    holder=$(cat ${diddoc_holder} | jq '.id' | tr -d '"')
+    if [ ! -z "${holder}" ]; then
+        # The verifier is the controller of the data station, the verifier is on node3
+        diddoc_verifier=${script_home}${docs_path}diddoc_customer-node3.json
+        verifier=$(cat ${diddoc_verifier} | jq '.id' | tr -d '"')
+        if [ ! -z "${verifier}" ]; then
+            json_template='{"authorizer":"%s","requester":"%s","service":"validated-query-service"}'
+            json_string=$(printf ${json_template} ${verifier} ${holder} )
+
+            # Send post request to node2 to request an access token from the verifier
+            curl --silent --request POST "${node2_base}/internal/auth/v1/request-access-token" \
+                    --header "Content-Type: application/json" \
+                    --data-raw "${json_string}" | jq '.'   
+        fi
+    fi
+}
+
+pushd "${script_home}" >/dev/null
+command=$(toLower ${1})
+shift || command=usage
+case "${command}" in
+    vendor)
+        for param in "$@"
+        do
+            createVendor ${param}
+            addVendorContact ${param}
+        done
+        ;;
+    trust)
+        for param in "$@"
+        do
+            trustIssuer ${param}
+        done
+        ;;    
+    endpoint)
+        for param in "$@"
+        do
+            addVendorEndPoint ${param}
+            addCustomerCompoundService ${param}
+        done
+        ;;
+    get_vendor)
+        for param in "$@"
+        do
+            getVendorDiddoc ${param}
+        done
+        ;;
+    customer)
+        for param in "$@"
+        do
+            createCustomer ${param}
+        done
+        ;;
+    get_customer)
+        for param in "$@"
+        do
+            getCustomerDiddoc ${param}
+        done
+        ;;
+    issue_organization)
+        for param in "$@"
+        do
+            issueOrganizationCredential ${param}
+        done
+        ;;
+    issue_validatedquery)
+        issueValidatedQueryCredential
+        ;;
+    accesstoken)
+        getAccessToken
+        ;;
+    get_ready)
+        for param in ${node_list}
+        do
+            createVendor ${param}
+            addVendorContact ${param}
+            createCustomer ${param}
+        done
+        addVendorEndPoint node3
+        addCustomerCompoundService node3
+        trustIssuer node2
+        trustIssuer node3
+        issueOrganizationCredential node2
+        issueOrganizationCredential node3
+        issueValidatedQueryCredential
+        ;;
+    *)
+        usage;;
+esac
+popd >/dev/null
