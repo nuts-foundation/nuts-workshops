@@ -319,11 +319,11 @@ Not yet available
 
 ### Perform the query
 
-Execute the query on the SPARQL-endpoint. 
+Run the query on the SPARQL-endpoint. 
 
 The right dataset can be found in the data catalog when its available in the data station. The ontology attribute from the credential is used to search for the dataset that conforms to (conformsTo) this ontology. See the specification of the [data catalog](https://gitlab.com/data-en-techniek/specificaties/datastation/data-catalog). The data station you build in the hackathon won't have a data catalog. So the default for now is `news`.
 
-See the guide on the [triple store](./triplestore/README.md) to install GraphDB. GraphDB is a persistent store for RDF-triples with support for reasoning and ontology. It also includes a SPARQL-endpoint.
+See the guide on the [triple store](./triplestore/README.md) to install GraphDB. GraphDB is a persistence store for RDF-triples with support for reasoning and ontology. It also includes a SPARQL-endpoint.
 
 ### Return the answer
 

@@ -2,10 +2,11 @@
 node_list="node1 node2 node3"
 # Node ports
 node1_port=1323
-node2_port=2323
-node3_port=3323
+node2_port=1323
+node3_port=1323
 # Datastation port
 datastation_port=9090
+datastation_endpoint=http://host.docker.internal
 # Hostname and port of the nuts nodes 
 node1_base=http://localhost:${node1_port}
 node2_base=http://localhost:${node2_port}
@@ -23,57 +24,59 @@ fi
 function usage {
     cat <<-EOF
 
-        Usage: $0 [command] [options]
+    Usage: $0 [command] [options]
 
-        Commands:
+    Commands:
 
-        vendor [node] - To create a vendor in the node including contact information.
-            Examples:
-              $0 vendor node1
-               - Create a vendor in node1.
-              $0 vendor node1 node2 node3
-               - Create a vendor in node1, node2, and node3.
+    vendor [node] - To create a vendor in the node including contact information.
+        Examples:
+            $0 vendor node1
+            - Create a vendor in node1.
+            $0 vendor node1 node2 node3
+            - Create a vendor in node1, node2, and node3.
 
-        get_vendor [node] - Resolve the diddoc of the vendor on the node
+    get_vendor [node] - Resolve the diddoc of the vendor on the node
 
-        trust [node] - Let the other nodes trust the vendor of the node specified.
-                       The vendor is trusted as an issuer of verifiable credentials.
+    trust [node] - Let the other nodes trust the vendor of the node specified.
+        The vendor is trusted as an issuer of verifiable credentials.
+        Examples:
+            $0 trust node1
+            - Trust the vendor of node1 as an issuer of verifiable credentials.
 
-            Examples:
-              $0 trust node1
-               - Trust the vendor of node1 as an issuer of verifiable credentials.
+    customer [node] - To create a customer in the node.
+        Examples:
+            $0 customer node1
+            - Create a customer in node1.
+            $0 customer node1 node2 node3
+            - Create a customer in node1, node2, and node3.
 
-        customer [node] - To create a customer in the node.
-            Examples:
-              $0 customer node1
-               - Create a customer in node1.
-              $0 customer node1 node2 node3
-               - Create a customer in node1, node2, and node3.
+    get_customer [node] - Resolve the diddoc of the customer on the node
 
-        get_customer [node] - Resolve the diddoc of the customer on the node
+    get_compound [node] - Resolve the compound service of the customer
 
-        endpoint [node] - Define an endpoint and compound services for authorization and validatedqueries.
+    endpoint [node] - Define an endpoint and compound services for authorization and validatedqueries.
+        Examples:
+            $0 endpoint node3
+            - Define an endpoint and compound services on node3.
 
-            Examples:
-              $0 endpoint node3
-               - Define an endpoint and compound services on node3.
-  
-        issue_organization [node] - Issue an organizational credential for the customer on the node.
-                                    The organizational credential is issued by the vendor of the node.
+    issue_organization [node] - Issue an organizational credential for the customer on the node.
+        The organizational credential is issued by the vendor of the node.
 
-        issue_validatedquery - Issue a validated query credential for the customer on node 2
-                               It's assumed that the issuer is the customer on node1, the holder the customer on node2,
-                               and the verifier the customer on node3 
+    issue_validatedquery - Issue a validated query credential for the customer on node 2
+        It's assumed that the issuer is the customer on node1, the holder the customer on node2,
+        and the verifier the customer on node3 
 
-        get_ready - Get the nodes ready to go nuts on the kik-v bolt, all of the above is done.
-                    It's assumed that the issuer is the customer on node1, the holder the customer on node2,
-                    and the verifier the customer on node3. The customer on node3 is the controller of the data station.
+    get_ready - Get the nodes ready to go nuts on the kik-v bolt, all of the above is done.
+        It's assumed that the issuer is the customer on node1, the holder the customer on node2,
+        and the verifier the customer on node3. The customer on node3 is the controller of the data station.
+    
+    accesstoken - Get an access token from the controller of the data source, the customer on node3. 
+        The request is done by the consumer, which is the customer on node2
         
-        accesstoken - Get an access token from the controller of the data source, the customer on node3. 
-                      The request is done by the consumer, which is the customer on node2
-                      
-                      If you get an error on the accesstoken after the get_ready command, be a little patient.
-                      The nodes must sync first before the access token can be released.
+        If you get an error on the accesstoken after the get_ready command, be a little patient.
+        The nodes must sync first before the access token can be released.
+
+    do_request - Post a request to the datastation with a valid accesstoken
 
 EOF
 exit 1
@@ -136,7 +139,8 @@ function addVendorEndPoint {
                  --header "Content-Type: application/json" \
                  --data-raw "${json_string_e1}" | jq '.' 
 
-            json_string_e2=$(printf ${json_template} "validatedquery" "host.docker.internal:${datastation_port}/validatedquery")
+            json_string_e2=$(printf ${json_template} "validatedquery" "${datastation_endpoint}:${datastation_port}/validatedquery")
+            echo ${json_string_e2}
             # Send post request to the node to add endpoint to the vendor
             curl --silent --request POST "${!hostname}/internal/didman/v1/did/${did}/endpoint" \
                  --header "Content-Type: application/json" \
@@ -217,7 +221,21 @@ function getCustomerDiddoc {
 
             # Send get request to the node to get the diddoc
             curl --silent --request GET "${!hostname}/internal/vdr/v1/did/${did}" | jq '.'
-        fi
+        fi    
+    fi
+}
+
+function getCustomerCompoundService {
+    node=${1}
+    if [ ! -z "${node}" ]; then
+        if grep -q "${node}" <<< "${node_list}"; then
+            hostname=${node}_base
+            diddoc_customer=${script_home}${docs_path}diddoc_customer-${node}.json
+            did=$(cat ${diddoc_customer} | jq '.id' | tr -d '"')
+
+            # Send get request to the node to get the diddoc
+            curl --silent --request GET "${!hostname}/internal/didman/v1/did/${did}/compoundservice" | jq '.'
+        fi    
     fi
 }
 
@@ -268,7 +286,6 @@ function trustIssuer {
     fi
 }
 
-
 function issueValidatedQueryCredential {
     # Assumptions:
     # The customer on node1 is the issuer
@@ -288,15 +305,16 @@ function issueValidatedQueryCredential {
         holder=$(cat ${diddoc_holder} | jq '.id' | tr -d '"')
         if [ ! -z "${holder}" ]; then
             json_validquery='{"profile":"https://kik-v2.gitlab.io/uitwisselprofielen/uitwisselprofiel-odb/","ontology":"http://ontology.ontotext.com/publishing","sparql":"PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"}'
-            json_credentialSubject=$(printf '{"id":"%s","validatetQuery":%s}' ${holder} ${json_validquery})
+            json_credentialSubject=$(printf '{"id":"%s","validatedQuery":%s}' ${holder} ${json_validquery})
             # The json string represents the values send to the node in the request
             json_string=$(printf '{"type":"ValidatedQueryCredential","issuer":"%s","credentialSubject":%s}' ${issuer} ${json_credentialSubject})
             
+            vc_issuer=${script_home}${docs_path}ValidatedQueryCredential-node1.json  
             # Send post request to node1 to issue an validated query credential
             curl --silent --request POST "${node1_base}/internal/vcr/v1/vc" \
                 --header "Content-Type: application/json" \
                 --data-raw "${json_string}" \
-                | jq '.'
+                | jq '.' > ${vc_issuer}
         fi
     fi
 }
@@ -321,6 +339,43 @@ function getAccessToken {
     fi
 }
 
+function doValidatedQueryRequest {
+    # The verifier is the controller of the data station, the verifier is on node3
+    diddoc_verifier=${script_home}${docs_path}diddoc_customer-node3.json
+    verifier=$(cat ${diddoc_verifier} | jq '.id' | tr -d '"')
+    if [ ! -z "${verifier}" ]; then
+        endpoint=$(curl --silent --request GET "${node2_base}/internal/didman/v1/did/${verifier}/compoundservice/validated-query-service/endpoint/validatedquery" | jq '.endpoint' | tr -d '"')
+
+        if [ ! -z "${endpoint}" ]; then
+            token=$(getAccessToken | jq '.access_token' | tr -d '"')
+            if [ ! -z "${token}" ]; then
+                diddoc_holder=${script_home}${docs_path}diddoc_customer-node2.json
+                holder=$(cat ${diddoc_holder} | jq '.id' | tr -d '"')
+                echo ${holder}
+                if [ ! -z "${holder}" ]; then
+                    vc_file=${script_home}${docs_path}ValidatedQueryCredential-node1.json
+                    validatedquery=$(cat ${vc_file})
+                    uuid_id=$(uuidgen)
+                    uuid_conversation=$(uuidgen)
+                    # Send post request to data station
+                    echo ${endpoint/host.docker.internal/localhost}
+                    curl --verbose --request POST "${endpoint/host.docker.internal/localhost}" \
+                            --header "Content-Type: application/json" \
+                            --header "Authorization: Bearer ${token}" \
+                            --header "Message-ID: ${uuid_id}" \
+                            --header "Subject: validated-query-requests" \
+                            --header "From: ${holder}" \
+                            --header "To: ${verifier}" \
+                            --header "References: ${uuid_conversation}" \
+                            --header "Reply-To: http://localhost:8080/messaging" \
+                            --data-raw "${validatedquery}"   
+                fi
+            fi
+        fi
+
+    fi
+}
+
 pushd "${script_home}" >/dev/null
 command=$(toLower ${1})
 shift || command=usage
@@ -328,9 +383,11 @@ if [[ ! -d ${script_home}${docs_path} ]]
 then
     show_docs=$(echo ${docs_path} | tr -d '/')
     echo "The directory ${show_docs} doesn't exists, create it first."
+    exit 1
 fi
 case "${command}" in
     vendor)
+
         for param in "$@"
         do
             createVendor ${param}
@@ -368,6 +425,12 @@ case "${command}" in
             getCustomerDiddoc ${param}
         done
         ;;
+    get_compound)
+        for param in "$@"
+        do
+            getCustomerCompoundService ${param}
+        done
+        ;;
     issue_organization)
         for param in "$@"
         do
@@ -386,15 +449,15 @@ case "${command}" in
             createVendor ${param}
             addVendorContact ${param}
             createCustomer ${param}
+            trustIssuer ${param}
+            issueOrganizationCredential ${param}
         done
         addVendorEndPoint node3
         addCustomerCompoundService node3
-        trustIssuer node1
-        trustIssuer node2
-        trustIssuer node3
-        issueOrganizationCredential node2
-        issueOrganizationCredential node3
         issueValidatedQueryCredential
+        ;;
+    do_request)
+        doValidatedQueryRequest
         ;;
     *)
         usage;;
