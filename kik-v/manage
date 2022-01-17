@@ -2,8 +2,8 @@
 node_list="node1 node2 node3"
 # Node ports
 node1_port=1323
-node2_port=1323
-node3_port=1323
+node2_port=2323
+node3_port=3323
 # Datastation port
 datastation_port=9090
 datastation_endpoint=http://host.docker.internal
@@ -451,6 +451,8 @@ case "${command}" in
             createCustomer ${param}
             trustIssuer ${param}
             issueOrganizationCredential ${param}
+            echo "Wachten op synchronisatie tussen nuts nodes ..."
+            sleep 10
         done
         addVendorEndPoint node3
         addCustomerCompoundService node3
