@@ -40,7 +40,7 @@ Content-Type: application/json
   ]
 }
 ```
-`identity` and `credentials` are optional. `identity` is required for any resources that requires *userContext* or if a credential includes a `credentialSubject.subject`.
+`identity` and `credentials` are optional. `identity` is required for any resources that requires *userContext* or if a credential includes a `credentialSubject.subject`. See the [authentication mini manual](7-authentication.md) for instruction on how to generate the value for `identity`.
 `credentials` are required when stated by the access policy of a bolt.
 The Nuts node expects that the custodian has a compound service in its DID Document with the correct service type.
 In that compound service, it expects an `oauth` key/value pair. When resolved that value points to an authorization server.
