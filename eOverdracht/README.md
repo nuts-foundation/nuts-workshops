@@ -166,7 +166,7 @@ POST <receiver-notification-endpoint>
 Authorization: Bearer eyJhbGciOiJSUz...
 ```
 
-Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain/transfer/sender/service.go#L622-L634
+Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain/transfer/sender/service.go#L558-L586
 
 ## Receiver
 
@@ -175,7 +175,7 @@ Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain
 The eOverdracht flow for the receiver starts with a notification on the receiver `notification` endpoint.
 The [services manual](1-service-registration.md) describes how the `eOverdracht-receiver` service needs to be registered.
 
-Your `notification` endpoint needs to be an API that is able to process an empty POST http call.
+Your `notification` endpoint needs to be an API that is able to process an empty POST http call. The last part of the path called will be the Task identifier. 
 
 The call will have a http `authorization` header with a bearer token in it:
 ```
@@ -189,7 +189,7 @@ These DIDs are important for the next step.
 
 ### Retrieving updated tasks
 
-When a notification is received, the receiver will have to fetch updated FHIR Task resources from the sender.
+When a notification is received, the receiver will have to fetch the updated FHIR Task resource from the sender.
 The first step is to find the correct base endpoint for the FHIR resource.
 This can be done by using the follow call on the Nuts node:
 
@@ -199,14 +199,14 @@ GET http://localhost:1323/internal/didman/v1/did/{did}/compoundservice/eOverdrac
 
 Where `{did}` needs to be replaced with the DID from the `sub` JWT field of the previous step.
 This will return, if all is configured correctly, a plain text response with the base endpoint.
-According to the eOverdracht bolt description and the Nictiz TO, the call to retrieve the Tasks would be:
+According to the eOverdracht bolt description, the call to retrieve the Tasks would be:
 
 ```http request
-GET <base>/Task?code=http://snomed.info/sct|308292007&_lastUpdated=2017-01-01T00:00:00Z
+GET <base>/Task/{id}
 Authorization: bearer <access-token>
 ```
 
-The `_lastUpdated` query param should be updated with the datetime of the previous request.
+Where `{id}` needs to be replaced with the identifier given in the notification path.
 
 This call requires an access token in the `authorization` header. The [access token manual](../mini-manuals/6-access-token.md) describes how to obtain the access token.
 For retrieving tasks, no authorization credentials or user identity is needed when requesting the token.
@@ -215,7 +215,7 @@ Given the JWT from the previous chapter, the `custodian` in the access token req
 The Task resources should now be returned and can be processed.
 The [Nictiz TO](https://informatiestandaarden.nictiz.nl/wiki/vpk:V4.0_FHIR_eOverdracht) has details on the contents of the Tasks.
 
-Code sample: https://github1s.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain/notification/handler.go#L42-L100
+Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain/notification/handler.go#L54-L119
 
 ### Retrieving NursingHandoff and other resources
 
@@ -230,7 +230,7 @@ Authorization: bearer <access-token>
 The access token is quite different though. According to the eOverdracht bolt specification access policy, retrieving these resources requires both a user identity and the correct authorization credentials.
 
 The right authorization credential can be found by following the [authorization credential manual](../mini-manuals/5-authz-credentials.md).
-The `credentialSubject.id` parameter must equal the receiver DID (your customer), the `credentialSubject.purposeOfUse` paramater must be `eOverdracht-sender` and the `credentialSubject.resources.#.path` parameter must equal the composition reference from the task resource. Note that the paths used in authorization credentials have a leading `/`.
+The `credentialSubject.id` parameter must equal the receiver DID (your customer), the `credentialSubject.purposeOfUse` parameter must be `eOverdracht-sender` and the `credentialSubject.resources.#.path` parameter must equal the composition reference from the task resource. Note that the paths used in authorization credentials have a leading `/`.
 
 The user identity can be obtained by following the [authentication manual](../mini-manuals/7-authentication.md)
 

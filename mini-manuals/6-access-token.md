@@ -31,7 +31,7 @@ Content-Type: application/json
 {
   "authorizer": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
   "requester": "did:nuts:3wEb8GJEuenjMexQXKfrdAr8CvA69SdbVh8qhUpDMcX2",
-  "identity": "BASE64 Login contract",
+  "identity": "Login contract verifiable presentation",
   "service": "eOverdracht-sender",
   "credentials": [
     {
