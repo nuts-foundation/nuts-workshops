@@ -39,7 +39,7 @@ The resulting DID Document can only be updated with the vendor's private key.
 This setup allows you to keep the most important key secure.
 The resulting DID must be stored somewhere, or the DID is lost (or very hard to retrieve).
 
-Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/customers/service.go#L18-L43
+Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/customers/service.go#L18-L43
 
 ## Giving the organization a name
 
@@ -100,7 +100,7 @@ The result will be the created credential:
 
 This credential will also be transported to each node in the network, which allows other nodes to find it.
 
-code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L186-L226
+code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L199-L235
 
 ## Searching for an organization
 
@@ -170,7 +170,7 @@ A search will return converted results. Each credential type within a concept is
 ]
 ```
 
-Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L76-L117
+Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L99-L129
 
 ## Trust
 
@@ -200,7 +200,7 @@ For both calls the result will be a list of DIDs:
 ]
 ```
 
-Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L118-L149
+Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L131-L161
 
 An issuer can be trusted (for a specific credential type) by calling:
 ```http request
@@ -227,4 +227,4 @@ Content-Type: application/json
 Trust in the name (or other identifying information) of an organization is essential for a network to operate safely.
 A user will select an organization based on this information and will send medical data to that organization!
 
-Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L254-293
+Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L264-L302

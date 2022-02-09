@@ -118,8 +118,8 @@ Content-Type: application/json
 }
 ```
 
-Code sample for endpoint registration: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/sp/service.go#L60-L68
-Code sample for compound service registration: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/sp/service.go#L134-L155
+Code sample for endpoint registration: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/master/domain/sp/service.go#L81-L88
+Code sample for compound service registration: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/master/domain/sp/service.go#L173-L194
 
 ## Enabling Bolts for customers
 
@@ -150,4 +150,4 @@ Content-Type: application/json
 }
 ```
 
-Code sample: https://github1s.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/customers/service.go#L48-L67
+Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/master/domain/customers/service.go#L77-L95
