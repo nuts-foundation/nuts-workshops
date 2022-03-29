@@ -255,9 +255,9 @@ function issueOrganizationCredential {
             json_organization='{"name":"Nightingale","city":"Delft"}'
             json_credentialSubject=$(printf '{"id":"%s","organization":%s}' ${holder} ${json_organization})
             # The json string represents the values send to the node in the request
-            json_string=$(printf '{"type":"NutsOrganizationCredential","issuer":"%s","credentialSubject":%s}' ${issuer} ${json_credentialSubject})
+            json_string=$(printf '{"type":"NutsOrganizationCredential","issuer":"%s","credentialSubject":%s,"visibility":"public"}' ${issuer} ${json_credentialSubject})
             # Send post request to the node to issue an organizational credential
-            curl --silent --request POST "${!hostname}/internal/vcr/v1/vc" \
+            curl --silent --request POST "${!hostname}/internal/vcr/v2/issuer/vc" \
                  --header "Content-Type: application/json" \
                  --data-raw "${json_string}" \
                  | jq '.'
@@ -278,7 +278,7 @@ function trustIssuer {
             for value in ${node_list}
             do
                 hostname_n=${value}_base
-                curl --silent --request POST "${!hostname_n}/internal/vcr/v1/trust" \
+                curl --silent --request POST "${!hostname_n}/internal/vcr/v2/verifier/trust" \
                     --header "Content-Type: application/json" \
                     --data-raw "${json_trustissuer}"
             done
@@ -297,7 +297,7 @@ function issueValidatedQueryCredential {
     if [ ! -z "${issuer}" ]; then
         json_trustissuer=$(printf '{"issuer":"%s","credentialType":"ValidatedQueryCredential"}' ${issuer} )
         ## Trust the issuer of the credential
-        curl --silent --request POST "${node1_base}/internal/vcr/v1/trust" \
+        curl --silent --request POST "${node1_base}/internal/vcr/v2/verifier/trust" \
             --header "Content-Type: application/json" \
             --data-raw "${json_trustissuer}"
 
@@ -307,11 +307,11 @@ function issueValidatedQueryCredential {
             json_validquery='{"profile":"https://kik-v2.gitlab.io/uitwisselprofielen/uitwisselprofiel-odb/","ontology":"http://ontology.ontotext.com/publishing","sparql":"PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"}'
             json_credentialSubject=$(printf '{"id":"%s","validatedQuery":%s}' ${holder} ${json_validquery})
             # The json string represents the values send to the node in the request
-            json_string=$(printf '{"type":"ValidatedQueryCredential","issuer":"%s","credentialSubject":%s}' ${issuer} ${json_credentialSubject})
+            json_string=$(printf '{"type":"ValidatedQueryCredential","issuer":"%s","credentialSubject":%s,"publishToNetwork":false}' ${issuer} ${json_credentialSubject})
             
             vc_issuer=${script_home}${docs_path}ValidatedQueryCredential-node1.json  
             # Send post request to node1 to issue an validated query credential
-            curl --silent --request POST "${node1_base}/internal/vcr/v1/vc" \
+            curl --silent --request POST "${node1_base}/internal/vcr/v2/verifier/vc" \
                 --header "Content-Type: application/json" \
                 --data-raw "${json_string}" \
                 | jq '.' > ${vc_issuer}

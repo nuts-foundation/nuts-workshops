@@ -52,12 +52,12 @@ Use the HTTP operation below to issue it, making sure to replace the example wit
 * `credentialSubject.id` needs to contain the viewer care organization's DID,
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/vc
+POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
     "issuer": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-    "type": ["NutsAuthorizationCredential"],
+    "type": "NutsAuthorizationCredential",
     "credentialSubject": {
         "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
         "legalBase": {
@@ -68,7 +68,8 @@ Content-Type: application/json
             }
         },
         "purposeOfUse": "zorginzage-demo"
-    }
+    },
+    "visibility": "private"
 }
 ```
 

@@ -126,19 +126,20 @@ Issuing needs to be performed on the node of the Care Organization. The organiza
 In order to issue a credential to a subject, we need its DID. You can manually look up the DID using the admin UI of the Care Organization.
 
 ```http request
-POST http://localhost:3323/internal/vcr/v1/vc
+POST http://localhost:3323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
     "issuer": "did:nuts:<the did of your favorite (fictional) EPD software supplier>",
-    "type": ["NutsOrganizationCredential"],
+    "type": "NutsOrganizationCredential",
     "credentialSubject": {
         "id": "did:nuts:<the did of the Care Organization>",
         "organization": {
             "name": "<the name you gave to the Care Organization>",
             "city": "<the city of the Care Organization>"
         }
-    }
+    },
+    "visibility": "public"
 }
 ```
 
@@ -175,12 +176,12 @@ The news example dataset of GraphDB is used for querying. Testdata is not availa
 You can pick a query from the [examples provided](./triplestore/data/queries.txt). Make sure that the query is url encoded.
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/vc
+POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
     "issuer": "did:nuts:<issuer DID>",
-    "type": ["ValidatedQueryCredential"],
+    "type": "ValidatedQueryCredential",
     "credentialSubject": {
         "id": "did:nuts:<consumer DID>",
         "validatedQuery": {
@@ -188,7 +189,8 @@ Content-Type: application/json
             "ontology": "http://ontology.ontotext.com/publishing",
             "sparql": "PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"
         }
-    }
+    },
+    "publishToNetwork": false
 }
 ```
 
@@ -246,18 +248,24 @@ Result should be the endpoint.
 Search for the ValidatedQueryCredential you would like to send in the request.
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/authorization?untrusted=true
+POST http://localhost:1323/internal/vcr/v2/search
 Content-Type: application/json
 
 {
-    "Params": [
-        {
-            "key": "credentialSubject.id",
-            "value": "DID of Care Organization"
+    "query": {
+        "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://nuts.nl/credentials/v1"
+        ],
+        "type": ["VerifiableCredential" ,"NutsAuthorizationCredential"],
+        "credentialSubject": {
+            "id": "DID of Care Organization"
         }
-    ]
+    },
+    "searchOptions": {
+        "allowUntrustedIssuer": true
+    }
 }
-
 ```
 
 ### Perform the request

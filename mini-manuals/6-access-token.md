@@ -97,7 +97,7 @@ If the requested resource requires an authorization credential then the resource
 Resolving a credential can be done by the following call:
 
 ```http request
-GET http://localhost:1323/internal/vcr/v1/vc/{id}
+GET http://localhost:1323/internal/vcr/v2/vc/{id}
 ```
 
 where the `id` has to be replaced with one of the IDs from the `vcs` field.

@@ -113,4 +113,4 @@ When completed the return will look like:
 The `status` has changed to completed and a `verifiablePresentation` has been added.
 The contents of the `verifiablePresentation` field can be used when requesting an access token. It has to be entered in the `identity` field of the `/internal/auth/v1/request-access-token` request body.
 
-Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/api/api.go#L159-L230
+Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/api/api.go#L156-L230
