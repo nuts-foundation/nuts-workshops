@@ -311,7 +311,7 @@ function issueValidatedQueryCredential {
             
             vc_issuer=${script_home}${docs_path}ValidatedQueryCredential-node1.json  
             # Send post request to node1 to issue an validated query credential
-            curl --silent --request POST "${node1_base}/internal/vcr/v2/verifier/vc" \
+            curl --silent --request POST "${node1_base}/internal/vcr/v2/issuer/vc" \
                 --header "Content-Type: application/json" \
                 --data-raw "${json_string}" \
                 | jq '.' > ${vc_issuer}
