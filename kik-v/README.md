@@ -106,6 +106,7 @@ For all these Admin UIs, use the password `demo`
 
 Go to [Admin UI of node 1](http://localhost:1303).
 Name this service provider **Issuer SP** since it will be the _Service Provider_ of the credential issuer.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:5555`.
 Click on the button `Create Service Provider`.
 Now you can create a issuer organization: Go to `Your care organizations` and create a new organization.
 You can use any `internal ID`, name it **Beheerorganisatie KIK-V** and give it your favorite city.
@@ -113,42 +114,23 @@ After saving you can click on the newly created organization and check the `Publ
 
 #### Holder
 
-Do the same thing for [Admin UI of node 2](http://localhost:2303) and call the _Service Provider_ **Consumer SP** since it will be the service provider of the data consumer and create an organization **Consumer**
+Do the same thing for [Admin UI of node 2](http://localhost:2303) and call the _Service Provider_ **Consumer SP** since it will be the service provider of the data consumer.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:2555`.
+Now create an organization **Consumer** which will represent the organization firing of the query.
 
 #### Verifier
 
 Create one last _Service Provider_ for the care organization with the [Admin UI of node 3](http://localhost:3303). Give this service provider the name of your favorite (fictional) EPD software supplier.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:3555`.
 Lastly, create a Care Organization with a unique name and publish it on the network.
 
-##### Issue an organisational credential for the care organization
-
-Issuing needs to be performed on the node of the Care Organization. The organization credential is needed to create an access token for the data station.
-In order to issue a credential to a subject, we need its DID. You can manually look up the DID using the admin UI of the Care Organization.
-
-```http request
-POST http://localhost:3323/internal/vcr/v2/issuer/vc
-Content-Type: application/json
-
-{
-    "issuer": "did:nuts:<the did of your favorite (fictional) EPD software supplier>",
-    "type": "NutsOrganizationCredential",
-    "credentialSubject": {
-        "id": "did:nuts:<the did of the Care Organization>",
-        "organization": {
-            "name": "<the name you gave to the Care Organization>",
-            "city": "<the city of the Care Organization>"
-        }
-    },
-    "visibility": "public"
-}
-```
-
-For more information on issuing/managing organiszation credentials, see [Issue a Nuts Organization Credential](https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html#issue-a-nuts-organization-credential).
+For more information on issuing/managing organization credentials, see [Issue a Nuts Organization Credential](https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html#issue-a-nuts-organization-credential).
 
 ##### Setup the endpoints for the data station
+Now we will setup the endpoints needed to interact with the actual services.
 
 Go to the [Admin UI of node 3](http://localhost:3303). The endpoints will be created for the _Service Provider_. 
-The first endpoint will be used by the validatedquery service. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. validatedquery, and `URL` needs to contain the value of the valid query enpoint at the data station.
+The first endpoint points to the new service we are going to build which acts as a proxy before the datastation. The value depends on the port and path your new service will be hosted at. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. `validatedquery`, and `URL` needs to contain the value of the valid query enpoint at the data station.
 
 The second endpoint is used for the authorization. Make sure that the type is called `oauth` and the endpoint points to `http://host.docker.internal:3323/n2n/auth/v1/accesstoken`. The host `host.docker.internal` means that docker is calling the localhost of your machine, assuming you are using docker to run the nodes.
 
@@ -156,14 +138,20 @@ The second endpoint is used for the authorization. Make sure that the type is ca
 
 The service you create is the `validated-query-service`. Fill in the name of the service and the endpoints `oauth` and `validatedquery`. It's necessary to use these names also as type in the service form. The request for an access token will look for the `oauth` endpoint type, and will return an error if it's not found.
 
-Now go to the customer's page and click on the customer you created. Tick the box for the service configuration and make sure the customer is published on the network.
+![Example of services and endpoints](configured%20services.png)
+
+Now for the last step: go to the customer's page and click on the customer you created. Tick the box for the service configuration and make sure the customer is published on the network.
+
+You now have setup your customer with a `validated-query-service` which other parties in the network can lookup.
 
 ## Issuing the ValidatedQueryCredential
-
+In this step we are going to issue a Verifiable Credential to a holder.
 Issuing needs to be performed on the node of the issuer.
-In order to issue a credential to a subject, we need its DID. You can manually look up the DID using the admin UI of the holder node.
+In order to issue a credential to a subject(holder), we need both DIDs:
+lookup the DID of the `Beheerorganisatie KIK-V` in the [Admin UI of issuer node](http://localhost:1303) and the `Consumer` DID on the 
+[Admin UI of holder node ](http://localhost:2303).
 
-We now need to issue a `ValidatedQueryCredential` to the holder, which it can use to query the Care organization.
+We now need to issue a `ValidatedQueryCredential` to the holder, which the holder can use to query the Care organization.
 Use the HTTP operation below to issue it, making sure to replace the example with the proper values:
 
 * `issuer` needs to contain the DID of the issuer (not the Service Provider),
@@ -190,7 +178,8 @@ Content-Type: application/json
             "sparql": "PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"
         }
     },
-    "publishToNetwork": false
+    "publishToNetwork": true,
+    "visibility": "private"
 }
 ```
 
