@@ -1,9 +1,9 @@
 #!/bin/bash
 node_list="node1 node2 node3"
 # Node ports
-node1_port=1323
-node2_port=2323
-node3_port=3323
+node1_port=8080
+node2_port=8081
+node3_port=8082
 # Datastation port
 datastation_port=9090
 datastation_endpoint=http://host.docker.internal
@@ -76,6 +76,8 @@ function usage {
         If you get an error on the accesstoken after the get_ready command, be a little patient.
         The nodes must sync first before the access token can be released.
 
+    create_presentation - Create a verifiable presentation for the validated query credential
+
     do_request - Post a request to the datastation with a valid accesstoken
 
 EOF
@@ -99,6 +101,14 @@ function createVendor {
                  --header "Content-Type: application/json" \
                  --data-raw "${json_string}" \
                  | jq '.' > ${diddoc_vendor}
+
+            did=$(cat ${diddoc_vendor} | jq '.id' | tr -d '"')
+            json_template='{"type":"%s","endpoint":"%s"}'
+            json_string_nutsComm=$(printf ${json_template} "NutsComm" "grpc://${node}:5555")
+
+            curl --silent --request POST "${!hostname}/internal/didman/v1/did/${did}/endpoint" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string_nutsComm}" | jq '.' 
         fi
     fi
 }
@@ -140,7 +150,7 @@ function addVendorEndPoint {
                  --data-raw "${json_string_e1}" | jq '.' 
 
             json_string_e2=$(printf ${json_template} "validatedquery" "${datastation_endpoint}:${datastation_port}/validatedquery")
-            echo ${json_string_e2}
+
             # Send post request to the node to add endpoint to the vendor
             curl --silent --request POST "${!hostname}/internal/didman/v1/did/${did}/endpoint" \
                  --header "Content-Type: application/json" \
@@ -207,6 +217,13 @@ function createCustomer {
                  --header "Content-Type: application/json" \
                  --data-raw "${json_string}" \
                  | jq '.' > ${diddoc_customer}
+
+            did_customer=$(cat ${diddoc_customer} | jq '.id' | tr -d '"')  
+            json_template='{"type":"%s","endpoint":"%s"}'
+            json_string_nutsComm=$(printf ${json_template} "NutsComm" "${did}/serviceEndpoint?type=NutsComm")
+            curl --silent --request POST "${!hostname}/internal/didman/v1/did/${did_customer}/endpoint" \
+                 --header "Content-Type: application/json" \
+                 --data-raw "${json_string_nutsComm}" | jq '.' 
         fi
     fi
 }
@@ -286,6 +303,16 @@ function trustIssuer {
     fi
 }
 
+function trustIssuerValidatedQuery {
+    # Customer of node 2 is the issuer of a presentation
+    diddoc_issuer=${script_home}${docs_path}diddoc_customer-node1.json
+    issuer=$(cat ${diddoc_issuer} | jq '.id' | tr -d '"')
+    json_trustissuer=$(printf '{"issuer":"%s","credentialType":"ValidatedQueryCredential"}' ${issuer} )
+    curl --silent --request POST "${node3_base}/internal/vcr/v2/verifier/trust" \
+        --header "Content-Type: application/json" \
+        --data-raw "${json_trustissuer}"
+}
+
 function issueValidatedQueryCredential {
     # Assumptions:
     # The customer on node1 is the issuer
@@ -307,7 +334,7 @@ function issueValidatedQueryCredential {
             json_validquery='{"profile":"https://kik-v2.gitlab.io/uitwisselprofielen/uitwisselprofiel-odb/","ontology":"http://ontology.ontotext.com/publishing","sparql":"PREFIX%20pub%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Ftaxonomy%2F%3E%0APREFIX%20publishing%3A%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fpublishing%23%3E%0ASELECT%20DISTINCT%20%3Fp%20%3FobjectLabel%20WHERE%20%7B%0A%20%20%20%20%3Chttp%3A%2F%2Fontology.ontotext.com%2Fresource%2Ftsk78dfdet4w%3E%20%3Fp%20%3Fo%20.%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3Fvalue%20.%0A%20%20%20%20%20%20%20%20%3Fvalue%20pub%3ApreferredLabel%20%3FobjectLabel%20.%0A%20%20%20%20%7D%20UNION%20%7B%0A%20%20%20%20%20%20%20%20%3Fo%20pub%3AhasValue%20%3FobjectLabel%20.%0A%20%20%20%20%20%20%20%20filter%20(isLiteral(%3FobjectLabel))%20.%0A%20%20%20%20%20%7D%0A%7D"}'
             json_credentialSubject=$(printf '{"id":"%s","validatedQuery":%s}' ${holder} ${json_validquery})
             # The json string represents the values send to the node in the request
-            json_string=$(printf '{"type":"ValidatedQueryCredential","issuer":"%s","credentialSubject":%s,"publishToNetwork":false}' ${issuer} ${json_credentialSubject})
+            json_string=$(printf '{"type":"ValidatedQueryCredential","issuer":"%s","credentialSubject":%s,"visibility":"private"}' ${issuer} ${json_credentialSubject})
             
             vc_issuer=${script_home}${docs_path}ValidatedQueryCredential-node1.json  
             # Send post request to node1 to issue an validated query credential
@@ -317,6 +344,29 @@ function issueValidatedQueryCredential {
                 | jq '.' > ${vc_issuer}
         fi
     fi
+}
+
+function createPresentation {
+    vc_file=${script_home}${docs_path}ValidatedQueryCredential-node1.json
+    diddoc_holder=${script_home}${docs_path}diddoc_customer-node2.json
+    holder=$(cat ${diddoc_holder} | jq '.id' | tr -d '"')
+    if [ ! -z "${holder}" ]; then
+        randomstring=$(date +%s | sha256sum | base64 | head -c 32 ; echo)
+        expdate=$(date -v+20M -u +"%Y-%m-%dT%H:%M:%SZ")
+
+        json_template='{"verifiableCredentials":[],"signerDID":"%s","proofPurpose":"authentication","challenge":"%s","expires":"%s"}'
+        json_base=$(printf ${json_template} ${holder} ${randomstring} ${expdate})
+        json_string=$( jq --argjson creds "$(<${vc_file})" '.verifiableCredentials += [$creds]' <<<${json_base})
+        echo ${json_base}
+
+        vp_holder=${script_home}${docs_path}ValidatedQueryPresentation-node2.json  
+        # Send post request to node1 to issue an validated query credential
+        curl --silent --request POST "${node2_base}/internal/vcr/v2/holder/vp" \
+            --header "Content-Type: application/json" \
+            --data-raw "${json_string}" \
+            | jq '.' > ${vp_holder}
+
+    fi    
 }
 
 function getAccessToken {
@@ -372,7 +422,6 @@ function doValidatedQueryRequest {
                 fi
             fi
         fi
-
     fi
 }
 
@@ -440,6 +489,9 @@ case "${command}" in
     issue_validatedquery)
         issueValidatedQueryCredential
         ;;
+    create_presentation)
+        createPresentation
+        ;;
     accesstoken)
         getAccessToken
         ;;
@@ -456,6 +508,7 @@ case "${command}" in
         done
         addVendorEndPoint node3
         addCustomerCompoundService node3
+        trustIssuerValidatedQuery
         issueValidatedQueryCredential
         ;;
     do_request)
