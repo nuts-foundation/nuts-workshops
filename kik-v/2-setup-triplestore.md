@@ -1,3 +1,7 @@
+# Setup the triple store for the data station
+
+The data producer needs to have a data station with a triple store. This tutorial results in the setup of the triple strore.
+
 # Start GraphDB with docker compose
 
 You will need docker and git installed on your machine.
@@ -66,7 +70,7 @@ for example the most recent version as of this writing is 9.10.0 so run
 make free VERSION=9.10.0
 ```
 
-this will build an image that you can use called reneh/triplestore:9.10.0-free.
+this will build an image that you can use. It's called reneh/triplestore:9.10.0-free.
 You can run the image now with
 
 ```bash

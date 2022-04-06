@@ -1,0 +1,10 @@
+[INFO ] 2022-04-05 15:23:13,743 [main | c.o.g.Config] Using 'jar:file:/opt/graphdb/dist/lib/graphdb-application-common-9.10.0.jar!/com/ontotext/graphdb/logback.xml' as logback's configuration file
+[INFO ] 2022-04-05 15:23:14,087 [main | c.o.g.s.GraphDB] Starting GraphDB in workbench mode.
+[INFO ] 2022-04-05 15:23:21,886 [main | c.o.g.Config] GraphDB Home directory: /opt/graphdb/home
+[INFO ] 2022-04-05 15:23:21,887 [main | c.o.g.Config] GraphDB Config directory: /opt/graphdb/home/conf
+[INFO ] 2022-04-05 15:23:21,893 [main | c.o.g.Config] GraphDB Data directory: /opt/graphdb/home/data
+[INFO ] 2022-04-05 15:23:21,895 [main | c.o.g.Config] GraphDB Work directory: /opt/graphdb/home/work
+[INFO ] 2022-04-05 15:23:21,897 [main | c.o.g.Config] GraphDB Logs directory: /opt/graphdb/home/logs
+[INFO ] 2022-04-05 15:23:26,333 [main | c.o.g.s.GraphDB] Started GraphDB in workbench mode at port 7200.
+[INFO ] 2022-04-05 15:23:49,665 [Thread-2 | c.o.g.s.GraphDB] Stopping GraphDB.
+[INFO ] 2022-04-05 15:23:49,701 [Thread-2 | c.o.f.c.s.SemanticDataManagement] Shutting down current semantic location

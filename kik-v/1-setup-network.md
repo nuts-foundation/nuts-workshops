@@ -1,0 +1,136 @@
+# Setup
+
+The setup will be performed for the three organizational roles of the KIK-V bolt.
+
+# Start a network
+
+We'll use the network setup as defined by the **nuts-network-local** repository.
+First clone the github repo to your machine:
+
+```shell
+git clone https://github.com/nuts-foundation/nuts-network-local
+```
+
+Navigate to the `network` directory.
+
+We start a network with 3 nodes, one for every organizational role. Each node will have a admin ui which makes it easier to manage DIDs.
+
+```shell
+docker compose --profile three \
+  --profile with-admin-one \
+  --profile with-admin-two \
+  --profile with-admin-three \
+  up
+```
+
+Starting up the fist time may take some time to download the IRMA schema's.
+
+You can check the status by executing `docker compose ps` from the same directory.
+
+```shell
+docker compose ps
+        Name                       Command                  State                                              Ports
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+network_admin-one_1     /app/nuts-registry-admin-demo   Up (healthy)   0.0.0.0:1303->1303/tcp,:::1303->1303/tcp
+network_admin-three_1   /app/nuts-registry-admin-demo   Up (healthy)   0.0.0.0:3303->1303/tcp,:::3303->1303/tcp
+network_admin-two_1     /app/nuts-registry-admin-demo   Up (healthy)   0.0.0.0:2303->1303/tcp,:::2303->1303/tcp
+network_node-one_1      /usr/bin/nuts server            Up (healthy)     0.0.0.0:1323->1323/tcp,:::1323->1323/tcp, 0.0.0.0:5555->5555/tcp,:::5555->5555/tcp
+network_node-three_1    /usr/bin/nuts server            Up (healthy)     0.0.0.0:3323->1323/tcp,:::3323->1323/tcp, 5555/tcp
+network_node-two_1      /usr/bin/nuts server            Up (healthy)     0.0.0.0:2323->1323/tcp,:::2323->1323/tcp, 5555/tcp
+```
+
+# Setup the Service Providers 
+
+Before we can start, each of these organizational roles must be created in the network. Each role has its own Nuts node and every nuts node has a _Service Provider_ which represents the identity of the node operator.
+
+> :warning: Start with node one, since this is the bootstrap node which needs to hold the genesis block.
+
+For all these Admin UIs, use the password `demo`
+
+> :info: We use the Admin Demo UI for all three organizational roles as it gives us an easily clickable UI. For the roles, the terminology seems a bit off since it is originally designed as a management interface for EPD suppliers managing its customers, which are care organizations.
+
+# Setup the Authority
+
+Go to [Admin UI of node 1](http://localhost:1303).
+Name this service provider **Authority SP** since it will be the _Service Provider_ of the authority that issues the validated query credential.
+Click on the button `Create Service Provider`.
+Now you can create an organization: Go to `Your care organizations` and create a new organization.
+You can use any `internal ID`, name it **Authority KIK-V** and give it your favorite city.
+After saving you can click on the newly created organization and check the `Publish by this name in Nuts network` checkbox to make sure the authority is visible on the network.
+
+# Setup the Data Consumer
+
+Do the same thing for [Admin UI of node 2](http://localhost:2303) and call the _Service Provider_ **Data Consumer SP** since it will be the service provider of the data consumer and create an organization named **Data Consumer**
+
+# Setup the Data Producer
+
+Create one last _Service Provider_ for the data producer with the [Admin UI of node 3](http://localhost:3303). Name this service provider **Data Producer SP**.
+Lastly, create an organization that acts as the data producer. Name it **Data Producer** and publish it on the network.
+
+# Issue an organizational credential for the data producer
+
+Issuing needs to be performed on the node of the data producer. The issuer is the service provider of the node. The organizational credential is needed to create an access token to access the data station. This is the minimal requirement. Default is that every organization has an organizational credential. 
+When you use the Admin UI, this step is not needed. The Admin UI will do it for you.
+
+In order to issue a credential to a subject, we need its DID. You can manually look up the DID of the data producer using the Admin UI.
+
+```http request
+POST http://localhost:3323/internal/vcr/v2/issuer/vc
+Content-Type: application/json
+
+{
+    "issuer": "did:nuts:<the did of the service provider>",
+    "type": ["NutsOrganizationCredential"],
+    "credentialSubject": {
+        "id": "did:nuts:<the did of the data producer>",
+        "organization": {
+            "name": "<the name of the data producer>",
+            "city": "<the city of the data producer>"
+        }
+    },
+    "visibility": "public"
+}
+```
+
+For more information on issuing/managing organizational credentials, see [Issue a Nuts Organization Credential](https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html#issue-a-nuts-organization-credential).
+
+# Trust the issuer of the organizational credential
+
+Verifiers of credentials need to trust the issuer of the credential. Minimal the data consumer needs to trust the organizational credential of the data producer. This trust is registered explicitly. 
+
+```http request
+POST http://localhost:2303/internal/vcr/v2/verifier/trust
+Content-Type: application/json
+
+{
+    "issuer": "did:nuts:<the did of the service provider of node 3>",
+    "credentialType": "NutsOrganizationCredential"
+}
+```
+
+# Trust the issuer of the validated query credential
+
+The data producer needs to trust the validated quesry credential of the authority. This trust is registered explicitly. 
+
+```http request
+POST http://localhost:3303/internal/vcr/v2/verifier/trust
+Content-Type: application/json
+
+{
+    "issuer": "did:nuts:<the did of the authority>",
+    "credentialType": "ValidatedQueryCredential"
+}
+```
+
+# Setup the endpoints for the data producer
+
+Go to the [Admin UI of node 3](http://localhost:3303). The endpoints are created for the _Service Provider_. 
+The first endpoint is used by the validatedquery service. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. validatedquery, and `URL` needs to contain the value of the valid query enpoint at the data station.
+
+The second endpoint is used for the authorization. Make sure that the type is called `oauth` and the endpoint points to `http://host.docker.internal:3323/n2n/auth/v1/accesstoken`. The host `host.docker.internal` means that docker is calling the localhost of your machine, assuming you are using docker to run the nodes.
+
+# Setup the service for the data producer
+
+The service you create is the `validated-query-service`. Fill in the name of the service and the endpoints `oauth` and `validatedquery`. It's necessary to use these names also as type in the service form. The request for an access token will look for the `oauth` endpoint type, and will return an error if it's not found.
+
+Now go to the organization page and click on the organization you created. Tick the box for the service configuration and make sure the organization is published on the network.
