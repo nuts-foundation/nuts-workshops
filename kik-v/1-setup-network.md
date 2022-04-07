@@ -119,3 +119,4 @@ The service you create is the `validated-query-service`. Fill in the name of the
 Now for the last step: go to the organization page and click on the data producer you created. Tick the box for the service configuration and make sure the data producer is published on the network.
 
 You now have setup your data producer with a `validated-query-service` which other parties in the network can lookup.
+

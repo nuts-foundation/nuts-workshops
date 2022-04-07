@@ -7,6 +7,7 @@ lookup the DID of the `Authority KIK-V` in the [Admin UI of issuer node](http://
 [Admin UI of holder node ](http://localhost:2303).
 
 We now need to issue a `ValidatedQueryCredential` to the holder, which the holder can use to query the data producer.
+
 Use the HTTP operation below to issue it, making sure to replace the example with the proper values:
 
 * `issuer` needs to contain the DID of the authority (not the Service Provider),
