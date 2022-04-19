@@ -45,7 +45,7 @@ Search on the node of the data consumer for the ValidatedQueryCredential that ne
          ],
          "type": ["VerifiableCredential" ,"ValidatedQueryCredential"],
          "credentialSubject": {
-             "id": "DID of data producer"
+             "id": "DID of data consumer"
          }
      },
      "searchOptions": {
