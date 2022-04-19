@@ -53,7 +53,7 @@ For all these Admin UIs, use the password `demo`
 
 Go to [Admin UI of node 1](http://localhost:1303).
 Name this service provider **Authority SP** since it will be the _Service Provider_ of the authority that issues the validated query credential.
-Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:5555`.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://host.docker.internal:5555`.
 Click on the button `Create Service Provider`.
 Now you can create an organization: Go to `Your care organizations` and create a new organization.
 You can use any `internal ID`, name it **Authority KIK-V** and give it your favorite city.
@@ -62,13 +62,13 @@ After saving you can click on the newly created organization and check the `Publ
 # Setup the Data Consumer
 
 Do the same thing for [Admin UI of node 2](http://localhost:2303) and call the _Service Provider_ **Data Consumer SP** since it will be the service provider of the data consumer.
-Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:2555`.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://host.docker.internal:2555`.
 Now create an organization **Data Consumer** which will represent the organization firing of the query.
 
 # Setup the Data Producer
 
 Create one last _Service Provider_ for the data producer with the [Admin UI of node 3](http://localhost:3303). Name this service provider **Data Producer SP**.
-Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:3555`.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://host.docker.internal:3555`.
 Lastly, create an organization that acts as the data producer. Name it **Data Producer** or a name of a fictive care organization and publish it on the network.
 
 For more information on issuing/managing organization credentials, see [Issue a Nuts Organization Credential](https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html#issue-a-nuts-organization-credential).
