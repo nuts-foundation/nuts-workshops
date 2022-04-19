@@ -53,6 +53,7 @@ For all these Admin UIs, use the password `demo`
 
 Go to [Admin UI of node 1](http://localhost:1303).
 Name this service provider **Authority SP** since it will be the _Service Provider_ of the authority that issues the validated query credential.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:5555`.
 Click on the button `Create Service Provider`.
 Now you can create an organization: Go to `Your care organizations` and create a new organization.
 You can use any `internal ID`, name it **Authority KIK-V** and give it your favorite city.
@@ -60,39 +61,17 @@ After saving you can click on the newly created organization and check the `Publ
 
 # Setup the Data Consumer
 
-Do the same thing for [Admin UI of node 2](http://localhost:2303) and call the _Service Provider_ **Data Consumer SP** since it will be the service provider of the data consumer and create an organization named **Data Consumer**
+Do the same thing for [Admin UI of node 2](http://localhost:2303) and call the _Service Provider_ **Data Consumer SP** since it will be the service provider of the data consumer.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:2555`.
+Now create an organization **Data Consumer** which will represent the organization firing of the query.
 
 # Setup the Data Producer
 
 Create one last _Service Provider_ for the data producer with the [Admin UI of node 3](http://localhost:3303). Name this service provider **Data Producer SP**.
+Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:3555`.
 Lastly, create an organization that acts as the data producer. Name it **Data Producer** and publish it on the network.
 
-# Issue an organizational credential for the data producer
-
-Issuing needs to be performed on the node of the data producer. The issuer is the service provider of the node. The organizational credential is needed to create an access token to access the data station. This is the minimal requirement. Default is that every organization has an organizational credential. 
-When you use the Admin UI, this step is not needed. The Admin UI will do it for you.
-
-In order to issue a credential to a subject, we need its DID. You can manually look up the DID of the data producer using the Admin UI.
-
-```http request
-POST http://localhost:3323/internal/vcr/v2/issuer/vc
-Content-Type: application/json
-
-{
-    "issuer": "did:nuts:<the did of the service provider>",
-    "type": ["NutsOrganizationCredential"],
-    "credentialSubject": {
-        "id": "did:nuts:<the did of the data producer>",
-        "organization": {
-            "name": "<the name of the data producer>",
-            "city": "<the city of the data producer>"
-        }
-    },
-    "visibility": "public"
-}
-```
-
-For more information on issuing/managing organizational credentials, see [Issue a Nuts Organization Credential](https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html#issue-a-nuts-organization-credential).
+For more information on issuing/managing organization credentials, see [Issue a Nuts Organization Credential](https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html#issue-a-nuts-organization-credential).
 
 # Trust the issuer of the organizational credential
 
@@ -124,8 +103,10 @@ Content-Type: application/json
 
 # Setup the endpoints for the data producer
 
+Now we will setup the endpoints needed to interact with the actual services.
+
 Go to the [Admin UI of node 3](http://localhost:3303). The endpoints are created for the _Service Provider_. 
-The first endpoint is used by the validatedquery service. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. validatedquery, and `URL` needs to contain the value of the valid query enpoint at the data station.
+The first endpoint points to the new service we are going to build which acts as a proxy before the datastation. The value depends on the port and path your new service will be hosted at. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. `validatedquery`, and `URL` needs to contain the value of the valid query enpoint at the data station.
 
 The second endpoint is used for the authorization. Make sure that the type is called `oauth` and the endpoint points to `http://host.docker.internal:3323/n2n/auth/v1/accesstoken`. The host `host.docker.internal` means that docker is calling the localhost of your machine, assuming you are using docker to run the nodes.
 
@@ -133,4 +114,9 @@ The second endpoint is used for the authorization. Make sure that the type is ca
 
 The service you create is the `validated-query-service`. Fill in the name of the service and the endpoints `oauth` and `validatedquery`. It's necessary to use these names also as type in the service form. The request for an access token will look for the `oauth` endpoint type, and will return an error if it's not found.
 
-Now go to the organization page and click on the organization you created. Tick the box for the service configuration and make sure the organization is published on the network.
+![Example of services and endpoints](configured%20services.png)
+
+Now for the last step: go to the organization page and click on the data producer you created. Tick the box for the service configuration and make sure the data producer is published on the network.
+
+You now have setup your data producer with a `validated-query-service` which other parties in the network can lookup.
+

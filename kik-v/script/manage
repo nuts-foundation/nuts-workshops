@@ -76,6 +76,8 @@ function usage {
         If you get an error on the accesstoken after the get_ready command, be a little patient.
         The nodes must sync first before the access token can be released.
 
+    create_presentation - Create a verifiable presentation for the validated query credential
+
     do_request - Post a request to the datastation with a valid accesstoken
 
 EOF

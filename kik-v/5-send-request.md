@@ -33,7 +33,26 @@ Find the endpoint as described in [Search and find an organization in the networ
 # Search for the validated query credential
 
 Search on the node of the data consumer for the ValidatedQueryCredential that needs to be send in the request.
-This is not yet availabe, use the saved credential
+
+```http request
+ POST http://localhost:1323/internal/vcr/v2/search
+ Content-Type: application/json
+ {
+     "query": {
+         "@context": [
+             "https://www.w3.org/2018/credentials/v1",
+             "https://nuts.nl/credentials/v1"
+         ],
+         "type": ["VerifiableCredential" ,"ValidatedQueryCredential"],
+         "credentialSubject": {
+             "id": "DID of data producer"
+         }
+     },
+     "searchOptions": {
+         "allowUntrustedIssuer": true
+     }
+ }
+ ```
 
 # Create a http request
 

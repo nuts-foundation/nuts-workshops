@@ -50,7 +50,7 @@ The vendor will issue a NutsOrganizationCredential to the customer DID, giving i
 Such a credential is created by:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/vc
+POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
@@ -62,7 +62,8 @@ Content-Type: application/json
             "name": "CareBears",
             "city": "CareCity"
         }
-    }
+    },
+    "visibility": "public"
 }
 ```
 
@@ -104,19 +105,23 @@ code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HE
 
 ## Searching for an organization
 
-You can search for any credential by:
+You can search for any credential by providing a VC with fields populated to match against:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/{concept}
+POST http://localhost:1323/internal/vcr/v2/search
 Content-Type: application/json
 
 {
-    "Params": [
-        {
-            "key": "key",
-            "value": "value"
+    "query": {
+        "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://nuts.nl/credentials/v1"
+        ],
+        "type": ["VerifiableCredential" ,"NutsAuthorizationCredential"],
+        "credentialSubject": {
+            "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
         }
-    ]
+    }
 }
 ```
 
@@ -124,19 +129,25 @@ Content-Type: application/json
 Currently, organizations are only defined through `NutsOrganizationCredential`s, but in the future other credentials may be supported as well.
 Having an abstract concept will allow clients to find the correct result even if it doesn't know by which credential it's defined.
 Check out the [docs](https://nuts-node.readthedocs.io/en/latest/pages/technology/vc-concepts.html) for the current concepts.
-Searching for a care organization can be done by using the `organization` concept:
+Searching for a care organization can be done by search for a `NutsOrganizationCredential`:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/organization
+POST http://localhost:1323/internal/vcr/v2/search
 Content-Type: application/json
 
 {
-    "Params": [
-        {
-            "key": "organization.name",
-            "value": "Care"
+    "query": {
+        "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://nuts.nl/credentials/v1"
+        ],
+        "type": ["VerifiableCredential" ,"NutsOrganizationCredential"],
+        "credentialSubject": {
+            "organization": {
+                "name": "Care"
+            }
         }
-    ]
+    }
 }
 ```
 
@@ -180,10 +191,10 @@ A search API call can be extended by adding the `untrusted=true` query parameter
 A list of (un)trusted issuers can be obtained by calling:
 
 ```http request
-GET http://localhost:1323/internal/vcr/v1/{credentialType}/trusted
+GET http://localhost:1323/internal/vcr/v2/verifier/{credentialType}/trusted
 ```
 ```http request
-GET http://localhost:1323/internal/vcr/v1/{credentialType}/untrusted
+GET http://localhost:1323/internal/vcr/v2/verifier/{credentialType}/untrusted
 ```
 
 where `credentialType` needs to be replaced by the credential type. For example: `NutsOrganizationCredential`.
@@ -204,7 +215,7 @@ Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HE
 
 An issuer can be trusted (for a specific credential type) by calling:
 ```http request
-POST http://localhost:1323/internal/vcr/v1/trust
+POST http://localhost:1323/internal/vcr/v2/verifier/trust
 Content-Type: application/json
 
 {
@@ -215,7 +226,7 @@ Content-Type: application/json
 
 and removed by calling:
 ```http request
-DELETE http://localhost:1323/internal/vcr/v1/trust
+DELETE http://localhost:1323/internal/vcr/v2/verifier/trust
 Content-Type: application/json
 
 {

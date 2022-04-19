@@ -26,12 +26,12 @@ Issuing an authorization credential is similar to issuing an organization creden
 A credential with implied consent can be issued with the following call:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/vc
+POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
     "issuer": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-    "type": ["NutsAuthorizationCredential"],
+    "type": "NutsAuthorizationCredential",
     "credentialSubject": {
         "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
         "legalBase": {
@@ -50,7 +50,8 @@ Content-Type: application/json
             }
         ],
         "purposeOfUse": "eOverdracht-sender"
-    }
+    },
+    "visibility": "private"
 }
 ```
 As you can see, there are quite some fields to fill out.
@@ -67,17 +68,17 @@ That composition is the •AdvanceNotice*.
 The `purposeOfUse` field is filled with `eOverdracht-sender`. 
 That value signals a resource server to apply a specific access policy when the credential is used to retrieve data.
 
-Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/nuts/registry/verifiable_credential.go#L58-L71
+Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain/transfer/sender/service.go#L367-L376
 
 A credential with explicit consent can be issued with the following call:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/vc
+POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
     "issuer": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-    "type": ["NutsAuthorizationCredential"],
+    "type": "NutsAuthorizationCredential",
     "credentialSubject": {
         "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
         "legalBase": {
@@ -87,9 +88,10 @@ Content-Type: application/json
                 "type": "used"
             }
         },
-        "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780",
+        "subject": "123456780",
         "purposeOfUse": "zorginzage-demo"
-    }
+    },
+    "visibility": "private"
 }
 ```
 
@@ -107,30 +109,33 @@ The receiver must find the authorization credential that authorizes access to th
 The following call must be used to find it:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/authorization?untrusted=true
+POST http://localhost:1323/internal/vcr/v2/search
 Content-Type: application/json
 
 {
-    "Params": [
-        {
-            "key": "credentialSubject.id",
-            "value": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv"
-        },
-        {
-            "key": "credentialSubject.purposeOfUse",
-            "value": "eOverdracht-sender"
-        },
-        {
-            "key": "credentialSubject.resources.#.path",
-            "value": "/composition/2250f7ab-6517-4923-ac00-88ed26f85843"
+    "query": {
+        "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://nuts.nl/credentials/v1"
+        ],
+        "type": ["VerifiableCredential" ,"NutsAuthorizationCredential"],
+        "credentialSubject": {
+            "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+            "purposeOfUse": "eOverdracht-sender",
+            "resources": {
+                "path": "/composition/2250f7ab-6517-4923-ac00-88ed26f85843"
+            }
         }
-    ]
+    },
+    "searchOptions": {
+        "allowUntrustedIssuer": true
+    }
 }
 ```
 
 The `credentialSubject.id` value must equal the DID of the receiving organization.
 `credentialSubject.purposeOfUse` value must be `eOverdracht-sender` as specified by the bolt description.
-The `credentialSubject.resources.#.path` value must equal the reference to the composition including a leading `/`.
+The `credentialSubject.resources.path` value must equal the reference to the composition including a leading `/`.
 
 This call will yield a result similar to:
 
@@ -183,24 +188,25 @@ Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/nuts/reg
 A similar request example, but for the authorization credential with explicit consent:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v1/authorization?untrusted=true
+POST http://localhost:1323/internal/vcr/v2/search
 Content-Type: application/json
 
 {
-    "Params": [
-        {
-            "key": "credentialSubject.id",
-            "value": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv"
-        },
-        {
-            "key": "credentialSubject.purposeOfUse",
-            "value": "zorginzage-demo"
-        },
-        {
-            "key": "credentialSubject.subject",
-            "value": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
+    "query": {
+        "@context": [
+            "https://www.w3.org/2018/credentials/v1",
+            "https://nuts.nl/credentials/v1"
+        ],
+        "type": ["VerifiableCredential" ,"NutsAuthorizationCredential"],
+        "credentialSubject": {
+            "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+            "purposeOfUse": "zorginzage-demo",
+            "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
         }
-    ]
+    },
+    "searchOptions": {
+        "allowUntrustedIssuer": true
+    }
 }
 ```
 
@@ -209,7 +215,7 @@ Content-Type: application/json
 Revoking an authorization credential is easy. An issuer can revoke the credential with the following call:
 
 ```http request
-DELETE http://localhost:1323/internal/vcr/v1/vc/{id}
+DELETE http://localhost:1323/internal/vcr/v2/issuer/vc/{id}
 ```
 
 Where `id` equals the identifier of the credential. In the example above this is `did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv#314542e8-c8cc-4502-a7df-a815ac47c06b`
