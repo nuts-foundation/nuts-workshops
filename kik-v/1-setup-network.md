@@ -69,30 +69,20 @@ Now create an organization **Data Consumer** which will represent the organizati
 
 Create one last _Service Provider_ for the data producer with the [Admin UI of node 3](http://localhost:3303). Name this service provider **Data Producer SP**.
 Set the `Nuts node endpoint of the Service Provider` field to `grpc://nuts.nl:3555`.
-Lastly, create an organization that acts as the data producer. Name it **Data Producer** and publish it on the network.
+Lastly, create an organization that acts as the data producer. Name it **Data Producer** or a name of a fictive care organization and publish it on the network.
 
 For more information on issuing/managing organization credentials, see [Issue a Nuts Organization Credential](https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html#issue-a-nuts-organization-credential).
 
 # Trust the issuer of the organizational credential
 
-Verifiers of credentials need to trust the issuer of the credential. Minimal the data consumer needs to trust the organizational credential of the data producer. This trust is registered explicitly. 
-
-```http request
-POST http://localhost:2303/internal/vcr/v2/verifier/trust
-Content-Type: application/json
-
-{
-    "issuer": "did:nuts:<the did of the service provider of node 3>",
-    "credentialType": "NutsOrganizationCredential"
-}
-```
+When you name an organisation, the service provider issues a NutsOrganizationCredential. In order to search by name for an organisation, you have to trust the issuer. This can be done by navigating to the Manage Credential Issuers section in each of the admin interfaces and click the Trust checkbox behind each service provider.
 
 # Trust the issuer of the validated query credential
 
 The data producer needs to trust the validated quesry credential of the authority. This trust is registered explicitly. 
 
 ```http request
-POST http://localhost:3303/internal/vcr/v2/verifier/trust
+POST http://localhost:3323/internal/vcr/v2/verifier/trust
 Content-Type: application/json
 
 {
@@ -100,19 +90,20 @@ Content-Type: application/json
     "credentialType": "ValidatedQueryCredential"
 }
 ```
+This must result in a `HTTP status code 204`
 
 # Setup the endpoints for the data producer
 
 Now we will setup the endpoints needed to interact with the actual services.
 
 Go to the [Admin UI of node 3](http://localhost:3303). The endpoints are created for the _Service Provider_. 
-The first endpoint points to the new service we are going to build which acts as a proxy before the datastation. The value depends on the port and path your new service will be hosted at. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. `validatedquery`, and `URL` needs to contain the value of the valid query enpoint at the data station.
+The first endpoint points to the new service we are going to build which acts as a proxy before the datastation. The value depends on the port and path your new service will be hosted at. Fill in the proper values where `type` needs to contain the type of the endpoint, f.e. `datastation`, and `URL` needs to contain the value of the valid query enpoint at the data station.
 
 The second endpoint is used for the authorization. Make sure that the type is called `oauth` and the endpoint points to `http://host.docker.internal:3323/n2n/auth/v1/accesstoken`. The host `host.docker.internal` means that docker is calling the localhost of your machine, assuming you are using docker to run the nodes.
 
 # Setup the service for the data producer
 
-The service you create is the `validated-query-service`. Fill in the name of the service and the endpoints `oauth` and `validatedquery`. It's necessary to use these names also as type in the service form. The request for an access token will look for the `oauth` endpoint type, and will return an error if it's not found.
+The service you create is the `validated-query-service`. Fill in the name of the service and the endpoints `oauth` and `datastation`. It's necessary to use these names also as type in the service form. The request for an access token will look for the `oauth` endpoint type, and will return an error if it's not found.
 
 ![Example of services and endpoints](configured%20services.png)
 
