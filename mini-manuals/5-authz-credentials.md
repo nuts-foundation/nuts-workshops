@@ -55,7 +55,7 @@ Content-Type: application/json
 }
 ```
 As you can see, there are quite some fields to fill out.
-The `issuer` is the DID of the custodian and the `credentialSubject.id` is the DID of the actor.
+The `issuer` is the DID of the custodian and the `credentialSubject.id` is the DID of the requester.
 The `type` must be a list of just `NutsAuthorizationCredential`.
 
 A bolt specifies how the `legalBase`, `purposeOfUse` and `resources` fields are filled.
@@ -77,10 +77,10 @@ POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
-    "issuer": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+    "issuer": "did:nuts:abc-custodian-abc",
     "type": "NutsAuthorizationCredential",
     "credentialSubject": {
-        "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
+        "id": "did:nuts:xyz-actor-requester-xyz",
         "legalBase": {
             "consentType": "explicit",
             "evidence": {
