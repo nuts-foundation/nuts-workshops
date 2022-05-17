@@ -20,12 +20,13 @@ docker compose --profile three \
   --profile with-admin-one \
   --profile with-admin-two \
   --profile with-admin-three \
+  --project-name kikv
   up
 ```
 
 Starting up the fist time may take some time to download the IRMA schema's.
 
-You can check the status by executing `docker compose ps` from the same directory.
+You can check the status by executing `docker compose --project-name kikv ps` from the same directory.
 
 ```shell
 docker compose ps
