@@ -24,8 +24,8 @@ jsonld:
       - https://w3c-ccg.github.io/lds-jws2020/contexts/lds-jws2020-v1.json
       - https://other-usecase-website.nl/use-case-context.ldjson
     localmapping:
-      - https://nuts.nl/credentials/v1: "./contexts/nuts.ldjson"
-      - https://yourdomain.nl/custom-context.ldjson: "./contexts/custom-context.ldjson"
+      - https://nuts.nl/credentials/v1: "/abs/path/to/contexts/nuts.ldjson"
+      - https://yourdomain.nl/custom-context.ldjson: "/abs/path/to/contexts/custom-context.ldjson"
 ```
 
 During startup of the node, remote contexts are fetched and cached. If the remote changes, the node must be restarted in order for these changes to have effect.
