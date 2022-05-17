@@ -67,6 +67,7 @@ POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
+    "@context":"https://kik-v.nl/context/v1.json",
     "issuer": "did:nuts:<authority DID>",
     "type": "ValidatedQueryCredential",
     "credentialSubject": {
