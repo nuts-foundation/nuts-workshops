@@ -12,8 +12,8 @@ jsonld:
       - https://www.w3.org/2018/credentials/v1
       - https://w3c-ccg.github.io/lds-jws2020/contexts/lds-jws2020-v1.json
     localmapping:
-      - https://nuts.nl/credentials/v1: "./data/vcr/contexts/nuts.ldjson"
-      - https://kik-v.nl/context/v1.json: "./data/vcr/contexts/kikv.json"
+      - https://nuts.nl/credentials/v1: "/opt/nuts/data/vcr/contexts/nuts.ldjson"
+      - https://kik-v.nl/context/v1.json: "/opt/nuts/data/vcr/contexts/kikv.ldjson"
 ```
 
 And make sure to add both the context to the `data/vcr/context` directory. The `nuts.ldjson` can be found in the github repository: https://github.com/nuts-foundation/nuts-node/tree/master/vcr/assets/assets/contexts. The context of `kikv.ldjson` should be:
