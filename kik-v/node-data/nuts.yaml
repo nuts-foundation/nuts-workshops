@@ -1,4 +1,4 @@
-verbosity: TRACE
+verbosity: INFO
 datadir: /opt/nuts/data
 http:
   default:
@@ -20,8 +20,8 @@ jsonld:
       - https://www.w3.org/2018/credentials/v1
       - https://w3c-ccg.github.io/lds-jws2020/contexts/lds-jws2020-v1.json
     localmapping:
-      https://nuts.nl/credentials/v1: "assets/contexts/nuts.ldjson"
-      https://www.w3.org/2018/credentials/v1: "assets/contexts/w3c-credentials-v1.ldjson"
-      https://w3c-ccg.github.io/lds-jws2020/contexts/lds-jws2020-v1.json: "assets/contexts/lds-jws2020-v1.ldjson"
-      https://schema.org: "assets/contexts/schema-org-v13.ldjson"
-      https://kik-v.nl/context/v1.json: "/opt/nuts/jsonld/kikv.ldjson"
+      - https://nuts.nl/credentials/v1: "assets/contexts/nuts.ldjson"
+      - https://www.w3.org/2018/credentials/v1: "assets/contexts/w3c-credentials-v1.ldjson"
+      - https://w3c-ccg.github.io/lds-jws2020/contexts/lds-jws2020-v1.json: "assets/contexts/lds-jws2020-v1.ldjson"
+      - https://schema.org: "assets/contexts/schema-org-v13.ldjson"
+      - https://kik-v.nl/context/v1.json: "/opt/nuts/jsonld/kikv.ldjson"

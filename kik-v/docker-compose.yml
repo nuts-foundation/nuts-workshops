@@ -1,11 +1,9 @@
 version: "3.9"
 services:
   node-one:
-#    image: nutsfoundation/nuts-node:master
-    image: &node_image reinkrul/nuts-node:latest
+    image: &node_image nutsfoundation/nuts-node:master
     environment:
       NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
-      NUTS_NETWORK_PROTOCOLS: 2
     ports:
       - "1323:1323"
     volumes:
@@ -17,7 +15,6 @@ services:
     environment:
       NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
       NUTS_BOOTSTRAPNODES: node-one:5555
-      NUTS_NETWORK_PROTOCOLS: 2
     ports:
       - "2323:1323"
     volumes:
@@ -29,7 +26,6 @@ services:
     environment:
       NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
       NUTS_BOOTSTRAPNODES: node-one:5555
-      NUTS_NETWORK_PROTOCOLS: 2
     ports:
       - "3323:1323"
     volumes:

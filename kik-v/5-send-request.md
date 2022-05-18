@@ -37,6 +37,7 @@ Search on the node of the data consumer for the ValidatedQueryCredential that ne
 ```http request
  POST http://localhost:2323/internal/vcr/v2/search
  Content-Type: application/json
+
  {
      "query": {
          "@context": [
