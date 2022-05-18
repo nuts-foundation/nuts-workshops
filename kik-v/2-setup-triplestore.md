@@ -6,13 +6,9 @@ The data producer needs to have a data station with a triple store. This tutoria
 
 You will need docker and git installed on your machine.
 
-Checkout this repository
-```shell
-git clone https://github.com/nuts-foundation/nuts-workshops.git
-```
 Navigate to the kik-v triplestore directory:
 ```shell
-cd kik-v/triplestore
+cd triplestore
 ```
 
 The `docker-compose.yml` files to deploy GraphDB use the `free-edition`. An image is provided for the hackathon. Register on the [Ontotext website](https://www.ontotext.com/products/graphdb/graphdb-free/) for the GraphDB Free edition if you want to continue to use GraphDB.

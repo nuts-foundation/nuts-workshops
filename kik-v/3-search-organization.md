@@ -12,10 +12,11 @@ You will find the DID of the service provider in the controller attribute of the
 
 # Find the endpoint of the service
 
-Next step is to get the endpoint of the service. Be sure you have registered the service with the name `validated-query-service` and the endpoint type of the service `validatedquery` with the service provider of the data producer. Look also that the service is registered for the data producer.
+Next step is to get the endpoint of the service. Make sure you have registered the service with the name `validated-query-service` and the endpoint type of the service `datastation` with the service provider of the data producer.
+Verify that the service is also registered for the data producer (by publishing it for the organization).
 
 ```http request
-GET http://localhost:2323/internal/didman/v1/did/<DID Service Provider>/compoundservice/validated-query-service/endpoint/datastation
+GET http://localhost:2323/internal/didman/v1/did/<DID Data Producer>/compoundservice/validated-query-service/endpoint/datastation
 Content-Type: application/json
 
 ```

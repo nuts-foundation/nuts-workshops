@@ -1,0 +1,21 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@protected": true,
+    "id": "@id",
+    "type": "@type",
+    "schema": "http://schema.org/",
+    "kikv": "https://example.org/kikv#",
+    "validatedQuery": {
+      "@id": "kikv:validatedQuery",
+      "@type": "rdf:HTML"
+    },
+    "ValidatedQueryCredential": "kikv:validatedQueryCredential",
+    "description": "schema:description",
+    "identifier": "schema:identifier",
+    "name": "http://schema.org/name",
+    "ontology": "kikv:kikvontology",
+    "profile": "kikv:profile",
+    "sparql": "kikv:sparql"
+  }
+}

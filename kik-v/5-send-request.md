@@ -35,29 +35,30 @@ Find the endpoint as described in [Search and find an organization in the networ
 Search on the node of the data consumer for the ValidatedQueryCredential that needs to be send in the request.
 
 ```http request
- POST http://localhost:2323/internal/vcr/v2/search
- Content-Type: application/json
- {
-     "query": {
-         "@context": [
-             "https://www.w3.org/2018/credentials/v1",
-             "https://kik-v.nl/context/v1.json"
-         ],
-         "type": ["VerifiableCredential" ,"ValidatedQueryCredential"],
-         "issuer": "DID of kik-v authority",
-         "credentialSubject": {
-             "id": "DID of data consumer"
-         }
-     },
-     "searchOptions": {
-         "allowUntrustedIssuer": true
+POST http://localhost:2323/internal/vcr/v2/search
+Content-Type: application/json
+
+{
+ "query": {
+     "@context": [
+         "https://www.w3.org/2018/credentials/v1",
+         "https://kik-v.nl/context/v1.json"
+     ],
+     "type": ["VerifiableCredential" ,"ValidatedQueryCredential"],
+     "issuer": "<DID of kik-v authority>",
+     "credentialSubject": {
+         "id": "<DID of data consumer>"
      }
+ },
+ "searchOptions": {
+     "allowUntrustedIssuer": true
  }
+}
  ```
 
-# Create a http request
+# Create a HTTP request
 
-The data consumer will send a http request to the data producer. Part of the request is a message envelop. The envelop are the following atrributes which are set in the http header.
+The data consumer will send a HTTP request to the data producer. Part of the request is a message envelope. The envelope are the following atrributes which are set in the http header.
 
 - Message-ID: a global unique identifier
 - Subject: validated-query-service
@@ -66,7 +67,7 @@ The data consumer will send a http request to the data producer. Part of the req
 - References: a global unique identifier for the conversation
 - Reply-To: a valid url of the service to receive the answer
 
-When you use java to develop the request and response, the From-attribute can not be used. This is a known issue that needs to be resolved in the specifications.
+When you use Java to develop the request and response, the From-attribute can not be used. This is a known issue that needs to be resolved in the specifications.
 
 # Create the presentation
 
