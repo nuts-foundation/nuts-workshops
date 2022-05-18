@@ -21,8 +21,6 @@ You can use [Postman](https://www.postman.com/product/rest-client/) to execute t
 
 # Resources
 
-- **Network in a day workshop**: [../network_in_a_day](../network_in_a_day)
-- **Local network setup**: https://github.com/nuts-foundation/nuts-network-local
 - **Node config**: https://nuts-node.readthedocs.io/en/latest/pages/configuration/configuration.html
 - **Services manual**: [1-service-registration.md](1-service-registration.md)
 - **Authorization credential manual**: [../mini-manuals/5-authz-credentials.md](../mini-manuals/5-authz-credentials.md)

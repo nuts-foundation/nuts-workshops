@@ -4,18 +4,17 @@ The data producer needs to have a data station with a triple store. This tutoria
 
 # Start GraphDB with docker compose
 
-You will need docker and git installed on your machine.
+The triple store is already part of the docker-compose file used in step 1. It should be running. 
 
-Checkout this repository
-```shell
-git clone https://github.com/nuts-foundation/nuts-workshops.git
-```
+You can check this by goig to http://localhost:7200 (it can take a while to startup).
+
+## Optional: building a custom Docker image
+The `docker-compose.yml` files to deploy GraphDB use the `free-edition`. An image is provided for the hackathon. If you want to keep using the GraphDB, register on the [Ontotext website](https://www.ontotext.com/products/graphdb/graphdb-free/) for the GraphDB Free edition and run the included build scripts:
+
 Navigate to the kik-v triplestore directory:
 ```shell
-cd kik-v/triplestore
+cd triplestore
 ```
-
-The `docker-compose.yml` files to deploy GraphDB use the `free-edition`. An image is provided for the hackathon. Register on the [Ontotext website](https://www.ontotext.com/products/graphdb/graphdb-free/) for the GraphDB Free edition if you want to continue to use GraphDB.
 
 Build and run:
 
@@ -39,7 +38,7 @@ Now you need to create a new repository named *news*.
 Perform the steps from the quick guide. **Make sure you create a repository with the ruleset __OWL2_RL__ option**
 https://graphdb.ontotext.com/documentation/9.10/free/quick-start-guide.html#create-a-repository
 
-Next step is to import the data. The data can be found in the *data* subdirectory. 
+Next step is to import the data. The data can be found in the `./triplestore/data` subdirectory. 
 See: https://graphdb.ontotext.com/documentation/9.10/free/quick-start-guide.html#load-data-through-the-graphdb-workbench
 
 ⚠️This can take a few minutes.

@@ -1,10 +1,21 @@
 # Issuing the Validated Query Credential
 
 In this step we are going to issue a Verifiable Credential to the data consumer (the holder of the verifiable credential).
+
+## Configure the nodes to accept custom credentials
+Make sure to read the [mini-manual 8 about custom credentials](../mini-manuals/8-custom-credentials.md).
+
+The nodes are already configured to understand KIK-V Verifiable Credentials.
+Review `node-data/nuts.yaml`, find the `jsonld` section.
+It contains a mapping that maps the KIK-V JSON-LD context URL (`https://kik-v.nl/context/v1.json`) to a local file, which can be found at `node-data/kikv.ldjson`.
+
+You can play around with a validated query on the [JSON-LD playground](https://tinyurl.com/yb9yqsmd)
+
+## Issuing the credential
 Issuing needs to be performed on the node of the authority (being the issuer of the verifiable credential).
 In order to issue a credential to a subject(holder), we need both DIDs:
-lookup the DID of the `Authority KIK-V` in the [Admin UI of issuer node](http://localhost:1303) and the `Data Consumer` DID on the 
-[Admin UI of holder node ](http://localhost:2303).
+lookup the DID of the `Authority KIK-V` (the organization, not the SP) in the [Admin UI of issuer node](http://localhost:1303) and the `Data Consumer` DID on the 
+[Admin UI of holder node](http://localhost:2303).
 
 We now need to issue a `ValidatedQueryCredential` to the holder, which the holder can use to query the data producer.
 
@@ -24,6 +35,7 @@ POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
+    "@context":"https://kik-v.nl/context/v1.json",
     "issuer": "did:nuts:<authority DID>",
     "type": "ValidatedQueryCredential",
     "credentialSubject": {
