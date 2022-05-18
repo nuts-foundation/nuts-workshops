@@ -1,0 +1,80 @@
+version: "3.9"
+services:
+  node-one:
+#    image: nutsfoundation/nuts-node:master
+    image: &node_image reinkrul/nuts-node:latest
+    environment:
+      NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
+      NUTS_NETWORK_PROTOCOLS: 2
+    ports:
+      - "1323:1323"
+    volumes:
+      - "./node-data/nuts.yaml:/opt/nuts/nuts.yaml:ro"
+      - "./node-data/kikv.ldjson:/opt/nuts/jsonld/kikv.ldjson:ro"
+      - "./node-data/one/node:/opt/nuts/data"
+  node-two:
+    image: *node_image
+    environment:
+      NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
+      NUTS_BOOTSTRAPNODES: node-one:5555
+      NUTS_NETWORK_PROTOCOLS: 2
+    ports:
+      - "2323:1323"
+    volumes:
+      - "./node-data/nuts.yaml:/opt/nuts/nuts.yaml:ro"
+      - "./node-data/kikv.ldjson:/opt/nuts/jsonld/kikv.ldjson:ro"
+      - "./node-data/two/node:/opt/nuts/data"
+  node-three:
+    image: *node_image
+    environment:
+      NUTS_CONFIGFILE: /opt/nuts/nuts.yaml
+      NUTS_BOOTSTRAPNODES: node-one:5555
+      NUTS_NETWORK_PROTOCOLS: 2
+    ports:
+      - "3323:1323"
+    volumes:
+      - "./node-data/nuts.yaml:/opt/nuts/nuts.yaml:ro"
+      - "./node-data/kikv.ldjson:/opt/nuts/jsonld/kikv.ldjson:ro"
+      - "./node-data/three/node:/opt/nuts/data"
+  admin-one:
+    image: &admin_image nutsfoundation/nuts-registry-admin-demo:master
+    ports:
+      - "1303:1303"
+    environment:
+      NUTS_DBFILE: "/app/data/registry-admin.db"
+      NUTS_CUSTOMERSFILE: "/app/data/customers.json"
+      NUTS_NUTSNODEADDR: "http://node-one:1323"
+      NUTS_CREDENTIALS_USERNAME: "demo@nuts.nl"
+      NUTS_CREDENTIALS_PASSWORD: "demo"
+    volumes:
+      - "./node-data/one/admin:/app/data"
+    depends_on:
+      - node-one
+  admin-two:
+    image: *admin_image
+    ports:
+      - "2303:1303"
+    environment:
+      NUTS_DBFILE: "/app/data/registry-admin.db"
+      NUTS_CUSTOMERSFILE: "/app/data/customers.json"
+      NUTS_NUTSNODEADDR: "http://node-two:1323"
+      NUTS_CREDENTIALS_USERNAME: "demo@nuts.nl"
+      NUTS_CREDENTIALS_PASSWORD: "demo"
+    volumes:
+      - "./node-data/two/admin:/app/data"
+    depends_on:
+      - node-two
+  admin-three:
+    image: *admin_image
+    ports:
+      - "3303:1303"
+    environment:
+      NUTS_DBFILE: "/app/data/registry-admin.db"
+      NUTS_CUSTOMERSFILE: "/app/data/customers.json"
+      NUTS_NUTSNODEADDR: "http://node-three:1323"
+      NUTS_CREDENTIALS_USERNAME: "demo@nuts.nl"
+      NUTS_CREDENTIALS_PASSWORD: "demo"
+    volumes:
+      - "./node-data/three/admin:/app/data"
+    depends_on:
+      - node-three
