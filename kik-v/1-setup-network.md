@@ -46,6 +46,8 @@ For all these Admin UIs, use the password `demo`
 
 > :info: We use the Admin Demo UI for all three organizational roles as it gives us an easily clickable UI. For the roles, the terminology seems a bit off since it is originally designed as a management interface for EPD suppliers managing its customers, which are care organizations.
 
+> :info: It's useful to take note of authorizer's, consumer's, and producer's organization DIDs (not the Service Providers) you create in the steps below, because you'll need them many times for what comes next. 
+
 # Setup the Authority
 
 Go to [Admin UI of node 1](http://localhost:1303).
