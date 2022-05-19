@@ -4,7 +4,7 @@ The data station is a service living under the legal authority of an organisatio
 
 The formal specification of the capabilities of a data station can be found here: https://gitlab.com/data-en-techniek/specificaties/datastation.
 
-The data consumer sends the credential as part of the body in the POST http call. To identify itself, the data consumer sends an accompaning access token in the header of the http call. 
+The data consumer sends the credential as part of the body in the POST http call. To identify itself, the data consumer sends an accompanying access token in the header of the http call. 
 
 # Get an access token
 
@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 ```
 
-The access token must be used as a bearer token in the authorization header of the reqeust.
+The access token must be used as a bearer token in the authorization header of the request.
 
 # Get the endpoint of the service
 
@@ -58,7 +58,7 @@ Content-Type: application/json
 
 # Create a HTTP request
 
-The data consumer will send a HTTP request to the data producer. Part of the request is a message envelope. The envelope are the following atrributes which are set in the http header.
+The data consumer will send a HTTP request to the data producer. Part of the request is a message envelope. The envelope are the following attributes which are set in the http header.
 
 - Message-ID: a global unique identifier
 - Subject: validated-query-service

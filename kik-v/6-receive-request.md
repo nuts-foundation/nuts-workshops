@@ -4,7 +4,7 @@ The data producer receives the request with the validated query credential.
 
 # Verify the access token
 
-The data consumer must provide an access token with the request for authentication and autheorization. The data producer must verify that the data consumer is allowed to use the validated query service. First step is to introspect the access token, and make sure that the data consumer has authorization for the validated query service.
+The data consumer must provide an access token with the request for authentication and authorization. The data producer must verify that the data consumer is allowed to use the validated query service. First step is to introspect the access token, and make sure that the data consumer has authorization for the validated query service.
 
 ```http request
 POST http://localhost:3323/internal/auth/v1/accesstoken/introspect
