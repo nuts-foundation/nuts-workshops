@@ -1,6 +1,6 @@
 # Setup the triple store for the data station
 
-The data producer needs to have a data station with a triple store. This tutorial results in the setup of the triple strore.
+The data producer needs to have a data station with a triple store. This tutorial results in the setup of the triple store.
 
 # Start GraphDB with docker compose
 
