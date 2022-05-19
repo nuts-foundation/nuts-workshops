@@ -1,4 +1,4 @@
-# Receivve the request
+# Receive the request
 
 The data producer receives the request with the validated query credential.
 
@@ -19,7 +19,7 @@ Use your own leeway policy to verify the expiration datetime.
 
 # Verify the presentation and credential
 
-The data consumer must present the validated quesry credential. The data producer will verify the validity of the presentation and the credential included.
+The data consumer must present the validated query credential. The data producer will verify the validity of the presentation and the credential included.
 
 ```http request
 POST http://localhost:3323/internal/vcr/v2/verifier/vp
