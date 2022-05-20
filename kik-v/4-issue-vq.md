@@ -49,7 +49,7 @@ Content-Type: application/json
         }
     },
     "publishToNetwork": true,
-    "visibility": "public"
+    "visibility": "private"
 }
 ```
 
