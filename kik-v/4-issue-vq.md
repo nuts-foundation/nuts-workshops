@@ -30,8 +30,6 @@ Use the HTTP operation below to issue it, making sure to replace the example wit
 The news example dataset of GraphDB is used for querying. Testdata is not available from KIK-V at the moment.
 You can pick a query from the [examples provided](./triplestore/data/queries.txt). Make sure that the query is url encoded.
 
-> :info: The VC below is published publicly (indicated by `visibility: public`), while it should be published private. This, however, is a temporary workaround. 
-
 ```http request
 POST http://localhost:1323/internal/vcr/v2/issuer/vc
 Content-Type: application/json

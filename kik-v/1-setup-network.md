@@ -44,9 +44,9 @@ Before we can start, each of these organizational roles must be created in the n
 
 For all these Admin UIs, use the password `demo`
 
-> :info: We use the Admin Demo UI for all three organizational roles as it gives us an easily clickable UI. For the roles, the terminology seems a bit off since it is originally designed as a management interface for EPD suppliers managing its customers, which are care organizations.
+> We use the Admin Demo UI for all three organizational roles as it gives us an easily clickable UI. For the roles, the terminology seems a bit off since it is originally designed as a management interface for EPD suppliers managing its customers, which are care organizations.
 
-> :info: It's useful to take note of authorizer's, consumer's, and producer's organization DIDs (not the Service Providers) you create in the steps below, because you'll need them many times for what comes next. 
+> It's useful to take note of authorizer's, consumer's, and producer's organization DIDs (not the Service Providers) you create in the steps below, because you'll need them many times for what comes next. 
 
 # Setup the Authority
 
@@ -111,3 +111,15 @@ The service you create is the `validated-query-service`. Fill in the name of the
 Now for the last step: go to the organization page and click on the data producer you created. Tick the box for the service configuration and make sure the data producer is published on the network.
 
 You now have setup your data producer with a `validated-query-service` which other parties in the network can look up.
+
+# Restart the Nuts nodes
+
+In the next steps we will issue a private ValidatedQueryCredential. But for private exchange of VCs to work, the connections need to be authenticated using the DID of the SP we just created.
+This is resolved automatically, but you need to restart the Nuts nodes (all 3) for it to take effect. So, restart the Nuts nodes:
+
+```shell
+docker compose restart
+```
+
+> A side effect of restarting after registering the service providers is that all 3 nodes will connect to each other, forming a full mesh network.
+> Each node published their Nuts node address (e.g. `grpc://node-one:5555`) which is used by the nodes to discover each other. 
