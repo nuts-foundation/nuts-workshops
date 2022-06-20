@@ -50,9 +50,10 @@ git clone https://github.com/nuts-foundation/nuts-network-local
 ```
 
 If you already did this as part of the preparation, please pull the latest changes.
-And pull the latest versions of the docker images: `docker-compose pull`
+Inside the repository there are 2 directories: *single* and *network*. In each,
+pull the latest versions of the docker images: `docker-compose pull`.
 
-Inside the repository there are 2 directories: *single* and *network*. We'll use the setup from the **single** directory.
+We'll use the setup from the **single** directory.
 Inside that directory startup the docker containers:
 
 ```shell
