@@ -78,14 +78,14 @@ When you name an organisation, the service provider issues a NutsOrganizationCre
 
 # Trust the issuer of the validated query credential
 
-The data producer needs to trust the validated query credential of the authority. This trust is registered explicitly. 
+The data producer needs to trust the validated query credential of the authority organization. This trust is registered explicitly. 
 
 ```http request
 POST http://localhost:3323/internal/vcr/v2/verifier/trust
 Content-Type: application/json
 
 {
-    "issuer": "did:nuts:<the did of the authority>",
+    "issuer": "did:nuts:<the did of thee Authority KIK-V organization>",
     "credentialType": "ValidatedQueryCredential"
 }
 ```
