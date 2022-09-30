@@ -150,3 +150,26 @@ GET http://localhost:1323/internal/vdr/v1/did/{did}
 ```
 
 You can find a code sample for creating a DID and updating the contact info here: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/sp/service.go#L40-L79
+
+## Registering NutsComm endpoint
+
+To exchange private transactions (transactions that contain PII, personally identifiable information) your node's connections need to be authenticated with its DID document.
+This requires your node's `NutsComm` endpoint to be registered on the DID document.
+It is the endpoint that can be used by other nodes to connect to your node, and is required for authenticated connections.
+It must be in the format of `grpc://<host>:<port>`. You can register it through:
+
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{did}/endpoint
+Content-Type: application/json
+
+{
+  "type": "NutsComm",
+  "endpoint": "grpc://nodeA:5555"
+}
+```
+
+You should restart your node to re-establish network connections to make sure they're properly authenticated.
+
+Other Nuts nodes will now discover your node and start connecting to it. You're also set up to send and receive private transactions.
+
+Note: your node's DID is automatically discovered when not in strict mode, but you can explicitly set it through `network.nodedid`.
