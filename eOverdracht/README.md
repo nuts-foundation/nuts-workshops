@@ -117,9 +117,6 @@ Content-Type: application/json
     "type": "NutsAuthorizationCredential",
     "credentialSubject": {
         "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-        "legalBase": {
-            "consentType": "implied"
-        },
         "resources": [
             {
                 "path": "/task/cfd5d1da-ceca-43ce-a6ca-3bc70f5d9cda",

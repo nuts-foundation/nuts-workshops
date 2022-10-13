@@ -23,7 +23,7 @@ Other nodes will not be able to view the credential.
 
 Issuing an authorization credential is similar to issuing an organization credential. Both use the same API. New credentials will automatically receive an id, issuanceDate, context and proof. A DID requires a valid assertionMethod key for issuing credentials.
 
-A credential with implied consent can be issued with the following call:
+A credential can be issued with the following call:
 
 ```http request
 POST http://localhost:1323/internal/vcr/v2/issuer/vc
@@ -34,9 +34,6 @@ Content-Type: application/json
     "type": "NutsAuthorizationCredential",
     "credentialSubject": {
         "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-        "legalBase": {
-            "consentType": "implied"
-        },
         "resources": [
             {
                 "path": "/task/cfd5d1da-ceca-43ce-a6ca-3bc70f5d9cda",
@@ -58,7 +55,7 @@ As you can see, there are quite some fields to fill out.
 The `issuer` is the DID of the custodian and the `credentialSubject.id` is the DID of the requester.
 The `type` must be a list of just `NutsAuthorizationCredential`.
 
-A bolt specifies how the `legalBase`, `purposeOfUse` and `resources` fields are filled.
+A bolt specifies how the `purposeOfUse` and `resources` fields are filled.
 
 The example above describes an authorization credential that is created by the *sender* of the *eOverdracht* bolt.
 The recipient of that credential is able to read and update the specified Task resource.
@@ -70,34 +67,8 @@ That value signals a resource server to apply a specific access policy when the 
 
 Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/domain/transfer/sender/service.go#L367-L376
 
-A credential with explicit consent can be issued with the following call:
-
-```http request
-POST http://localhost:1323/internal/vcr/v2/issuer/vc
-Content-Type: application/json
-
-{
-    "issuer": "did:nuts:abc-custodian-abc",
-    "type": "NutsAuthorizationCredential",
-    "credentialSubject": {
-        "id": "did:nuts:xyz-actor-requester-xyz",
-        "legalBase": {
-            "consentType": "explicit",
-            "evidence": {
-                "path": "not",
-                "type": "used"
-            }
-        },
-        "subject": "123456780",
-        "purposeOfUse": "zorginzage-demo"
-    },
-    "visibility": "private"
-}
-```
-
 This credential does not limit on specific resources but rather on a single patient. 
 The `resources` field is replaced by a `subject` field which contains the BSN as oid.
-The `consentType` has also changed to `explicit`.
 
 ## Using credentials
 
@@ -148,9 +119,6 @@ This call will yield a result similar to:
         ],
         "credentialSubject": {
             "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-            "legalBase": {
-                "consentType": "implied"
-            },
             "purposeOfUse": "eOverdracht-sender",
             "resources": [
                 {
@@ -184,31 +152,6 @@ The entire JSON object will be needed when requesting an access token.
 The `vcs` field in the access token request can be populated with a list of authorization credentials. 
 
 Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/nuts/registry/verifiable_credential.go#L73-L109
-
-A similar request example, but for the authorization credential with explicit consent:
-
-```http request
-POST http://localhost:1323/internal/vcr/v2/search
-Content-Type: application/json
-
-{
-    "query": {
-        "@context": [
-            "https://www.w3.org/2018/credentials/v1",
-            "https://nuts.nl/credentials/v1"
-        ],
-        "type": ["VerifiableCredential" ,"NutsAuthorizationCredential"],
-        "credentialSubject": {
-            "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-            "purposeOfUse": "zorginzage-demo",
-            "subject": "urn:oid:2.16.840.1.113883.2.4.6.3:123456780"
-        }
-    },
-    "searchOptions": {
-        "allowUntrustedIssuer": true
-    }
-}
-```
 
 ## Revoking credentials
 
