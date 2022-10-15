@@ -60,13 +60,6 @@ Content-Type: application/json
     "type": "NutsAuthorizationCredential",
     "credentialSubject": {
         "id": "did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv",
-        "legalBase": {
-            "consentType": "explicit",
-            "evidence": {
-                "path": "not",
-                "type": "used"
-            }
-        },
         "purposeOfUse": "zorginzage-demo"
     },
     "visibility": "private"

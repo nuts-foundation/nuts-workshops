@@ -118,9 +118,6 @@ The result of this call shows the outcome of the resolution:
     "expirationDate": "2012-01-02T12:00:00Z",
     "credentialSubject": {
         "id": "did:nuts:42wTGxWYd3XdnR4mGSqLXypAxdwG2duNxYJS82MaGn2w",
-        "legalBase": {
-            "consentType": "implied"
-        },
         "purposeOfUse": "eOverdracht-sender",
         "resources": [
             {
