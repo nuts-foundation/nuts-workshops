@@ -183,6 +183,21 @@ A search will return converted results. Each credential type within a concept is
 
 Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/credentials/service.go#L99-L129
 
+## Registering NutsComm endpoint
+
+For an organization to receive private transactions, it needs to publish its `NutsComm` endpoint on its DID document.
+It will refer to the vendor's `NutsComm` endpoint, by registering an endpoint reference (given `{client_did}` and `{vendor_did}`):
+
+```http request
+POST http://localhost:1323/internal/didman/v1/did/{client_did}/endpoint
+Content-Type: application/json
+
+{
+  "type": "NutsComm",
+  "endpoint": "{vendor_did}/serviceEndpoint?type=NutsComm"
+}
+```
+
 ## Trust
 
 By default, a search will only yield *trusted* credentials. A credential is trusted when its issuer is trusted.
