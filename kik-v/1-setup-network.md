@@ -85,7 +85,7 @@ POST http://localhost:3323/internal/vcr/v2/verifier/trust
 Content-Type: application/json
 
 {
-    "issuer": "did:nuts:<the did of thee Authority KIK-V organization>",
+    "issuer": "did:nuts:<the did of the Authority KIK-V organization>",
     "credentialType": "ValidatedQueryCredential"
 }
 ```
