@@ -1,4 +1,5 @@
 verbosity: INFO
+strictmode: false
 datadir: /opt/nuts/data
 http:
   default:
