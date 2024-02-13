@@ -1,0 +1,44 @@
+### Setup: load did:web
+GET http://localhost:1323/internal/vdr/v2/did
+
+> {%
+    // Find DID document
+    let did = response.body.find(t => t.endsWith('org-1'));
+    client.assert(did, 'DID org-1 not found, run initialize.http first');
+    client.global.set('did', did)
+    client.global.set('didEncoded', encodeURIComponent(did))
+%}
+
+### Allow access to FHIR resource
+POST http://localhost:9000/{{didEncoded}}
+Content-Type: application/json
+
+[
+  "/fhir/Ziekenhuis_Morgenzon/EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000"
+]
+
+> {%
+    client.assert(response.status === 201, 'Expected 201 OK');
+%}
+
+### Request access token
+POST http://localhost:1323/internal/auth/v2/{{didEncoded}}/request-service-access-token
+Content-Type: application/json
+
+{
+  "verifier": "{{did}}",
+  "scope": "geboortezorg"
+}
+
+> {%
+    client.assert(response.body.access_token);
+    client.global.set('accessToken', response.body.access_token)
+%}
+
+### Read FHIR resource
+GET http://localhost:9080/fhir/Ziekenhuis_Morgenzon/EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000s
+Authorization: Bearer {{accessToken}}
+
+> {%
+    client.assert(response.status === 200, 'Expected 200 OK');
+%}
