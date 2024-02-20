@@ -1,0 +1,38 @@
+### Setup: create a new did:web
+POST http://localhost:1323/internal/vdr/v2/did
+Content-Type: application/json
+
+{
+  "id": "org-1"
+}
+
+> {%
+    client.global.set('did', response.body.id)
+%}
+
+### Issue a NutsOrganizationCredential
+POST http://localhost:1323/internal/vcr/v2/issuer/vc
+Content-Type: application/json
+
+{
+    "type": "NutsOrganizationCredential",
+    "issuer": "{{did}}",
+    "credentialSubject": {
+        "id": "{{did}}",
+        "organization": {
+            "name": "Because We Care B.V.",
+            "city": "Arnhem"
+        }
+    },
+    "publishToNetwork": false
+}
+
+> {%
+    client.global.set('vc', JSON.stringify(response.body))
+%}
+
+### Load issues NutsOrganizationCredential into holder's wallet
+POST http://localhost:1323/internal/vcr/v2/holder/{{did}}/vc
+Content-Type: application/json
+
+{{vc}}

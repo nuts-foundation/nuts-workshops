@@ -1,0 +1,30 @@
+services:
+  api-gateway:
+    image: apache/apisix
+    ports:
+      - "9080:9080"
+    environment:
+      APISIX_STAND_ALONE: true
+    volumes:
+      - './apisix_config.yaml:/usr/local/apisix/conf/apisix.yaml:ro'
+    networks:
+      - nuts-deployment-apigateway
+  policy-agent:
+    image: openpolicyagent/opa:0.61.0
+    ports:
+      - "8181:8181"
+    command:
+      - "run"
+      - "--server"
+      - "--log-level=debug"
+      - "--log-format=text"
+      - "--set=decision_logs.console=true"
+      - "/policies/geboortezorg.rego"
+    volumes:
+      - './opa_policies/:/policies/:ro'
+    networks:
+      - nuts-deployment-apigateway
+networks:
+  nuts-deployment-apigateway:
+    name: nuts-deployment-apigateway
+    external: true

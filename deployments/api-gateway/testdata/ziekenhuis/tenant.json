@@ -1,0 +1,13 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "id",
+      "valueInteger": 1
+    },
+    {
+      "name": "name",
+      "valueCode": "Ziekenhuis_Morgenzon"
+    }
+  ]
+}

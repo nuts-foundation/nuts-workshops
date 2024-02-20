@@ -1,0 +1,35 @@
+services:
+  hapi:
+    image: hapiproject/hapi:v6.10.1
+    ports:
+      - "8080:8080"
+    environment:
+      - hapi.fhir.fhir_version=DSTU3
+      - hapi.fhir.partitioning.allow_references_across_partitions=false
+    networks:
+      - nuts-deployment-apigateway
+  resource-authz-server:
+    build: resource-authz
+    ports:
+      - "9000:8080"
+    networks:
+      - nuts-deployment-apigateway
+  nutsnode:
+    image: nutsfoundation/nuts-node:local
+    ports:
+      - "1323:1323"
+    volumes:
+      - "./nutsnode/nuts.yaml:/nuts.yaml"
+      - "./nutsnode/localhost.pem:/opt/nuts/certificate-and-key.pem:ro"
+      - "./nutsnode/truststore.pem:/opt/nuts/truststore.pem:ro"
+      - "./nutsnode/policy:/opt/nuts/policy"
+      - "./data/node:/opt/nuts/data"
+      # did:web resolver uses the OS CA bundle, but e2e tests use a self-signed CA which can be found in truststore.pem
+      # So we need to mount that file to the OS CA bundle location, otherwise did:web resolving will fail due to untrusted certs.
+      - "./nutsnode/truststore.pem:/etc/ssl/certs/Nuts_RootCA.pem:ro"
+    networks:
+      - nuts-deployment-apigateway
+networks:
+  nuts-deployment-apigateway:
+    name: nuts-deployment-apigateway
+    external: true
