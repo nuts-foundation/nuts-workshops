@@ -35,7 +35,7 @@ Content-Type: application/json
 %}
 
 ### Read FHIR resource
-GET http://localhost:9080/fhir/Ziekenhuis_Morgenzon/EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000s
+GET http://localhost:9080/fhir/Ziekenhuis_Morgenzon/EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000
 Authorization: Bearer {{accessToken}}
 
 > {%

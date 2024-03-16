@@ -3,7 +3,7 @@ routes:
     uri: /fhir/*
     upstream:
       nodes:
-        "hapi:7080": 1
+        "hapi:8080": 1
       type: roundrobin
     plugin_config_id: nuts-zorgtoepassing-authz
   - id: nutsnode
