@@ -1,30 +1,30 @@
 ### Setup: create a new did:web
-POST http://localhost:1323/internal/vdr/v2/did
+POST http://localhost:8081/internal/vdr/v2/did
 Content-Type: application/json
 
 {
   "id": "org-1"
 }
 
-> {%
-    client.global.set('did', response.body.id)
-%}
+> {% client.global.set('did', response.body.id) %}
 
 ### Issue a NutsOrganizationCredential
-POST http://localhost:1323/internal/vcr/v2/issuer/vc
+# Set the expiration date to 1 year
+< {% client.global.set('credentialExpirationDate', new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 365).toISOString()) %}
+POST http://localhost:8081/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
     "type": "NutsOrganizationCredential",
     "issuer": "{{did}}",
+    "expirationDate": "{{credentialExpirationDate}}",
     "credentialSubject": {
         "id": "{{did}}",
         "organization": {
             "name": "Because We Care B.V.",
             "city": "Arnhem"
         }
-    },
-    "publishToNetwork": false
+    }
 }
 
 > {%
@@ -32,7 +32,7 @@ Content-Type: application/json
 %}
 
 ### Load issues NutsOrganizationCredential into holder's wallet
-POST http://localhost:1323/internal/vcr/v2/holder/{{did}}/vc
+POST http://localhost:8081/internal/vcr/v2/holder/{{did}}/vc
 Content-Type: application/json
 
 {{vc}}

@@ -32,7 +32,7 @@ func main() {
 				_, _ = writer.Write([]byte(fmt.Sprintf("expected JSON []string: %w", err.Error())))
 				return
 			}
-			party := strings.TrimLeft(request.URL.Path, "/")
+			party := strings.TrimLeft(request.URL.RawPath, "/")
 			if party == "" {
 				writer.WriteHeader(http.StatusBadRequest)
 				_, _ = writer.Write([]byte("invalid party in URL"))

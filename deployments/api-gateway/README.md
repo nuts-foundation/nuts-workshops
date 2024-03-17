@@ -9,7 +9,7 @@ Deployments:
 
 Do the following to set up the environment:
 1. Create docker network: `./init.sh`
-2. Start FHIR server, Nuts node and Authorized Resources server: ``ocker compose up`
+2. Start FHIR server, Nuts node and Authorized Resources server: ``docker compose up`
 3. When FHIR server has started, load test data into it: `./load_test_data.sh`
 4. Create `did:web` DID, issue `NutsOrganizationCredential` to itself: [create-did-and-vc.http](create-did-and-vc.http)
 5. Start APISIX and Open Policy Agent in `apisix` directory: `docker compose up`

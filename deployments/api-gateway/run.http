@@ -1,16 +1,15 @@
 ### Setup: load did:web
-GET http://localhost:1323/internal/vdr/v2/did
+GET http://localhost:8081/internal/vdr/v2/did
 
 > {%
     // Find DID document
     let did = response.body.find(t => t.endsWith('org-1'));
     client.assert(did, 'DID org-1 not found, run initialize.http first');
     client.global.set('did', did)
-    client.global.set('didEncoded', encodeURIComponent(did))
 %}
 
 ### Allow access to FHIR resource
-POST http://localhost:9000/{{didEncoded}}
+POST http://localhost:9000/{{did}}
 Content-Type: application/json
 
 [
@@ -22,7 +21,7 @@ Content-Type: application/json
 %}
 
 ### Request access token
-POST http://localhost:1323/internal/auth/v2/{{didEncoded}}/request-service-access-token
+POST http://localhost:8081/internal/auth/v2/{{did}}/request-service-access-token
 Content-Type: application/json
 
 {
@@ -36,7 +35,7 @@ Content-Type: application/json
 %}
 
 ### Read FHIR resource
-GET http://localhost:9080/fhir/Ziekenhuis_Morgenzon/EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000s
+GET http://localhost:9080/fhir/Ziekenhuis_Morgenzon/EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000
 Authorization: Bearer {{accessToken}}
 
 > {%
