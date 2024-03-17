@@ -2,7 +2,7 @@ services:
   hapi:
     image: hapiproject/hapi:v6.10.1
     ports:
-      - "7080:8080"
+      - "7080:8080" # port is exported to load test data
     environment:
       - hapi.fhir.fhir_version=DSTU3
       - hapi.fhir.partitioning.allow_references_across_partitions=false
@@ -11,7 +11,7 @@ services:
   resource-authz-server:
     build: resource-authz
     ports:
-      - "9000:8080"
+      - "9000:8080" # port is exposed to load test data
     networks:
       - nuts-deployment-apigateway
     depends_on:
@@ -20,7 +20,7 @@ services:
   nutsnode:
     image: nutsfoundation/nuts-node:6.0.0-alpha.1
     ports:
-      - "8081:8081"
+      - "8081:8081" # port exposed for loading test data (create DIDs and VCs, requesting access token)
       - "8080:8080"
     volumes:
       - "./nutsnode/policy:/opt/nuts/policy"
