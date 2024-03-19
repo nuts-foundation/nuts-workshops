@@ -1,0 +1,6 @@
+fhir:
+  server:
+    type: hapi-multi-tenant
+    address: http://hapi:8080/fhir
+customersfile: /customers.json
+nutsnodeaddr: http://nutsnode:8081

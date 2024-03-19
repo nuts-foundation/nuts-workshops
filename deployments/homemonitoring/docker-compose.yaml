@@ -1,0 +1,56 @@
+services:
+  hapi:
+    image: hapiproject/hapi:v6.10.1
+    ports:
+      - "7080:8080" # port is exported to load test data
+    volumes:
+      - "./data/hapi:/usr/local/tomcat/target" # TODO: does not seem to be the data directory
+    environment:
+      - hapi.fhir.fhir_version=DSTU3
+      - hapi.fhir.partitioning.allow_references_across_partitions=false
+  demo-ehr:
+    image: nutsfoundation/nuts-demo-ehr:main
+    volumes:
+      - "./demo-ehr/config.yaml:/config.yaml"
+      - "./demo-ehr/customers.json:/customers.json:ro"
+    environment:
+      - NUTS_CONFIGFILE=/config.yaml
+    ports:
+      - "1304:1304"
+  nutsnode:
+    image: nutsfoundation/nuts-node:6.0.0-alpha.4
+    ports:
+      - "8081:8081" # port exposed for loading test data (create DIDs and VCs, requesting access token)
+      - "8080:8080"
+    volumes:
+      - "./data/nutsnode:/data"
+      - "./nutsnode/nuts.yaml:/opt/nuts/nuts.yaml:ro"
+      - "./nutsnode/policy:/opt/nuts/policy:ro"
+      - "./nutsnode/discovery:/opt/nuts/discovery:ro"
+      # did:web resolver uses the OS CA bundle, but e2e tests use a self-signed CA which can be found in truststore.pem
+      # So we need to mount that file to the OS CA bundle location, otherwise did:web resolving will fail due to untrusted certs.
+      - "./nutsnode/truststore.pem:/etc/ssl/certs/Nuts_RootCA.pem:ro"
+    environment:
+      - NUTS_CONFIGFILE=/opt/nuts/nuts.yaml
+  api-gateway:
+    image: apache/apisix
+    ports:
+      - "9443:9443"
+      - "9080:9080"
+    environment:
+      APISIX_STAND_ALONE: true
+    volumes:
+      - './api-gateway/apisix_config.yaml:/usr/local/apisix/conf/apisix.yaml:ro'
+  policy-agent:
+    image: openpolicyagent/opa:0.61.0
+    ports:
+      - "8181:8181"
+    command:
+      - "run"
+      - "--server"
+      - "--log-level=debug"
+      - "--log-format=text"
+      - "--set=decision_logs.console=true"
+      - "/policies/homemonitoring.rego"
+    volumes:
+      - './policy-agent/:/policies/:ro'

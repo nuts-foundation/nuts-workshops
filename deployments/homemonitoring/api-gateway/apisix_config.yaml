@@ -1,0 +1,56 @@
+routes:
+  - id: fhir_server
+    uri: /fhir/*
+    upstream:
+      nodes:
+        "hapi:8080": 1
+      type: roundrobin
+    plugin_config_id: nuts-zorgtoepassing-authz
+  - id: nutsnode
+    uris:
+      - /.well-known/*
+      - /iam/*
+      - /oauth2/*
+    upstream:
+      nodes:
+        "nutsnode:8080": 1
+      type: roundrobin
+ssls:
+  -
+    id: tls
+    snis: ["api-gateway"]
+    cert: |
+      -----BEGIN CERTIFICATE-----
+      MIIB5jCCAY2gAwIBAgIJAP4dHF14qi42MAoGCCqGSM49BAMCMDIxMDAuBgNVBAMM
+      J051dHMgU3RhYmxlIERldmVsb3BtZW50IE5ldHdvcmsgUm9vdCBDQTAeFw0yNDAz
+      MTUxNTUzNTdaFw0yNTAzMTUxNTUzNTdaMBYxFDASBgNVBAMMC2FwaS1nYXRld2F5
+      MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEXXwTFkhPPSNKT8lwm062VV5QPpxG
+      NR0bJFU0tmEM9cUJZYPNZAbTtCUrbVZksIjTzpHFVAlPaFwh8pskJiTAWqOBpzCB
+      pDAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIwFgYDVR0RBA8wDYILYXBp
+      LWdhdGV3YXkwHQYDVR0OBBYEFLvG54zptTDweO/AUASfRcPz+jakMEwGA1UdIwRF
+      MEOhNqQ0MDIxMDAuBgNVBAMMJ051dHMgU3RhYmxlIERldmVsb3BtZW50IE5ldHdv
+      cmsgUm9vdCBDQYIJAOjzIhFRgthWMAoGCCqGSM49BAMCA0cAMEQCID1OWuhFum1x
+      TGjxkwkug038TDOZTUttBP6vnurozjU0AiA2DPCYx7gvoQbZpIvDfYHyLiVtOaYi
+      w5vNarkMfrNviQ==
+      -----END CERTIFICATE-----
+    key: |
+      -----BEGIN EC PRIVATE KEY-----
+      MHcCAQEEIP9Rd2xVEhjCV4087Ir3ucH3j+gUb95y4vYYjsVsCgzloAoGCCqGSM49
+      AwEHoUQDQgAEXXwTFkhPPSNKT8lwm062VV5QPpxGNR0bJFU0tmEM9cUJZYPNZAbT
+      tCUrbVZksIjTzpHFVAlPaFwh8pskJiTAWg==
+      -----END EC PRIVATE KEY-----
+plugin_configs:
+  - id: nuts-zorgtoepassing-authz
+    plugins:
+      openid-connect:
+        client_id: "client_id_todo"
+        client_secret: "client_secret_todo"
+        discovery: "discovery_todo"
+        introspection_endpoint: "http://nutsnode:8081/internal/auth/v2/accesstoken/introspect"
+        bearer_only: true
+        realm: "master"
+        introspection_endpoint_auth_method: none
+      opa:
+        host: "http://policy-agent:8181"
+        policy: homemonitoring
+#END
