@@ -1,0 +1,42 @@
+### Setup: create a new did:web for the service center
+POST http://localhost:8081/internal/vdr/v2/did
+Content-Type: application/json
+
+{
+  "id": "servicecenter"
+}
+
+> {% client.global.set('servicecenterDID', response.body.id) %}
+
+### Issue a NutsOrganizationCredential
+# Set the expiration date to 1 year
+< {% client.global.set('credentialExpirationDate', new Date(new Date().getTime() + 1000 * 60 * 60 * 24 * 365).toISOString()) %}
+POST http://localhost:8081/internal/vcr/v2/issuer/vc
+Content-Type: application/json
+
+{
+    "type": "NutsOrganizationCredential",
+    "issuer": "{{servicecenterDID}}",
+    "expirationDate": "{{credentialExpirationDate}}",
+    "credentialSubject": {
+        "id": "{{servicecenterDID}}",
+        "organization": {
+            "name": "Service Center",
+            "city": "Arnhem"
+        }
+    }
+}
+
+> {%
+    client.global.set('servicecenterVC', JSON.stringify(response.body))
+%}
+
+### Load issues NutsOrganizationCredential into holder's wallet
+POST http://localhost:8081/internal/vcr/v2/holder/{{servicecenterDID}}/vc
+Content-Type: application/json
+
+{{servicecenterVC}}
+
+### Activate HomeMonitoring Discovery Service for the DID
+POST http://localhost:8081/internal/discovery/v1/dev:HomeMonitoring2024/{{servicecenterDID}}
+

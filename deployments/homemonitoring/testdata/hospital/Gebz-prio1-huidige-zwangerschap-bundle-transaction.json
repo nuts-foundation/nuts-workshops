@@ -1,0 +1,631 @@
+{
+  "resourceType": "Bundle",
+  "id": "samenvatting-wouden-zwangerschap-4",
+  "type": "transaction",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:c755a07e-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Composition",
+        "id": "samenvatting-zwangerschap4-wouden",
+        "status": "final",
+        "type": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "15508-5",
+              "display": "Labor and delivery records"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "date": "2020-10-28T11:03:07.977+01:00",
+        "author": [
+          {
+            "reference": "Practitioner/c75595df-1904-11eb-6105-020000000000",
+            "display": "Zorgverlener"
+          }
+        ],
+        "title": "Example prio1 huidige zwangerschap",
+        "section": [
+          {
+            "entry": [
+              {
+                "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+                "display": "Wouden van der"
+              },
+              {
+                "reference": "Organization/C1504",
+                "display": "Verloskundigenpraktijk A"
+              },
+              {
+                "reference": "Practitioner/c75595df-1904-11eb-6105-020000000000",
+                "display": "Zorgverlener"
+              },
+              {
+                "reference": "PractitionerRole/C1504",
+                "display": "Verloskundigenpraktijk A"
+              },
+              {
+                "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+                "display": "Zwangerschap 4 wouden"
+              },
+              {
+                "reference": "Condition/c755a91f-1904-11eb-6105-020000000000",
+                "display": "Zwangerschap 4 wouden"
+              },
+              {
+                "reference": "Observation/c7559976-1904-11eb-6105-020000000000",
+                "display": "bloedgroep vrouwwouden"
+              },
+              {
+                "reference": "Observation/c7559b10-1904-11eb-6105-020000000000",
+                "display": "rhesus d factor vrouwwouden"
+              },
+              {
+                "reference": "Observation/c7559caa-1904-11eb-6105-020000000000",
+                "display": "rhesus c factorwouden"
+              },
+              {
+                "reference": "Observation/c7559e44-1904-11eb-6105-020000000000",
+                "display": "hbwouden"
+              },
+              {
+                "reference": "Observation/c755a920-1904-11eb-6105-020000000000",
+                "display": "graviditeitwouden"
+              },
+              {
+                "reference": "Observation/c755a921-1904-11eb-6105-020000000000",
+                "display": "pariteitwouden"
+              },
+              {
+                "reference": "Observation/c755a923-1904-11eb-6105-020000000000",
+                "display": "a terme datumwouden"
+              }
+            ]
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Composition/samenvatting-zwangerschap4-wouden"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "system": "http://fhir.nl/fhir/NamingSystem/bsn",
+            "value": "999910413"
+          }
+        ],
+        "name": [
+          {
+            "family": "van der Wouden",
+            "_family": {
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
+                  "valueString": "van der"
+                },
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
+                  "valueString": "Wouden"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Patient?identifier=999910413"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c755980f-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "C1504",
+        "identifier": [
+          {
+            "value": "C1504"
+          }
+        ],
+        "name": "Verloskundigenpraktijk A"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Organization/C1504"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c75595df-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "c75595df-1904-11eb-6105-020000000000",
+        "text": {
+          "status": "generated",
+          "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><div /></div>"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Practitioner/c75595df-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c75595de-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "id": "C1504",
+        "practitioner": {
+          "reference": "Practitioner/c75595df-1904-11eb-6105-020000000000"
+        },
+        "organization": {
+          "reference": "Organization/C1504",
+          "display": "Verloskundigenpraktijk A"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "PractitionerRole/C1504"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c75595ba-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "EpisodeOfCare",
+        "id": "c75595ba-1904-11eb-6105-020000000000",
+        "status": "active",
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "364320009",
+                "display": "Pregnancy observable (observable entity)"
+              }
+            ]
+          }
+        ],
+        "diagnosis": [
+          {
+            "condition": {
+              "reference": "Condition/c755a91f-1904-11eb-6105-020000000000",
+              "display": "Zwangerschap 4 wouden"
+            }
+          }
+        ],
+        "patient": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "managingOrganization": {
+          "reference": "Organization/C1504",
+          "display": "Verloskundigenpraktijk A"
+        },
+        "careManager": {
+          "reference": "Practitioner/c75595df-1904-11eb-6105-020000000000"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c755a91f-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Condition",
+        "id": "c755a91f-1904-11eb-6105-020000000000",
+        "clinicalStatus": "active",
+        "code": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "364320009",
+              "display": "Pregnancy observable (observable entity)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "context": {
+          "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+          "display": "Zwangerschap 4 wouden"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Condition/c755a91f-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c7559976-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c7559976-1904-11eb-6105-020000000000",
+        "status": "final",
+        "_status": {
+          "extension": [
+            {
+              "url": "http://nictiz.nl/fhir/StructureDefinition/code-specification",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.16.1",
+                    "code": "final",
+                    "display": "Final"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "49581000146104",
+                "display": "Laboratory test finding (finding)"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "883-9",
+              "display": "ABO group [Type] in Blood"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "context": {
+          "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+          "display": "Zwangerschap 4 wouden"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "165743006",
+              "display": "AB"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/c7559976-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c7559b10-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c7559b10-1904-11eb-6105-020000000000",
+        "status": "final",
+        "_status": {
+          "extension": [
+            {
+              "url": "http://nictiz.nl/fhir/StructureDefinition/code-specification",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.16.1",
+                    "code": "final",
+                    "display": "Final"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "49581000146104",
+                "display": "Laboratory test finding (finding)"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1305-2",
+              "display": "D Ag [Presence] in Blood"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "context": {
+          "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+          "display": "Zwangerschap 4 wouden"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "165747007",
+              "display": "Rh D Positief"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/c7559b10-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c7559caa-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c7559caa-1904-11eb-6105-020000000000",
+        "status": "final",
+        "_status": {
+          "extension": [
+            {
+              "url": "http://nictiz.nl/fhir/StructureDefinition/code-specification",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.16.1",
+                    "code": "final",
+                    "display": "Final"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "49581000146104",
+                "display": "Laboratory test finding (finding)"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "1159-3",
+              "display": "little c Ag [Presence] on Red Blood Cells"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "context": {
+          "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+          "display": "Zwangerschap 4 wouden"
+        },
+        "valueCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "733119003",
+              "display": "Rh c Negatief"
+            }
+          ]
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/c7559caa-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c7559e44-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c7559e44-1904-11eb-6105-020000000000",
+        "status": "final",
+        "_status": {
+          "extension": [
+            {
+              "url": "http://nictiz.nl/fhir/StructureDefinition/code-specification",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "system": "urn:oid:2.16.840.1.113883.2.4.3.11.60.40.4.16.1",
+                    "code": "final",
+                    "display": "Final"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "49581000146104",
+                "display": "Laboratory test finding (finding)"
+              }
+            ]
+          }
+        ],
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "718-7",
+              "display": "Hemoglobin (Bld) [Mass/Vol]"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "context": {
+          "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+          "display": "Zwangerschap 4 wouden"
+        },
+        "effectiveDateTime": "2020-08-17",
+        "valueQuantity": {
+          "value": 8.5,
+          "unit": "mmol/L",
+          "system": "http://unitsofmeasure.org",
+          "code": "mmol/L"
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/c7559e44-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c755a920-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c755a920-1904-11eb-6105-020000000000",
+        "extension": [
+          {
+            "url": "http://nictiz.nl/fhir/StructureDefinition/observation-focusSTU3",
+            "valueReference": {
+              "reference": "Condition/c755a91f-1904-11eb-6105-020000000000",
+              "display": "Zwangerschap 4 wouden"
+            }
+          }
+        ],
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "11996-6",
+              "display": "Gravidity"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "context": {
+          "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+          "display": "Zwangerschap 4 wouden"
+        },
+        "valueQuantity": {
+          "value": 4
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/c755a920-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c755a921-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c755a921-1904-11eb-6105-020000000000",
+        "extension": [
+          {
+            "url": "http://nictiz.nl/fhir/StructureDefinition/observation-focusSTU3",
+            "valueReference": {
+              "reference": "Condition/c755a91f-1904-11eb-6105-020000000000",
+              "display": "Zwangerschap 4 wouden"
+            }
+          }
+        ],
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "11977-6",
+              "display": "Parity"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "context": {
+          "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+          "display": "Zwangerschap 4 wouden"
+        },
+        "valueQuantity": {
+          "value": 2
+        }
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/c755a921-1904-11eb-6105-020000000000"
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c755a923-1904-11eb-6105-020000000000",
+      "resource": {
+        "resourceType": "Observation",
+        "id": "c755a923-1904-11eb-6105-020000000000",
+        "extension": [
+          {
+            "url": "http://nictiz.nl/fhir/StructureDefinition/observation-focusSTU3",
+            "valueReference": {
+              "reference": "Condition/c755a91f-1904-11eb-6105-020000000000",
+              "display": "Zwangerschap 4 wouden"
+            }
+          }
+        ],
+        "status": "final",
+        "code": {
+          "coding": [
+            {
+              "system": "http://loinc.org",
+              "code": "11778-8",
+              "display": "Deliv date Clin est"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:c75595d4-1904-11eb-6105-020000000000",
+          "display": "Wouden van der"
+        },
+        "context": {
+          "reference": "EpisodeOfCare/c75595ba-1904-11eb-6105-020000000000",
+          "display": "Zwangerschap 4 wouden"
+        },
+        "valueDateTime": "2020-10-25"
+      },
+      "request": {
+        "method": "PUT",
+        "url": "Observation/c755a923-1904-11eb-6105-020000000000"
+      }
+    }
+  ]
+}
