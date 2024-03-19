@@ -20,7 +20,7 @@ services:
       - "--log-level=debug"
       - "--log-format=text"
       - "--set=decision_logs.console=true"
-      - "/policies/geboortezorg.rego"
+      - "/policies/homemonitoring.rego"
     volumes:
       - './opa_policies/:/policies/:ro'
     networks:

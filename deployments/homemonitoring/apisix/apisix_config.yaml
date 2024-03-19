@@ -52,5 +52,5 @@ plugin_configs:
         introspection_endpoint_auth_method: none
       opa:
         host: "http://policy-agent:8181"
-        policy: geboortezorg
+        policy: homemonitoring
 #END

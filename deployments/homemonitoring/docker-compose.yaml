@@ -8,10 +8,17 @@ services:
       - hapi.fhir.partitioning.allow_references_across_partitions=false
     networks:
       - nuts-deployment-apigateway
-#  demo-ehr:
-#    build: nutsfoundation/demo-ehr:local
-#    networks:
-#      - nuts-deployment-apigateway
+  demo-ehr:
+    image: nutsfoundation/demo-ehr:local
+    volumes:
+      - "./demo-ehr/config.yaml:/config.yaml"
+      - "./demo-ehr/customers.json:/customers.json:ro"
+    environment:
+      - NUTS_CONFIGFILE=/config.yaml
+    ports:
+      - "1304:1304"
+    networks:
+      - nuts-deployment-apigateway
   nutsnode:
     image: nutsfoundation/nuts-node:master
     ports:
