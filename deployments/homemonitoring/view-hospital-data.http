@@ -42,6 +42,14 @@ Authorization: Bearer {{accessToken}}
     client.global.set('patientID', response.body.entry[0].resource.id)
 %}
 
+### Read FHIR Observations (by patient ID)
+GET http://localhost:9080/fhir/1/Observation?subject=Patient/{{patientID}}
+Authorization: Bearer {{accessToken}}
+
+> {%
+    client.assert(response.status === 200, 'Expected 200 OK');
+%}
+
 ### Read FHIR EpisodeOfCare (by patient BSN)
 GET http://localhost:9080/fhir/1/EpisodeOfCare?patient.identifier=1234567890
 Authorization: Bearer {{accessToken}}
@@ -50,10 +58,3 @@ Authorization: Bearer {{accessToken}}
     client.assert(response.status === 200, 'Expected 200 OK');
 %}
 
-### Read FHIR Observations (by patient ID)
-GET http://localhost:9080/fhir/1/Observation?subject=Patient/{{patientID}}
-Authorization: Bearer {{accessToken}}
-
-> {%
-    client.assert(response.status === 200, 'Expected 200 OK');
-%}
