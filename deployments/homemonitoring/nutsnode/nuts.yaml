@@ -1,0 +1,19 @@
+# NUTS_URL being the API Gateway might look weird, but it's actually the "outside facing" interface for the Nuts node,
+# since it needs TLS which is handled by APISIX in this setup.
+url: https://api-gateway:9443
+strictmode: false
+verbosity: debug
+http:
+  internal:
+    address: :8081
+policy:
+  directory: /opt/nuts/policy
+auth:
+  contractvalidators:
+    - dummy
+discovery:
+  definitions:
+    directory: /opt/nuts/discovery
+  server:
+    definition_ids:
+        - dev:HomeMonitoring2024

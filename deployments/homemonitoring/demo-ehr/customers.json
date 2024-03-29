@@ -1,0 +1,10 @@
+{
+  "1": {
+    "active": true,
+    "city": "Arnhem",
+    "did": "did:web:api-gateway%3A9443:iam:hospital",
+    "domain": "",
+    "id": 1,
+    "name": "Hospital"
+  }
+}

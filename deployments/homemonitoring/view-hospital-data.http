@@ -1,0 +1,60 @@
+### Setup: load DID of service center
+GET http://localhost:8081/internal/vdr/v2/did
+
+> {%
+    // Find DID document
+    let did = response.body.find(t => t.endsWith('servicecenter'));
+    client.assert(did, 'DID servicecenter not found, run setup first');
+    client.global.set('servicecenterDID', did)
+%}
+
+### Setup: load DID of hospital
+GET http://localhost:8081/internal/vdr/v2/did
+
+> {%
+    // Find DID document
+    let did = response.body.find(t => t.endsWith('hospital'));
+    client.assert(did, 'DID hospital not found, run setup first');
+    client.global.set('hospitalDID', did)
+%}
+
+### Request access token
+POST http://localhost:8081/internal/auth/v2/{{servicecenterDID}}/request-service-access-token
+Content-Type: application/json
+
+{
+  "verifier": "{{hospitalDID}}",
+  "scope": "homemonitoring"
+}
+
+> {%
+    client.assert(response.body.access_token);
+    client.global.set('accessToken', response.body.access_token)
+%}
+
+### Read FHIR Patient (by BSN)
+
+GET http://localhost:9080/fhir/1/Patient?identifier=1234567890
+Authorization: Bearer {{accessToken}}
+
+> {%
+    client.assert(response.status === 200, 'Expected 200 OK');
+    client.global.set('patientID', response.body.entry[0].resource.id)
+%}
+
+### Read FHIR Observations (by patient ID)
+GET http://localhost:9080/fhir/1/Observation?subject=Patient/{{patientID}}
+Authorization: Bearer {{accessToken}}
+
+> {%
+    client.assert(response.status === 200, 'Expected 200 OK');
+%}
+
+### Read FHIR EpisodeOfCare (by patient BSN)
+GET http://localhost:9080/fhir/1/EpisodeOfCare?patient.identifier=1234567890
+Authorization: Bearer {{accessToken}}
+
+> {%
+    client.assert(response.status === 200, 'Expected 200 OK');
+%}
+
