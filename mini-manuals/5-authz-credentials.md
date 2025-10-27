@@ -26,7 +26,7 @@ Issuing an authorization credential is similar to issuing an organization creden
 A credential can be issued with the following call:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v2/issuer/vc
+POST http://localhost:8081/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
@@ -80,7 +80,7 @@ The receiver must find the authorization credential that authorizes access to th
 The following call must be used to find it:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v2/search
+POST http://localhost:8081/internal/vcr/v2/search
 Content-Type: application/json
 
 {
@@ -158,7 +158,7 @@ Code sample: https://github.com/nuts-foundation/nuts-demo-ehr/blob/HEAD/nuts/reg
 Revoking an authorization credential is easy. An issuer can revoke the credential with the following call:
 
 ```http request
-DELETE http://localhost:1323/internal/vcr/v2/issuer/vc/{id}
+DELETE http://localhost:8081/internal/vcr/v2/issuer/vc/{id}
 ```
 
 Where `id` equals the identifier of the credential. In the example above this is `did:nuts:JCJEi3waNGNhkmwVvFB3wdUsmDYPnTcZxYiWThZqgWKv#314542e8-c8cc-4502-a7df-a815ac47c06b`
