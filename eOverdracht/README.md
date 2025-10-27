@@ -182,7 +182,7 @@ Authorization: bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJhaWQiOiJ1cm46b2lkO
 
 You can validate the access token by sending it to the introspection endpoint. This is described in the [access token manual](../mini-manuals/6-access-token.md).
 The result for the introspection token will return the JWT claims. Two claims are of interest: `iss` and `sub`. 
-The issuer and the subject are both DIDs. The issuer is your customer DID that signed the JWT and the subject is the DID of the sender that is sending the notification. 
+The issuer and the subject are both DIDs. The issuer is your care organization's DID that signed the JWT and the subject is the DID of the sender that is sending the notification. 
 These DIDs are important for the next step.
 
 ### Retrieving updated tasks
@@ -228,7 +228,7 @@ Authorization: bearer <access-token>
 The access token is quite different though. According to the eOverdracht bolt specification access policy, retrieving these resources requires both a user identity and the correct authorization credentials.
 
 The right authorization credential can be found by following the [authorization credential manual](../mini-manuals/5-authz-credentials.md).
-The `credentialSubject.id` parameter must equal the receiver DID (your customer), the `credentialSubject.purposeOfUse` parameter must be `eOverdracht-sender` and the `credentialSubject.resources.#.path` parameter must equal the composition reference from the task resource. Note that the paths used in authorization credentials have a leading `/`.
+The `credentialSubject.id` parameter must equal the receiver DID (your care organization), the `credentialSubject.purposeOfUse` parameter must be `eOverdracht-sender` and the `credentialSubject.resources.#.path` parameter must equal the composition reference from the task resource. Note that the paths used in authorization credentials have a leading `/`.
 
 The user identity can be obtained by following the [authentication manual](../mini-manuals/7-authentication.md)
 

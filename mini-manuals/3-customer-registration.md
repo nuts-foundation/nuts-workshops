@@ -1,13 +1,13 @@
-# Customer registration
+# Organization registration
 
 ## Description
 
 This manual describes how to register care organizations (the vendor's customers) and publish their names.
-We'll describe the API calls based on the assumption the customer has a single vendor.
+We'll describe the API calls based on the assumption the organization has a single vendor.
 
 ## Creating an organization DID
 
-Creating the DID for the customer is the same as creating the DID for the vendor:
+Creating the DID for the organization is the same as creating the DID for the vendor:
 
 ```http request
 POST http://localhost:8081/internal/vdr/v2/subject
@@ -21,9 +21,9 @@ Content-Type: application/json
 
 Since a DID in itself doesn't hold any information about its owner, it may represent anything (vendor/care organization/etc).
 To make it known as a care organization's presence on the network, it must be issued a credential.
-The vendor will issue a NutsOrganizationCredential to the customer DID, giving it a name.
+The vendor will issue a NutsOrganizationCredential to the organization DID, giving it a name.
 
-Such a credential is created by (replace the `issuer` with the vendor's DID and the `credentialSubject.id` with the customer's DID):
+Such a credential is created by (replace the `issuer` with the vendor's DID and the `credentialSubject.id` with the organization's DID):
 
 ```http request
 POST http://localhost:8081/internal/vcr/v2/issuer/vc
@@ -162,10 +162,10 @@ Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HE
 ## Registering NutsComm endpoint
 
 For an organization to receive private transactions, it needs to publish its `NutsComm` endpoint on its DID document.
-It will refer to the vendor's `NutsComm` endpoint, by registering an endpoint reference (given `{customer_subject_id}` and `{vendor_nuts_did}`):
+It will refer to the vendor's `NutsComm` endpoint, by registering an endpoint reference (given `{organization_subject_id}` and `{vendor_nuts_did}`):
 
 ```http request
-POST http://localhost:8081/internal/vdr/v2/subject/{customer_subject_id}/service
+POST http://localhost:8081/internal/vdr/v2/subject/{organization_subject_id}/service
 Content-Type: application/json
 
 {
