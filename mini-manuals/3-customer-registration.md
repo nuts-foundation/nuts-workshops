@@ -5,41 +5,17 @@
 This manual describes how to register care organizations (the vendor's customers) and publish their names.
 We'll describe the API calls based on the assumption the customer has a single vendor.
 
-## Resources
-
-- **Nuts DID method**: https://nuts-foundation.gitbook.io/drafts/rfc/rfc006-distributed-registry
-- **Registration manual**: https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html
-- **Verifiable credentials**: https://nuts-foundation.gitbook.io/drafts/rfc/rfc011-verifiable-credential
-- **NutsOrganizationCredential**: https://nuts-foundation.gitbook.io/drafts/rfc/rfc012-nuts-organization-credential
-- **Credential concepts**: https://nuts-node.readthedocs.io/en/latest/pages/technology/vc-concepts.html
-
 ## Creating an organization DID
 
-Creating the DID for the customer is similar to creating the DID for the vendor.
-Some settings are slightly different:
+Creating the DID for the customer is the same as creating the DID for the vendor:
 
 ```http request
-POST http://localhost:1323/internal/vdr/v1/did
+POST http://localhost:8081/internal/vdr/v2/subject
 Content-Type: application/json
-
-{
-  "controllers": ["did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz"],
-  "assertionMethod": true,
-  "authentication": false,
-  "capabilityInvocation": false,
-  "capabilityDelegation": false,
-  "keyAgreement": false,
-  "selfControl": false
-}
 ```
 
-Given these parameters, we create a DID that can only use its key for assertions (access tokens and credentials).
-The DID Document is controlled by another DID, the vendor's DID.
-The resulting DID Document can only be updated with the vendor's private key.
-This setup allows you to keep the most important key secure.
-The resulting DID must be stored somewhere, or the DID is lost (or very hard to retrieve).
-
-Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/customers/service.go#L18-L43
+> *Note*: if you don't have multiple tenants (e.g. a hospital running its own Nuts node),
+> you can use the same subject as the vendor.
 
 ## Giving the organization a name
 
@@ -47,10 +23,10 @@ Since a DID in itself doesn't hold any information about its owner, it may repre
 To make it known as a care organization's presence on the network, it must be issued a credential.
 The vendor will issue a NutsOrganizationCredential to the customer DID, giving it a name.
 
-Such a credential is created by:
+Such a credential is created by (replace the `issuer` with the vendor's DID and the `credentialSubject.id` with the customer's DID):
 
 ```http request
-POST http://localhost:1323/internal/vcr/v2/issuer/vc
+POST http://localhost:8081/internal/vcr/v2/issuer/vc
 Content-Type: application/json
 
 {
@@ -108,7 +84,7 @@ code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HE
 You can search for any credential by providing a VC with fields populated to match against:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v2/search
+POST http://localhost:8081/internal/vcr/v2/search
 Content-Type: application/json
 
 {
@@ -128,11 +104,11 @@ Content-Type: application/json
 `concept` will have to be replaced with the correct concept, an abstraction that generalizes the information of credentials.
 Currently, organizations are only defined through `NutsOrganizationCredential`s, but in the future other credentials may be supported as well.
 Having an abstract concept will allow clients to find the correct result even if it doesn't know by which credential it's defined.
-Check out the [docs](https://nuts-node.readthedocs.io/en/latest/pages/technology/vc-concepts.html) for the current concepts.
+
 Searching for a care organization can be done by search for a `NutsOrganizationCredential`:
 
 ```http request
-POST http://localhost:1323/internal/vcr/v2/search
+POST http://localhost:8081/internal/vcr/v2/search
 Content-Type: application/json
 
 {
@@ -186,15 +162,15 @@ Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HE
 ## Registering NutsComm endpoint
 
 For an organization to receive private transactions, it needs to publish its `NutsComm` endpoint on its DID document.
-It will refer to the vendor's `NutsComm` endpoint, by registering an endpoint reference (given `{client_did}` and `{vendor_did}`):
+It will refer to the vendor's `NutsComm` endpoint, by registering an endpoint reference (given `{customer_subject_id}` and `{vendor_nuts_did}`):
 
 ```http request
-POST http://localhost:1323/internal/didman/v1/did/{client_did}/endpoint
+POST http://localhost:8081/internal/vdr/v2/subject/{customer_subject_id}/service
 Content-Type: application/json
 
 {
   "type": "NutsComm",
-  "endpoint": "{vendor_did}/serviceEndpoint?type=NutsComm"
+  "endpoint": "{vendor_nuts_did}/serviceEndpoint?type=NutsComm"
 }
 ```
 
@@ -206,10 +182,10 @@ A search API call can be extended by adding the `untrusted=true` query parameter
 A list of (un)trusted issuers can be obtained by calling:
 
 ```http request
-GET http://localhost:1323/internal/vcr/v2/verifier/{credentialType}/trusted
+GET http://localhost:8081/internal/vcr/v2/verifier/{credentialType}/trusted
 ```
 ```http request
-GET http://localhost:1323/internal/vcr/v2/verifier/{credentialType}/untrusted
+GET http://localhost:8081/internal/vcr/v2/verifier/{credentialType}/untrusted
 ```
 
 where `credentialType` needs to be replaced by the credential type. For example: `NutsOrganizationCredential`.
@@ -230,7 +206,7 @@ Code sample: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HE
 
 An issuer can be trusted (for a specific credential type) by calling:
 ```http request
-POST http://localhost:1323/internal/vcr/v2/verifier/trust
+POST http://localhost:8081/internal/vcr/v2/verifier/trust
 Content-Type: application/json
 
 {
@@ -241,7 +217,7 @@ Content-Type: application/json
 
 and removed by calling:
 ```http request
-DELETE http://localhost:1323/internal/vcr/v2/verifier/trust
+DELETE http://localhost:8081/internal/vcr/v2/verifier/trust
 Content-Type: application/json
 
 {

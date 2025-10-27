@@ -66,11 +66,6 @@ We'll change the config in `single/config/node/nuts.yaml` to
 ```yaml
 datadir: /opt/nuts/data
 strictmode: false
-http:
-  default:
-    address: :1323
-    cors:
-      origin: "*"
 verbosity: debug
 network:
   enabletls: false

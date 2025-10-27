@@ -5,73 +5,64 @@
 This manual describes how to create a DID and how to register a vendor as subject of the DID.
 The concept of a vendor comes from a SaaS based architecture. If a single care organization hosts its own node, the care organization will act as vendor.
 
-## Resources
-
-- **Nuts DID method**: https://nuts-foundation.gitbook.io/drafts/rfc/rfc006-distributed-registry
-- **Registration manual**: https://nuts-node.readthedocs.io/en/latest/pages/getting-started/4-connecting-crm.html
-- **Node configuration**: https://nuts-node.readthedocs.io/en/latest/pages/configuration/configuration.html
-
-## Creating a DID
+## Creating a subject and its DIDs
 
 You can create an infinite amount of DIDs. DIDs in itself are meaningless until information is added to them.
 Creating a DID only creates a key pair and an ID. If the result of the REST call is not stored, the DID is lost (or at least very hard to retrieve).
-A DID is created through:
+DIDs are bound to a "subject", which is a tenant in the Nuts node. A subject has one or more DIDs.
+A subject is created through:
 
 ```http request
-POST http://localhost:1323/internal/vdr/v1/did
+POST http://localhost:8081/internal/vdr/v2/subject
+```
+
+
+The result will be a subject and its DID Documents:
+
+```json
+{
+  "id": "e8f44ab1-93bc-4728-ae13-dcda893528d5",
+  "documents": [
+    {
+      "@context": "https://www.w3.org/ns/did/v1",
+      "assertionMethod": [
+        "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz#3RySG4RbbmWw-61OfrpI0q7oBkqyESLCmhKctLyog4s"
+      ],
+      "capabilityInvocation": [
+        "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz#3RySG4RbbmWw-61OfrpI0q7oBkqyESLCmhKctLyog4s"
+      ],
+      "id": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
+      "verificationMethod": [
+        {
+          "controller": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
+          "id": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz#3RySG4RbbmWw-61OfrpI0q7oBkqyESLCmhKctLyog4s",
+          "publicKeyJwk": {
+            "crv": "P-256",
+            "kty": "EC",
+            "x": "7B_C548pMtONSEoXbxKZOnlXIxbplayJ_v41VdPBvzg",
+            "y": "3Ra83dahvaqhBloZnK5vaqcZWn-lKoGW4nuiWkkTdtQ"
+          },
+          "type": "JsonWebKey2020"
+        }
+      ]
+    }
+  ]
+}
+```
+
+It's important to store the `id` (`e8f44ab1-93bc-4728-ae13-dcda893528d5`), which is a handle to the subject and its DID documents.
+
+Alternatively, you can provide the subject ID yourself by adding it to the request body:
+
+```http request
+POST http://localhost:8081/internal/vdr/v2/subject
 Content-Type: application/json
 
 {
-  "controllers": [],
-  "assertionMethod": true,
-  "authentication": false,
-  "capabilityInvocation": true,
-  "capabilityDelegation": false,
-  "keyAgreement": false,
-  "selfControl": true
+  "id": "my-hospital"
 }
 ```
 
-The body of the call is the default setting. Using an empty body will yield the same result.
-An explanation of each of the parameters that can be set.
-
-- controllers: List of DIDs that can alter the DID Document. Those DIDs must have a capabilityInvocation key.
-- assertionMethod: If the key generated for the DID Document can also be used for assertions (credentials, access tokens)
-- authentication: Reserved for future use
-- capabilityInvocation: If the key may be used to update a DID Document.
-- capabilityDelegation: Reserved for future use
-- keyAgreement: Reserved for future use
-- selfControl: If the DID will be listed as its own controller. When true, capabilityInvocation must be true as well.
-
-The result will be a DID Document:
-
-```
-{
-    "@context": "https://www.w3.org/ns/did/v1",
-    "assertionMethod": [
-        "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz#3RySG4RbbmWw-61OfrpI0q7oBkqyESLCmhKctLyog4s"
-    ],
-    "capabilityInvocation": [
-        "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz#3RySG4RbbmWw-61OfrpI0q7oBkqyESLCmhKctLyog4s"
-    ],
-    "id": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
-    "verificationMethod": [
-        {
-            "controller": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz",
-            "id": "did:nuts:Ft8NRLzSjxyw8AmTHVtJ9ehBctXpsaQjshmHnqWCATEz#3RySG4RbbmWw-61OfrpI0q7oBkqyESLCmhKctLyog4s",
-            "publicKeyJwk": {
-                "crv": "P-256",
-                "kty": "EC",
-                "x": "7B_C548pMtONSEoXbxKZOnlXIxbplayJ_v41VdPBvzg",
-                "y": "3Ra83dahvaqhBloZnK5vaqcZWn-lKoGW4nuiWkkTdtQ"
-            },
-            "type": "JsonWebKey2020"
-        }
-    ]
-}
-```
-
-It's important to store the `id` (`did:nuts:Ft8N... etc`), which is the actual DID. All API calls use that id.
 
 ## Updating contact information
 
@@ -81,14 +72,17 @@ The contact information allows for other node operators to contact the lagging n
 Contact information is stored as service on the DID document. In order to make the life of developers easier, we've added a convenience method:
 
 ```http request
-PUT http://localhost:1323/internal/didman/v1/did/{did}/contactinfo
+PUT http://localhost:8081/internal/vdr/v2/subject/{subject_id}/service
 Content-Type: application/json
 
 {
-  "name": "Care services B.V.",
-  "phone": "555-1234",
-  "email": "hi@example.com",
-  "website": "https://example.com"
+  "type": "node-contact-info",
+  "serviceEndpoint": {
+    "name": "Care services B.V.",
+    "phone": "555-12342",
+    "email": "hi@example.com",
+    "website": "https://example.com"
+  }
 }
 ```
 
@@ -97,7 +91,7 @@ It returns the same information as sent when successful.
 The changes to the DID Document can be seen by resolving it:
 
 ```http request
-GET http://localhost:1323/internal/vdr/v1/did/{did}
+GET http://localhost:8081/internal/vdr/v2/did/{did}
 ```
 
 ```
@@ -149,8 +143,6 @@ GET http://localhost:1323/internal/vdr/v1/did/{did}
 }
 ```
 
-You can find a code sample for creating a DID and updating the contact info here: https://github.com/nuts-foundation/nuts-registry-admin-demo/blob/HEAD/domain/sp/service.go#L40-L79
-
 ## Registering NutsComm endpoint
 
 To exchange private transactions (transactions that contain PII, personally identifiable information) your node's connections need to be authenticated with its DID document.
@@ -159,17 +151,17 @@ It is the endpoint that can be used by other nodes to connect to your node, and 
 It must be in the format of `grpc://<host>:<port>`. You can register it through:
 
 ```http request
-POST http://localhost:1323/internal/didman/v1/did/{did}/endpoint
+POST http://localhost:8081/internal/vdr/v2/subject/{subject_id}/service
 Content-Type: application/json
 
 {
   "type": "NutsComm",
-  "endpoint": "grpc://nodeA:5555"
+  "serviceEndpoint": "grpc://example.com:5555"
 }
 ```
+
+Now, you configure set this node DID as `network.nodedid`, so the node uses that to authenticate to other nodes.
 
 You should restart your node to re-establish network connections to make sure they're properly authenticated.
 
 Other Nuts nodes will now discover your node and start connecting to it. You're also set up to send and receive private transactions.
-
-Note: your node's DID is automatically discovered when not in strict mode, but you can explicitly set it through `network.nodedid`.
